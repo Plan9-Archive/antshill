@@ -1,0 +1,77 @@
+#!/bin/rc
+# store copies of all the variables used to control boot
+
+if(~ $1 init){
+	echo 'binddevs=' $binddevs >/tmp/p9initcfg
+	echo 'hostfactotum=' $hostfactotum >>/tmp/p9initcfg
+	echo 'netsvc=' $netsvc >>/tmp/p9initcfg
+	echo 'cpusvc=' $cpusvc >>/tmp/p9initcfg
+	echo 'hubsvc=' $hubsvc >>/tmp/p9initcfg
+	if(! ~ $cpuport 17020)
+		echo 'cpuport=' $cpuport >>/tmp/p9initcfg
+	echo 'hostcsdns=' $hostcsdns >>/tmp/p9initcfg
+	echo 'unprivileged=' $unprivileged >>/tmp/p9initcfg
+	exit ''
+}
+
+# all of these are for plan9rc
+# reconstruct a bootargs if the user has entered that data interactively
+
+if(~ $interactive yes){
+	if(~ $getrootfs tcp){
+		bootinfo=`{echo $getrootfs $ipparams}
+	}
+	if(~ $getrootfs local){
+		if(! ~ $bootpartition '')
+			bootinfo=`{echo local!^$bootpartition}
+		if(~ $bootpartition *fs){
+			bootinfo=`{echo $bootinfo $kfsparams}
+		}
+	}
+}
+if not{
+	bootinfo=$bootparse
+}
+
+echo 'bootfile=' $bootfile >/tmp/p9rcconfig
+echo 'bootargs=' $bootinfo >>/tmp/p9rcconfig
+echo 'sysname=' $sysname >>/tmp/p9rcconfig
+if(! ~ $ramsetup ramskel)
+	echo 'ramsetup=' $ramsetup >>/tmp/p9rcconfig
+echo 'startventi=' $startventi >>/tmp/p9rcconfig
+if(~ startventi yes){
+	echo 'venticonf= '$venticonf >>/tmp/p9rcconfig
+	echo 'ventilisten= '$ventilisten >>/tmp/p9rcconfig
+	echo 'vhttplisten= '$vhttplisten >>/tmp/p9rcconfig
+}
+echo 'venti=' $venti >>/tmp/p9rcconfig
+echo 'fs=' $fs >>/tmp/p9rcconfig
+echo 'auth=' $auth >>/tmp/p9rcconfig
+echo 'cfs=' $cfs >>/tmp/p9rcconfig
+echo 'fossil=' $fossil >>/tmp/p9rcconfig
+echo 'kfs=' $kfs >>/tmp/p9rcconfig
+if(! ~ $initscript initskel)
+	echo 'initscript=' $initscript >>/tmp/p9rcconfig
+if(! ~ $namespace namespace)
+	echo 'namespace=' $namespace >>/tmp/p9rcconfig
+echo 'factotum=' $factotum >>/tmp/p9rcconfig
+echo 'rootstart=' $rootstart >>/tmp/p9rcconfig
+echo 'staylocal=' $staylocal >>/tmp/p9rcconfig
+echo 'afterfact=' $afterfact >>/tmp/p9rcconfig
+echo 'afterroot=' $afterroot >>/tmp/p9rcconfig
+echo 'tryusb=' $tryusb >>/tmp/p9rcconfig
+# for ramskel 
+echo 'tgzfs=' $tgzfs >>/tmp/p9rcconfig
+if(! ~ $fatpath /dev/sdC0/9fat)
+	echo 'fatpath=' $fatpath >>/tmp/p9rcconfig
+# put last so user will notice it and think about what they want
+echo 'interactive=' $interactive >>/tmp/p9rcconfig
+
+# sed out unwanted spaces and catenate variables from plan9rc and initskel
+
+cat /tmp/p9rcconfig | sed '/.*=$/d' | sed 's/= /=/g' >/tmp/p9cfg
+rm /tmp/p9rcconfig
+if(~ $initscript initskel){
+	cat /tmp/p9initcfg | sed '/.*=$/d' | sed 's/= /=/g' >>/tmp/p9cfg
+	rm /tmp/p9initcfg
+}

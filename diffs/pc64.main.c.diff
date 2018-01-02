@@ -1,0 +1,11 @@
+--- /sys/src/9/pc64/main.c	Sun Dec 17 12:32:53 2017
++++ ../frontmods/pc64/main.c	Fri Dec 22 02:26:47 2017
+@@ -236,6 +236,8 @@
+ 	p->pgrp = newpgrp();
+ 	p->egrp = smalloc(sizeof(Egrp));
+ 	p->egrp->ref = 1;
++	p->sgrp = smalloc(sizeof(Sgrp));
++	p->sgrp->ref = 1;
+ 	p->fgrp = dupfgrp(nil);
+ 	p->rgrp = newrgrp();
+ 	p->procmode = 0640;

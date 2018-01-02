@@ -1,0 +1,103 @@
+9front and Bell Labs are both supported.  Installing from source is
+the recommended method, although precompiled kernels and tools.tgz may
+be found in the "frontants" and "labsants" subdirectories on
+files.9gridchan.org, along with source/utilities tarballs.
+
+Overview: A full ANTS install includes a kernel (9ants for 9front,
+9pcram.gz for Bell Labs) and tools.tgz placed in 9fat.  Hubfs, grio,
+utility scripts, and manpages are installed to your main filesystem.
+The 9fat plan9.ini needs a few additional variables for configuration.
+The 9front /rc/bin/termrc needs one line added to the end.
+
+Building and installing is mostly done by the build script in the root
+of the ANTS directory.  This script has multiple modes.
+
+9front Install
+--------------
+
+build 9front # compiles everything, but does not install anything. 
+build fronthost # installs the userspace components
+copy the new 9ants kernel and tools.tgz to the 9fat partition
+edit plan9.ini
+add the following line to /rc/bin/termrc:
+home=/usr/$user; cd; . $home/lib/profile
+
+The minimal change to plan9.ini is setting "bootfile=9ants"
+To change to using the main ANTS boot script, add "bootcmd=plan9rc"
+To set a password for remote access on systems not using an auth server:
+add "privpassword=SOMEPASSWORD"
+
+There are many optional plan9.ini variables which affect the plan9rc
+script.  Please see its documentation for a comprehensive list.
+
+build script info
+-----------------
+
+The build script uses binds to work only within the rootless directory
+and leave all existing system src unmodified.  It has the following
+modes:
+
+9front build script modes
+-------------------------
+
+build - with no arguments, this builds a 9pcram.gz kernel with the
+kernel and its compilation files located in compiletemp. Requires 
+build extras build patched build bootpaq be run first.
+
+build 9front - this builds a 9ants kernel and tools.tgz and copies
+them to the root of the ants directory
+
+build fronthost - builds and installs the userspace components
+(hubfs, grio, contents of the scripts directory, manpages)
+
+build 9frontinstall - installs kernel and tools to 9fat, then installs
+userspace programs and prompts for a privpassword.  Requires "build
+9front" be run first.  It is necessary to edit and change the new
+plan9.ini as needed
+
+build frontkernel - builds the 9ants kernel but does not create a
+tools.tgz
+
+build vultr - installs to a clean vultr install (hjfs recommended)
+
+build vultrfossil - installs to a custom-partitioned 9front vultr install
+changes system to use venti+fossil
+
+Additional notes
+----------------
+
+set interactive= in plan9.ini to control bootup prompting. 
+interactive=traditional (or unset) gives only standard boot prompts
+interactive=yes gives fully interactive configurable boot
+interactive=no will boot with no prompts unless info is missing
+
+tgzfs= if you wish to load a tgz of tools other than tools.tgz, set
+this to the name of the .tgz in 9fant, or set to "no" to skip loading
+
+fatpath= if the correct 9fat partition isn't auto-detected, set this
+to supply the correct pathname
+
+full explanation of all new plan9.ini possibilities and their defaults
+is found within the doc subdirectory.
+
+page doc/ants.ps ## please do this to read the full Giant ANTS paper
+also
+
+nroff -man doc/plan9rc.man ## the full documentation for plan9rc
+bootup
+
+9front version/ANTS version coordination (approximate, different
+revisions may work as well, these were tested during the development
+process)
+
+hg up -r599 builds vs 9front 6299
+hg up -r569 builds vs 9front 6277
+hg up -r534 builds vs 9front 6261
+hg up -r515 builds vs 9front 5736
+hg up -r485 builds vs 9front 5675
+hg up -r422 builds vs 9front 5641
+hg up -r395 builds vs 9front 5639
+hg up -r379 builds vs 9front 5625
+hg up -r377 builds vs 9front 5360
+hg up -r369 builds vs 9front 5217
+hg up -r368 builds vs 9front 4796

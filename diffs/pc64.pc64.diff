@@ -1,0 +1,19 @@
+--- /sys/src/9/pc64/pc64	Mon Dec 18 08:00:37 2017
++++ ../frontmods/pc64/pc64	Fri Dec 22 02:26:47 2017
+@@ -10,6 +10,7 @@
+ 	proc
+ 	mnt
+ 	srv
++	zrv
+ 	shr
+ 	dup
+ 	rtc
+@@ -152,6 +153,7 @@
+ 
+ bootdir
+ 	/$objtype/bin/paqfs
+-	/$objtype/bin/auth/factotum
+ 	bootfs.paq
+ 	boot
++	/n/rootless/bootdir.extras/factotum
++	/n/rootless/bootdir.extras/plan9rc

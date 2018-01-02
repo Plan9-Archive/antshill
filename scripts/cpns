@@ -1,0 +1,50 @@
+#!/bin/rc
+# cpns copies namespace from process 1 to process 2
+# this script requires the writable /proc/ns mod found in contrib/mycroftiv/writeprocns
+# cpns MODELpid TARGETpid
+
+rfork e
+only=()
+xclude=()
+riosafe=()
+testonly=()
+saveargs=$*
+while (~ $1 -*){
+	switch($1){
+	case -o
+		only=$2
+		shift
+		shift
+	case -x
+		xclude=$2
+		shift
+		shift
+	case -t
+		testonly=-t
+		shift
+	case -r
+		riosafe=-r
+		shift
+	case *
+		echo bad flag $1
+		shift
+	}
+}
+
+if(~ $2 ""){
+	echo usage: cpns MODELpid TARGETpid
+	exit usage
+}
+
+if(! test -e /proc/$1){
+	echo process $1 does not exist!
+	exit no.proc
+}
+if(! test -e /proc/$2){
+	echo process $2 does not exist!
+	exit no.proc
+}
+subns $saveargs
+addns $saveargs
+
+exit ''

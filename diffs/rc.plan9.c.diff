@@ -1,0 +1,17 @@
+--- /sys/src/cmd/rc/plan9.c	Thu May 19 16:48:54 2016
++++ ../frontmods/rc/plan9.c	Fri Dec 22 02:26:47 2017
+@@ -81,11 +81,13 @@
+ 			arg|=RFFDG;    break;
+ 		case 'F':
+ 			arg|=RFCFDG;   break;
++		case 'V':
++			arg|=RFCSRVG;  break;
+ 		}
+ 		break;
+ 	default:
+ 	Usage:
+-		pfmt(err, "Usage: %s [fnesFNEm]\n", runq->argv->words->word);
++		pfmt(err, "Usage: %s [fnesFNEmV]\n", runq->argv->words->word);
+ 		setstatus("rfork usage");
+ 		poplist();
+ 		return;

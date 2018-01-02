@@ -1,0 +1,11 @@
+--- /sys/src/cmd/auth/factotum/util.c	Sat Jan 21 23:43:13 2017
++++ ../frontmods/patched/factotumutil.c	Fri Dec 22 02:26:47 2017
+@@ -11,6 +11,8 @@
+ 
+ 	if(access("/net/tcp", AEXIST) < 0)
+ 		bind("#I", "/net", MBEFORE);
++	if(nomntcs)
++		return -1;
+ 
+ 	if(access("/net/cs", AEXIST) < 0){
+ 		if((srvfd = open("#s/cs", ORDWR)) >= 0){

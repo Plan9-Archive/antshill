@@ -1,0 +1,72 @@
+#!/bin/rc
+
+# desc: choose and mount file system partition
+
+sname=fossil
+
+switch($1){
+case go
+	echo
+	echo Please choose drive with fossil partition
+	echo
+
+	files=(`{ls /dev/sd*/fossil* /dev/fs/fossil* >[2]/dev/null})
+	if(! ~ $#files 0)
+		ls -l $files
+	echo
+	if(~ $#files 1)
+		default=(-d $files)
+	if not
+		default=()
+	prompt $default 'Fossil partition' $files
+	fs=$rd
+	export fs
+	fsflags=()
+	export fsflags
+
+	prompt -d none 'Dialstring for remote venti server?'
+	ventidial=$rd
+	export ventidial
+
+	if(! test -f $fs){
+		echo 'Fossil partition not found!'
+		mountfs=ready
+		export mountfs
+		exit oops
+	}
+
+	echo fsys main config $fs >/tmp/initfossil.conf
+	cat initfossil.conf >>/tmp/initfossil.conf
+	echo fsys main config $fs >/tmp/fossil.conf
+	if (~ $ventidial none)
+		echo 'fsys main open -V -c 3000' >>/tmp/fossil.conf
+	if not
+		echo 'fsys main open -c 3000' >>/tmp/fossil.conf
+	echo 'srv -p fscons' >>/tmp/fossil.conf
+	echo 'srv -A fossil' >>/tmp/fossil.conf 
+
+	log Starting $fstype file server for $fs
+	unmount /n/newfs >[2]/dev/null
+
+	fossil/flfmt $fs
+	fossil/conf -w $fs /tmp/initfossil.conf
+	fossil/fossil -f $fs
+	mount -c /srv/fossil /n/fossil
+	fossil/conf -w $fs /tmp/fossil.conf
+
+	log Mounting $fstype file server for $fs
+	while(! logprog mount -c /srv/$sname /n/newfs)
+		sleep 2
+
+case checkready checkdone
+	if(! ~ $fstype '' && ~ $#fs 1 && test -f $fs){
+		if(test -f /srv/$sname && test -d /n/newfs/adm){
+			mountfs=done
+			export mountfs
+			exit
+		}
+	}
+	mountfs=ready
+	export mountfs
+	exit
+}

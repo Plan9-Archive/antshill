@@ -1,0 +1,99 @@
+CONTENTS OF THIS DIRECTORY:
+
+AFTER COMPILING:
+
+9ants - 9front kernel. install in 9fat partition
+
+9pcram.gz - bell labs kernel. install in 9fat partition
+
+tools.tgz - optional support utilities. Place in 9fat
+
+INSTALLING README INDEX GUIDE - intro documentation and help
+
+build - script to build all components of the namespace toolkit
+
+bootdir.extras/ - central point for main rootless boot tools
+
+	bootpaq - this is compiled into the kernel and contains tools
+	from root/lib/_mkpaq
+
+	factotum grio hub hubfs hubshell rc rcmain - programs compiled
+	into boot
+
+	namespace namespace.saveterm namespace.standard - customized
+	namespace files adapted to the rootless environment
+
+	plan9rc - the main namespace launcher script which controls
+	boot and launching additional namespaces
+
+	ramskel - sets up the ramfs skeleton and optional tgzfs
+
+	initskel - acts as a mini-cpurc for the rootless environment
+	and its network services
+
+	save9cfg - script to save variables used in plan9.ini and by
+	plan9rc and initskel
+
+	skel.tar - this is the tar of the bootdir.extras/root
+	subdirectory
+
+	root/ - this is what becomes the skeleton ramfs used in the
+	early boot environment.  it contains mostly empty directories
+	and a /usr/bootes template user directory.
+
+cfg/ - contains configuration files and utility scripts, as well as
+the mkpaq and toolcopy scripts which can be used to customize the
+contents of the early boot namespace
+
+compiletemp/ - used by the build script to compile things in, after
+running build the new 9pcram.gz kernel will be found here
+
+diffs/ - these files show the diffs between the modified ANTS files
+and the base 9front distribution
+
+doc/ - documentation for bootup, namespace scripts, fossil/venti
+tools, plan9.ini/plan9rc/initskel variables
+
+	ants.ps - please page ants.ps to read the full Giant ANTS
+	paper
+
+	examples/ - contains saved output of tests and demonstrations
+
+	modified.manpages/ - modified documentation for boot (8) and
+	proc (3)
+
+	textdoc/ - older plaintext forms of documentation prior to
+	manpage writing
+
+	PLAN9.INI - this file is a plan9.ini which works with the
+	stock fossil install of the bell labs .iso and the 9pcram.gz
+	kernel
+
+frontmods/ - 9front patches and modifications. Subdirs get bound over
+	base directories during build 9front
+	
+	grio/ - 9front version of customized rio
+
+grio/ - labs modified rio with hubfs integration and other features
+
+hubfs/ - a 'screen' replacement as a 9p fs, also general purpose
+	network transparent pipe muxing for grids
+
+patched/ - contains the source code for modifications of standard
+plan9 programs adapted to the rootless environment
+
+root/ - used to build the tools.tgz.  It contains additional chunks of
+information used to provide a slightly richer plan 9 environment.
+
+scripts/ - contains the non-bootup related namespace manipulation and
+fossil/venti maintenance scripts.
+
+src.9.boot/ - labs modified files from /sys/src/9/boot.  The build script
+binds these modified files over the parallel directory.
+
+src.9.pc/ - the labs 9pcram kernel configuration file and its mkfile
+
+src.9.port/ - labs version pf modified files for writable /proc/ns and
+the rootless boot.  These two mods are separable if desired.  The ns
+mod affects chan.c devproc.c and portfns.h.  The boot related files
+are devroot.c and devsrv.c

@@ -1,0 +1,11 @@
+syntax: glob
+8.*
+*.8
+*.gz
+*.tgz
+compiletemp
+8.out
+hubshell
+bootpaq
+libboot.a8
+.ps

@@ -1,0 +1,19 @@
+--- /sys/src/cmd/auth/factotum/fs.c	Tue Jan  2 09:53:47 2018
++++ ../frontmods/patched/factotumfs.c	Tue Jan  2 10:07:10 2018
+@@ -12,6 +12,7 @@
+ char		*service;
+ int		sflag;
+ int		uflag;
++int		nomntcs;
+ 
+ extern Srv		fs;
+ static void		notifyf(void*, char*);
+@@ -103,6 +104,8 @@
+ 	case 'u':		/* user: set hostowner */
+ 		uflag = 1;
+ 		break;
++	case 'x':
++		nomntcs = 1;
+ 	default:
+ 		usage();
+ 	}ARGEND

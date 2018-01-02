@@ -1,0 +1,48 @@
+#!/bin/rc
+# DANGER! This script obliterates fossils and resets them to a different score
+# fosreset rootscore [fossil] [venti]
+
+rfork e
+score=$1
+if(! ~ $score ???????????????????????????*){
+	echo $1 is not a fossil root score
+	exit no.rootscore
+}
+fossil=$2
+if(~ $fossil '')
+	fossil=/dev/sdC0/fossil
+if(! ~ $3 '')
+	venti=$3
+if(~ $venti ''){
+	echo 'please set a venti target for your fossil!'
+	exit no.venti
+}
+if(~ $fossil tcp*){
+	echo not disk
+	exit no.disk
+}
+
+if(! test -e /bin/foshalt)
+	fshalt
+if not
+	foshalt
+kill fossil |rc
+sleep 1
+Kill fossil |rc
+sleep 2
+slay fossil |rc
+sleep 1
+stillhere=`{ps |grep fossil}
+if(! ~ $stillhere ''){
+	echo 'fossil processes still running! exiting'
+	exit fossilzombie
+}
+
+if(~ $score vac*)
+	score=`{echo $score |sed 's/vac://g'}
+if(test -e /bin/flfmt)
+	flfmt -y -v $score $fossil
+if not
+	fossil/flfmt -y -v $score $fossil
+
+exit ''

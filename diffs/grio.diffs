@@ -1,0 +1,321 @@
+diff -Nurp /sys/src/cmd/rio/README ../frontmods/grio/README
+--- /sys/src/cmd/rio/README	Thu Jan  1 00:00:00 1970
++++ ../frontmods/grio/README	Fri Dec 22 02:26:47 2017
+@@ -0,0 +1,19 @@
++grio is a modified rio that adds hubfs integration, an extra user
++selectable command in the menu, and appearance options.  grio expects
++hubfs to be installed.  If an available hubfs is not mounted at
++/n/hubfs, it starts one.  It uses /srv/riohubfs.username for the new
++hubfs.  Additional options: the -x argument sets a command (default
++/bin/acme), -a provides an argument to it.  Colors are defined by 8
++digit hexidecimal numbers.  -c sets backgrouind color, -t the text
++color, -u the window color, -y the border color of active windows, -z
++the border color of backgrounded windows.  The width of borders can be
++set with an integer parameter for -w.
++
++Example: grio -x /bin/stats -a -elm -c 0xaabbccff -y 0x11111111 -w 2
++
++Note: before using the %remote command in an attached hub it is
++necessary to
++
++bind -c /n/riohubfs.$user /n/hubfs
++
++in the initial hubfs shell
+diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
+--- /sys/src/cmd/rio/dat.h	Sun Dec 17 12:33:20 2017
++++ ../frontmods/grio/dat.h	Fri Dec 22 02:26:47 2017
+@@ -43,7 +43,7 @@ typedef	struct	Xfid Xfid;
+ 
+ enum
+ {
+-	Selborder		= 4,		/* border of selected window */
++//	Selborder		= 4,		/* border of selected window */
+ 	Unselborder	= 1,		/* border of unselected window */
+ 	Scrollwid 		= 12,		/* width of scroll bar */
+ 	Scrollgap 		= 4,		/* gap right of scroll bar */
+@@ -173,6 +173,12 @@ struct Window
+ 	char			*dir;
+ };
+ 
++int		Selborder;
++ulong	bgtrans;
++ulong	borderactivecolor;
++ulong	borderbgcolor;
++ulong	textcolor;
++ulong	winbgcolor;
+ void		winctl(void*);
+ void		winshell(void*);
+ Window*	wlookid(int);
+@@ -309,6 +315,7 @@ Screen	*wscreen;
+ Cursor	boxcursor;
+ Cursor	crosscursor;
+ Cursor	sightcursor;
++Cursor	deletecursor;
+ Cursor	whitearrow;
+ Cursor	query;
+ Cursor	*corners[9];
+@@ -349,6 +356,7 @@ char		srvpipe[];
+ char		srvwctl[];
+ int		errorshouldabort;
+ int		menuing;		/* menu action is pending; waiting for window to be indicated */
++int		deleting;		/* for changing cursor in pointto() */
+ int		snarfversion;	/* updated each time it is written */
+ int		messagesize;		/* negotiated in 9P version setup */
+ int		shiftdown;
+diff -Nurp /sys/src/cmd/rio/data.c ../frontmods/grio/data.c
+--- /sys/src/cmd/rio/data.c	Sat Nov 23 21:21:19 2013
++++ ../frontmods/grio/data.c	Fri Dec 22 02:26:47 2017
+@@ -46,6 +46,18 @@ Cursor sightcursor = {
+ 	 0x21, 0x84, 0x31, 0x8C, 0x0F, 0xF0, 0x00, 0x00, }
+ };
+ 
++Cursor deletecursor = {
++	0, 0,
++	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
++	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
++	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
++	0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
++
++	0x00, 0x0E, 0x07, 0x1F, 0x03, 0x17, 0x73, 0x6F,
++	0xFB, 0xCE, 0xDB, 0x8C, 0xDB, 0xC0, 0xFB, 0x6C,
++	0x77, 0xFC, 0x00, 0x00, 0x00, 0x01, 0x00, 0x03,
++	0x94, 0xA6, 0x63, 0x3C, 0x63, 0x18, 0x94, 0x90,
++};
+ Cursor whitearrow = {
+ 	{0, 0},
+ 	{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFF, 0xFC, 
+@@ -175,21 +187,21 @@ Cursor *corners[9] = {
+ void
+ iconinit(void)
+ {
+-	background = allocimage(display, Rect(0,0,1,1), RGB24, 1, 0x777777FF);
++	background = allocimage(display, Rect(0,0,1,1), RGB24, 1, bgtrans);
+ 
+ 	/* greys are multiples of 0x11111100+0xFF, 14* being palest */
+-	cols[BACK] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0xFFFFFFFF^reverse);
++	cols[BACK] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, winbgcolor^reverse);
+ 	cols[BORD] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x999999FF^reverse);
+-	cols[TEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x000000FF^reverse);
++	cols[TEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, textcolor^reverse);
+ 	cols[HTEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x000000FF);
+ 	if(!reverse) {
+ 		cols[HIGH] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0xCCCCCCFF);
+-		titlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DGreygreen);
+-		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DPalegreygreen);
++		titlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderactivecolor);
++		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderbgcolor);
+ 	} else {
+ 		cols[HIGH] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DPurpleblue);
+-		titlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DPurpleblue);
+-		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x222222FF);
++		titlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderactivecolor);
++		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderbgcolor);
+ 	}
+ 	dholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DMedblue);
+ 	lightholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DGreyblue);
+diff -Nurp /sys/src/cmd/rio/mkfile ../frontmods/grio/mkfile
+--- /sys/src/cmd/rio/mkfile	Wed Jan 18 00:12:54 2012
++++ ../frontmods/grio/mkfile	Fri Dec 22 02:26:47 2017
+@@ -1,7 +1,7 @@
+ </$objtype/mkfile
+ BIN=/$objtype/bin
+ 
+-TARG=rio
++TARG=grio
+ OFILES=\
+ 	rio.$O\
+ 	data.$O\
+diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
+--- /sys/src/cmd/rio/rio.c	Sat Nov 19 15:46:33 2016
++++ ../frontmods/grio/rio.c	Fri Dec 22 02:26:47 2017
+@@ -45,9 +45,13 @@ Channel* initkbd(void);
+ 
+ char		*fontname;
+ 
++char *altcmd, *altarg;
++
+ enum
+ {
+ 	New,
++	Hub,
++	Altc,
+ 	Reshape,
+ 	Move,
+ 	Delete,
+@@ -86,6 +90,8 @@ int	Hidden = Exit+1;
+ 
+ char		*menu3str[100] = {
+  [New]		"New",
++ [Hub]		"Hub",
++ [Altc]		"Altc",
+  [Reshape]	"Resize",
+  [Move]		"Move",
+  [Delete]		"Delete",
+@@ -101,6 +107,8 @@ Menu menu3 =
+ 
+ char *rcargv[] = { "rc", "-i", nil };
+ char *kbdargv[] = { "rc", "-c", nil, nil };
++char *hubargv[] = { "hubshell", "/n/hubfs/io", nil };
++char *altargv[] = { "New acme", nil, nil };
+ 
+ int errorshouldabort = 0;
+ 
+@@ -113,28 +121,58 @@ derror(Display*, char *errorstr)
+ void
+ usage(void)
+ {
+-	fprint(2, "usage: rio [-b] [-f font] [-i initcmd] [-k kbdcmd] [-s]\n");
++	fprint(2, "usage: grio [-x altcmd] [-a altarg] [-c bgcolor] [-w borderwidth] [-t textcolor] [-u wincolor ] [-y bordercolor1] [-z bordercolor2] [-f font] [-i initcmd] [-k kbdcmd] [-s]\n");
+ 	exits("usage");
+ }
+ 
+ void
+ threadmain(int argc, char *argv[])
+ {
+-	char *initstr, *kbdin, *s;
++	char *initstr, *kbdin, *s, *usercol, *borderwidth, *bacolor, *bbcolor, *tcolor, *ucolor;
+ 	char buf[256];
+ 	Image *i;
+ 	Rectangle r;
++	bgtrans = 0x777777FF;
++	Selborder = 4;
++	borderactivecolor = DGreygreen;
++	borderbgcolor = DPalegreygreen;
++	textcolor = 0x000000FF;
++	winbgcolor = 0xFFFFFFFF;
++	char mountstr[512] = "/srv/riohubfs.";
++	char hubstr[512]= "riohubfs.";
+ 
++/*
+ 	if(strstr(argv[0], ".out") == nil){
+ 		menu3str[Exit] = nil;
+ 		Hidden--;
+ 	}
++*/
++
++	strcat(hubstr, getenv("user"));
++	strcat(mountstr, getenv("user"));
++	if(access("/n/hubfs/io0", 0) != 0){
++		if(access("/bin/hub", 0) == 0){
++//			fprint(2, "no existing hubfs found at /n/hubfs, starting hubfs\n");
++			if(access(mountstr, 0) != 0){
++				if(fork()==0)
++					execl("/bin/hub", "hub", "-b", hubstr, nil);
++				sleep(1000);
++			}
++			if(fork()==0)
++				execl("/bin/mount", "mount", "-c", mountstr, "/n/hubfs", nil);
++			sleep(100);
++		}
++	}
++	altcmd = strdup("/bin/acme");
++
+ 	initstr = nil;
+ 	kbdin = nil;
+ 	maxtab = 0;
+ 	ARGBEGIN{
+ 	case 'b':
+ 		reverse = ~0xFF;
++		borderactivecolor = DPurpleblue;
++		borderbgcolor = 0x222222FF;
+ 		break;
+ 	case 'f':
+ 		fontname = EARGF(usage());
+@@ -153,6 +191,55 @@ threadmain(int argc, char *argv[])
+ 	case 'D':
+ 		debug++;
+ 		break;
++	case 'x':
++		altcmd = ARGF();
++		altargv[0] = altcmd;
++		if(altcmd == nil)
++			usage();
++		break;
++	case 'a':
++		altarg = ARGF();
++		altargv[1] = altarg;
++		altargv[2] = nil;
++		if(altarg == nil)
++			fprint(2, "warning no argument supplied despite -c flag\n");
++		break;
++	case 'c':
++		usercol = ARGF();
++		if (usercol == nil)
++ 			usage();
++		bgtrans = strtoul(usercol,0,0);
++		break;
++	case 'w':
++		borderwidth = ARGF();
++		if (borderwidth == nil)
++ 			usage();
++		Selborder = atoi(borderwidth);
++		break;
++	case 'y':
++		bacolor = ARGF();
++		if (bacolor == nil)
++			usage();
++		borderactivecolor = strtoul(bacolor,0,0);
++		break;
++	case 'z':
++		bbcolor = ARGF();
++		if (bbcolor == nil)
++			usage();
++		borderbgcolor = strtoul(bbcolor,0,0);
++		break;
++	case 't':
++		tcolor = ARGF();
++		if (tcolor == nil)
++			usage();
++		textcolor = strtoul(tcolor,0,0);
++		break;
++	case 'u':
++		ucolor = ARGF();
++		if (ucolor == nil)
++			usage();
++		winbgcolor = strtoul(ucolor,0,0);
++		break;
+ 	default:
+ 		usage();
+ 	}ARGEND
+@@ -744,6 +831,7 @@ button3menu(void)
+ 		free(menu3str[i]);
+ 		menu3str[i] = nil;
+ 	}
++	menu3str[Altc] = altargv[0];
+ 	sweeping = TRUE;
+ 	switch(i = menuhit(3, mousectl, &menu3, wscreen)){
+ 	case -1:
+@@ -751,6 +839,12 @@ button3menu(void)
+ 	case New:
+ 		new(sweep(), FALSE, scrolling, 0, nil, "/bin/rc", nil);
+ 		break;
++	case Hub:
++		new(sweep(), FALSE, scrolling, 0, nil, "/bin/hubshell", hubargv);
++		break;
++	case Altc:
++		new(sweep(), FALSE, scrolling, 0, nil, altcmd, altargv);
++ 		break;
+ 	case Reshape:
+ 		resize();
+ 		break;
+@@ -1015,7 +1109,11 @@ pointto(int wait)
+ 	Window *w;
+ 
+ 	menuing = TRUE;
+-	riosetcursor(&sightcursor);
++	if(deleting == TRUE){
++		riosetcursor(&deletecursor);
++		deleting = FALSE;
++	} else
++		riosetcursor(&sightcursor);
+ 	while(mouse->buttons == 0)
+ 		readmouse(mousectl);
+ 	if(mouse->buttons == 4)
+@@ -1043,6 +1141,7 @@ delete(void)
+ {
+ 	Window *w;
+ 
++	deleting = TRUE;
+ 	w = pointto(TRUE);
+ 	if(w)
+ 		wsendctlmesg(w, Deleted, ZR, nil);
