@@ -1,5 +1,7 @@
 # Tutorial for using 9worker.gz raw VM image
+
 ### Walkthrough done with Qemu in Debian Wheezy
+
 #### commands shown are executed inside the vm except where shown as
 
 	[HOST] wget http://9gridchan.org/9worker.gz
@@ -96,7 +98,6 @@ thing to do is sweep out a new window using the Hub menu to start a
 new shell.  Type ns and some other commands.  You can connect to the
 same hub again using the same menu item.
 
-
 #### To connect to 9front cd namespace
 
 	rerootwin -f boot
@@ -113,9 +114,10 @@ be back in the hubfs ns.  The different namespaces between the cd
 environment and the rootless environment provide a good opportunity to
 test cpns between different processes.
 
-
 ## Using 9worker and 9queen together -- 2 nodes
+
 #### Example setup given using a completely fresh install from bell labs iso
+
 (This shows how to create the worker and queen images.  If you
 download the preinstalled images, you can skip the first two steps.)
 
@@ -140,6 +142,7 @@ download the preinstalled images, you can skip the first two steps.)
 	fshalt
 
 (This is the exact process by which the two images were created.)
+
 #### Now we are ready to use both together
 
 	[HOST] qemu -hda 9queen -net nic -net user,hostfwd=tcp::2564-:564,hostfwd=tcp::17007-:17007,hostfwd=tcp::17020-:17020
@@ -152,9 +155,10 @@ page [installing plan 9 on
 qemu](http://www.plan9.bell-labs.com/wiki/plan9/Installing_Plan_9_on_Qemu/index.html)
 has details.
 
-
 #### choose option 2 on 9queen boot (cpu server)
+
 #### choose option 3 on 9worker boot and then choose tcp
+
 #### enter tcp boot ips of 9queen (your local machine ip probably)
 
 	[HOST] drawterm -a localhost -c localhost -u glenda
@@ -169,7 +173,6 @@ has details.
 Now you can work in a normal cpu root but your hubfs menu has
 persistent access to the service namespace on the fileserver.
 
-
 #### Access the service namespace on the tcp cpu
 
 	[HOST] drawterm -a localhost -c 'tcp!localhost!17060' -u glenda
@@ -181,7 +184,6 @@ persistent access to the service namespace on the fileserver.
 This environment with two machines is also good for testing rerootwin,
 cpns of remote processes, and many other aspects of ANTS not covered
 in this brief tutorial.
-
 
 ## Complex ANTS usage demo: 2 nodes, 5 namespaces
 

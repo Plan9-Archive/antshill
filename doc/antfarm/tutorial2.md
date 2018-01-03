@@ -1,4 +1,5 @@
 # Advanced Advanced Namespaces: 5 namespaces, 2 nodes
+
 ## What happens in this demo:
 
 * Two machines boot, the second as a tcp cpu from the first machine's disk fs
@@ -36,8 +37,11 @@ in this demo are accessed:
 * The console of the tcp cpu will be taken over by a Bell Labs live cd terminal namespace
 
 The machine which boots first (9queen) and runs the disk fossil will be called
+
 ###filesrv
+
 and the machine which boots second (9worker) as a tcp cpu will be called
+
 ###helix
 
 From within these namespaces, additional connections will be made
@@ -78,10 +82,15 @@ commands uses the bolded header to identify which of the five
 namespaces the given commands are to be executed in.
 
 ## Start by booting both nodes in the manner of the earlier tutorial
+
 #### boot 9queen with menuitem 2 and 9front cdrom attached
+
 	[HOST] qemu -hda 9queen -net nic -net user,hostfwd=tcp::2564-:564,hostfwd=tcp::17007-:17007,hostfwd=tcp::17020-:17020 -cdrom 9front-*.iso
+
 #### boot 9worker with menuitem 3 and bell labs cdrom attached
+
 	[HOST] qemu -hda 9worker -net nic -net user,hostfwd=tcp::2567-:567,hostfwd=tcp::17010-:17010,hostfwd=tcp::17060-:17060 -cdrom plan9.iso
+
 #### cpu to worker port 17010
 
 You have cpu'd into a totally conventional tcp boot cpu namespace.
@@ -171,6 +180,7 @@ Open a new window in grio
 	import filesrv /proc
 
 #### Copy the ns of the 9front cd shell onto the rootless shell ns 
+
 (This is still done from the helix 17060 service ns.)
 
 	cpns -t -r 9frontpid servicepid

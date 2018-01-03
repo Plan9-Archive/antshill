@@ -1,9 +1,11 @@
 # Setup and alternatives for VM images
+
 ## Qemu and Drawterm
 
 The software needed on your system to use the ANTS vm image is the Qemu emulator and Drawterm. Linux and other unix variants usually have Qemu as part of their package repository. The official site is [http://qemu.org](http://qemu.org). Drawterm is located at [http://swtch.com](http://swtch.com) and allows graphical access to a Plan 9 system.
 
 ## Full sample VM command lines for 9queen and 9worker:
+
 #### 9queen with 256megs memory all needed redirs and 9front iso attached
 
 	qemu -m 256 -drive file=9queen,media=disk,index=0,cache=writeback -net nic -net user,hostfwd=tcp::2564-:564,hostfwd=tcp::17007-:17007,hostfwd=tcp::17020-:17020 -cdrom 9front-*.iso &
