@@ -35,10 +35,11 @@ if(~ $1 9frontcd){
 }
 
 if(~ $1 distromod){
-	cp frontmods/patched/libauthsrv/readnvram.c /sys/src/libauthsrv/readnvram.c
+	cp frontmods/libauthsrv/readnvram.c /sys/src/libauthsrv/readnvram.c
 	cp frontmods/rcbin/9fs /rc/bin/9fs
 	cp frontmods/rcbin/fshalt /rc/bin/fshalt
 	cp frontmods/rcbin/termrc /rc/bin/termrc
+	exit
 }
 
 if(test -d /dist/plan9front){
