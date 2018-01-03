@@ -56,7 +56,7 @@ by default) is added to the menu via the
 .B -x
 option. The command must include the full path, for instance
 .B /bin/stats
-rather than simply 'stats'. A single argument containing no spaces may be passed with the
+rather than simply 'stats'. A single argument may be passed with the
 .B -a
 argument option. If the argument is a set of flags, the - needs to be included. For instance,
 .B -lems
@@ -117,7 +117,7 @@ grio -c 0xffaaffff -y 0 -w 2
 Import and mount a hubfs already running on a remote machine for easy use from the menu
 .IP
 .EX
-rimport kremvax /srv
+rimport -a kremvax /srv
 mount -c /srv/kremhub /n/hubfs
 grio
 .EE
@@ -125,10 +125,9 @@ grio
 Start with a theme of bold and breathtaking beauty
 .IP
 .EX
-grio -c 0xff0000ff -u 0x00ccff -y 0x00ff00ff -t 0xffff00ff -z 0xffaa00ff
-.EE
-.EX
--w 10 -x /bin/games/catclock -f /lib/font/bit/times/latin1.bold.10.font
+grio -c 0xff0000ff -u 0x00ccff -y 0x00ff00ff -t 0xffff00ff \e
+-z 0xffaa00ff -w 10 -x /bin/games/catclock \e
+-f /lib/font/bit/times/latin1.bold.10.font
 .EE
 .PP
 .SH SOURCE
