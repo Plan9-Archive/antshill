@@ -1,13 +1,11 @@
-9front and Bell Labs are both supported.  Installing from source is
-the recommended method, although precompiled kernels and tools.tgz may
-be found in the "frontants" and "labsants" subdirectories on
-files.9gridchan.org, along with source/utilities tarballs.
+9front is supported by this repo. If you are using the old Bell Labs
+distribution, use the older "plan9ants" bitbucket repository.
 
-Overview: A full ANTS install includes a kernel (9ants for 9front,
-9pcram.gz for Bell Labs) and tools.tgz placed in 9fat.  Hubfs, grio,
-utility scripts, and manpages are installed to your main filesystem.
-The 9fat plan9.ini needs a few additional variables for configuration.
-The 9front /rc/bin/termrc needs one line added to the end.
+Overview: A full ANTS install includes a kernel (9ants for 9front) and
+tools.tgz placed in 9fat.  Hubfs, grio, utility scripts, and manpages
+are installed to your main filesystem.  The 9fat plan9.ini needs a few
+additional variables for configuration.  The 9front /rc/bin/termrc
+needs one line added to the end.
 
 Building and installing is mostly done by the build script in the root
 of the ANTS directory.  This script has multiple modes.
@@ -90,14 +88,5 @@ bootup
 revisions may work as well, these were tested during the development
 process)
 
-hg up -r599 builds vs 9front 6299
-hg up -r569 builds vs 9front 6277
-hg up -r534 builds vs 9front 6261
-hg up -r515 builds vs 9front 5736
-hg up -r485 builds vs 9front 5675
-hg up -r422 builds vs 9front 5641
-hg up -r395 builds vs 9front 5639
-hg up -r379 builds vs 9front 5625
-hg up -r377 builds vs 9front 5360
-hg up -r369 builds vs 9front 5217
-hg up -r368 builds vs 9front 4796
+hg up -r5 builds vs 9front r6299
+
