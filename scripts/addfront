@@ -1,0 +1,14 @@
+#!/bin/rc
+# make the front copy of the plan 9 distribution available for local use
+
+if(! test -e /srv/front){
+	srv tcp!107.191.117.201!564 front
+}
+mount -n /srv/front /n/front
+bind -a /n/front/9front /
+bind -b /$cputype/bin /bin
+bind -b /rc/bin /bin
+bind -a /n/front/plan9/sys /sys
+bind -a /n/front/plan9/lib /lib
+bind -b /n/front/plan9/lib/font /lib/font
+exit ''
