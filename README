@@ -1,4 +1,4 @@
-- Advanced Namespace Tools for 9front and Bell Labs Plan 9 -
+- Advanced Namespace Tools for 9front -
 
 This is a toolkit of additions and modifications to Plan 9.  It is
 designed to make Plan 9 installations, on single machines or on
@@ -84,4 +84,3 @@ interactive=yes in plan9.ini).
 
 Additional documentation found in the INSTALLING file and in the doc/
 subdirectory.
-

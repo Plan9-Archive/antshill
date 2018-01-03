@@ -2,7 +2,7 @@
 
 # desc: choose and mount file system partition
 
-sname=fossil
+sname=fossil.newfs
 
 switch($1){
 case go
@@ -51,7 +51,6 @@ case go
 	fossil/flfmt $fs
 	fossil/conf -w $fs /tmp/initfossil.conf
 	fossil/fossil -f $fs
-	mount -c /srv/fossil /n/fossil
 	fossil/conf -w $fs /tmp/fossil.conf
 
 	log Mounting $fstype file server for $fs

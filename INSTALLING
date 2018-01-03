@@ -78,12 +78,6 @@ to supply the correct pathname
 full explanation of all new plan9.ini possibilities and their defaults
 is found within the doc subdirectory.
 
-page doc/ants.ps ## please do this to read the full Giant ANTS paper
-also
-
-nroff -man doc/plan9rc.man ## the full documentation for plan9rc
-bootup
-
 9front version/ANTS version coordination (approximate, different
 revisions may work as well, these were tested during the development
 process)

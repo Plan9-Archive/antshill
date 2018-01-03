@@ -11,8 +11,6 @@ if(~ `{pwd} /tmp*){
 	exit wrong.dir
 }
 
-##	set up namespace so we keep everything we do contained
-
 rfork ne
 . /$objtype/mkfile
 builddir=`{pwd}
@@ -408,5 +406,3 @@ echo '9front, fronthost, frontkernel'
 echo '9frontinstall, vultr, vultrfossil'
 echo '9frontcd, distromod, clean'
 echo 'frontpatched, extras, tools'
-
-
