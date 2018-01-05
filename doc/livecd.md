@@ -1,6 +1,6 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTS r587 9front r6286 released Dec 30 2017
+### ANTS 386v2 and new 64-bit iso based on 9front r6304 released 5 Jan 2018
 
 ## [http://files.9gridchan.org/9ants386v2.iso.gz](http://files.9gridchan.org/9ants386v2.iso.gz)
 
@@ -83,6 +83,20 @@ at which point you will still be in the namespace outside the root fileserver. Y
 * Install makes plan9rc the default booting command/method
 
 The live cd uses an ANTS-customized bootrc, but the full install sets the ANTS plan9rc boot script This script is backward compatible with the standard boot process, but offers several new options and possibilities, including the ability to hook custom commands during the boot process, root to cpu servers with aan for reliability, or even connect to a remote hubfs to control the boot process and announce services to an inferno registry. See man plan9rc for some details, although not all possibilities are currently documented.
+
+### Games additions
+
+Also included for entertainment are tools for playing interactive fiction text adventures, and a small library of games. Just start the
+
+	fiction
+
+script to use a numeric menu to launch the pre-installed text games. You can examine the /rc/bin/fiction script to see how they are started. There are a few more IF interpreter ports and curses versions of some of them located in repos at bitbucket.org/mycroftiv. Many many more games are available, check [http://ifdb.tads.org](http://ifdb.tads.org) and [http://www.ifarchive.org](http://www.ifarchive.org) as well as competition sites like the yearly ifcomp and spring thing to find more possibilities.
+
+Also installed is the shareware wad file for doom, so 
+
+	games/doom
+
+will launch the standard Doom 1 game without needing to download, place, and rename any .wad files.
 
 ### Who is this for?
 
