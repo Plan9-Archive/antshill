@@ -19,14 +19,15 @@ a:hover { text-decoration: none; color: #C00; background: #FC0; }
 <div id="header">
 <h1> Advanced Namespace Tools for Plan 9 </h1>
 <p>
-<h2> 9front-ANTS live/install CD now available </h2>
+<h2> 9front-ANTS live/install CDs now available </h2>
+<h3> 32 and 64 bit versions </h3>
 </div>
 <div id="body">
-ANTS is a set of tools to structure and manage Plan 9 namespaces to make systems and grids more flexible, reliable, and easy to administer. It primarily supports the 9front distribution of Plan 9, although it can be installed to the Bell Labs or 9legacy versions also. ANTS is well suited to cloud based hosting and scripts for use with vultr.com are provided.
+ANTS is a set of tools to structure and manage Plan 9 namespaces to make systems and grids more flexible, reliable, and easy to administer. It primarily supports the 9front distribution of Plan 9, although an older version can be installed to the Bell Labs or 9legacy versions also. ANTS is well suited to cloud based hosting and scripts for use with vultr.com are provided.
 <h4>Live/install cd link and guide </h4>
-There is now a live/install cd for the ANTS environment, based on the 9front cd image. It is located at <a href="http://files.9gridchan.org/9ants587.iso.gz">files.9gridchan.org/9ants587.iso.gz</a>. A brief guide to using it is located at <a href="http://doc.9gridchan.org/guides/livecd">doc.9gridchan.org/guides/livecd</a>. This is intended as a contribution of experimental code and ideas to the 9front project, not as a competing release. Thanks to Cinap and the rest of the 9front developers and users for their assistance and support. Newcomers to Plan 9 should stick to the standard <a href="http://9front.org">9front.org</a> release.
-<h4>Update and Status 30 December 2017</h4>
-The main ANTS repo, found at <a href="https://bitbucket.org/mycroftiv/plan9ants">bitbucket.org/mycroftiv/plan9ants</a> has been updated to revision 588 to compile with the December 2017 9front release r6245 and with subsequent updates through at least 9front r6286. Building from source is the preferred method for installing ANTS, I think most users who might be interested in ANTS are happier compiling locally. Development can be followed at <a href="https://bitbucket.org/mycroftiv/antsexperiments">bitbucket.org/mycroftiv/antsexperiments</a>
+There is now a live/install cd for the ANTS environment, based on the 9front cd image. It is located at <a href="http://files.9gridchan.org/9ants64.iso.gz">files.9gridchan.org/9ants64.iso.gz</a>. A 64-bit version is at <a href="http://files.9gridchan.org/9ants386v2.iso.gz">files.9gridchan.org/9ants386v2.iso.gz</a>. A brief guide to using it is located at <a href="http://doc.9gridchan.org/guides/livecd">doc.9gridchan.org/guides/livecd</a>. This is intended as a contribution of experimental code and ideas to the 9front project, not as a competing release. Thanks to Cinap and the rest of the 9front developers and users for their assistance and support. Newcomers to Plan 9 should stick to the standard <a href="http://9front.org">9front.org</a> release.
+<h4>Update and Status 5 January 2018</h4>
+The ANTS repos are being changed as a result of the move to 9front-only development and support. The stable repo, synced to 9front releases, will be <a href="https://bitbucket.org/mycroftiv/ants9front">bitbucket.org/mycroftiv/ants9front</a> and development against 9front hg tip will be <a href="https://bitbucket.org/mycroftiv/antshill">bitbucket.org/mycroftiv/antshill</a>. Due to release timing issues, the ants9front repo will not stabilize until the next 9front .iso release. For the most recent December 2017 "Screenlock Goodnight" iso, use the plan9ants repo. The previous ANTS repo, found at <a href="https://bitbucket.org/mycroftiv/plan9ants">bitbucket.org/mycroftiv/plan9ants</a> will now be left as a static artifact to build with Bell Labs or 9legacy and 9front release r6245. The "antsexperiments" repo is no longer used for development.
 <h4>Development Blog</h4>
 Beginning in December 2016, I have been blogging intensively about development and testing of ANTS in 9front. The blog is found at <a href="//doc.9gridchan.org/blog/">doc.9gridchan.org/blog</a>
 <h4>Components</h4>
@@ -41,19 +42,21 @@ ANTS is a modular toolkit. The components can be used separately:
 <li>Grio modified rio with hubfs integration, colors, and customizable command menu
 </ul>
 <h4>Code repositories</h4>
-<p><a href="https://bitbucket.org/mycroftiv/plan9ants">bitbucket.org/mycroftiv/plan9ants</a> - The current release source code repo<p>
-<p><a href="https://bitbucket.org/mycroftiv/antsexperiments">bitbucket.org/mycroftiv/antsexperiments</a> - Ongoing development code<p>
+<p><a href="https://bitbucket.org/mycroftiv/ants9front">bitbucket.org/mycroftiv/ants9front</a> - The current release source code repo<p>
+<p><a href="https://bitbucket.org/mycroftiv/antshill">bitbucket.org/mycroftiv/antshill</a> - Ongoing development code<p>
 <h4>Documentation, Walkthroughs, Tutorials</h4>
 <p><a href="//ants.9gridchan.org/ants.html">ants.9gridchan.org/ants.html</a> - Code, manpages, and the description paper<p>
 <p><a href="//doc.9gridchan.org/them/">doc.9gridchan.org/them</a> - Walkthroughs for setting up a full ANTS grid with examples and support scripts for <a href="http://www.vultr.com/?ref=6843332">vultr.com</a> [referrer link] hosting<p>
 <p><a href="//doc.9gridchan.org/antfarm/tutorial">doc.9gridchan.org/antfarm/tutorial</a> - Tutorials for using ANTS features done with the QEMU vm images from 2013<p>
-<h2>Brief Guide to Installing</h2>
-<h3>Installing from source (hg clone)</h3>
-<h4>9front</h4>
+<h2>Brief Guide to Installing from source after hg clone</h2>
+<h3>9front</h3>
+<h4>For 2018 and later 9front cd releases, hg clone from bitbucket.org/mycroftiv/ants9front</h4>
+<h4>For 9front hg tip, hg clone from bitbucket.org/mycroftiv/antshill</h4>
 Inside the base ants directory, 'build 9front'. Then 'build fronthost'. This recreates the 9ants kernel and builds a new tools.tgz and installs the userspace components. Note this will overwrite a pre-existing 9ants and tools.tgz if have compiled previously. Copy the 9ants kernel to your 9fat partition. You probably also want to copy the tools.tgz to 9fat as well. Modify your plan9.ini to use the new kernel. An example for 9front is located at frontmods/plan9.ini. You may wish to leave bootfile= blank in plan9.ini and choose to use the 9ants or older 9pcf kernel by typing in 'bootfile=9ants' and 'boot' manually. If you are booting to gui, it is necessary to add the following line to the end of your /rc/bin/termrc:
 <p>home=/usr/$user; cd; . $home/lib/profile<p>
 Once correct plan9.ini variables are set, your system can be rebooted with the new kernel. Assuming proper configuration, there should be no disruption of your userland and the new ANTS namespace will be accessible via cpu or hubfs.
 <h4>Bell Labs</h4>
+<h4>Hg clone from repo https://bitbucket.org/mycroftiv/plan9ants</h4>
 Inside the base ants directory, 'build everything'. This recreates the 9pcram.gz kernel and tools.tgz. Note that this will overwrite a pre-existing 9pcram.gz and tools.tgz if you have compiled previously. To install the userspace components to the main system, cd to the base ants2.1 directory and 'build labshost' Copy the 9pcram.gz kernel to your 9fat partition. You probably also want to copy the tools.tgz to 9fat as well. Modify your plan9.ini to use the new kernel. Setting up a boot menu is recommended. An example configuration is located at doc/PLAN9.INI. Once correct plan9.ini variables are set, your system can be rebooted with the new kernel. Assuming proper configuration, there should be no disruption of your userland and the new ANTS namespace will be accessible via cpu or hubfs.
 <h3>Full installs to new Qemu instances</h3>
 If you want to do a full automatic ANTS install into a Qemu vm that has just been set up from the .iso, special build options are provided.

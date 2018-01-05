@@ -2,7 +2,9 @@
 
 ### ANTS r587 9front r6286 released Dec 30 2017
 
-## [http://files.9gridchan.org/9ants587.iso.gz](http://files.9gridchan.org/9ants587.iso.gz)
+## [http://files.9gridchan.org/9ants386v2.iso.gz](http://files.9gridchan.org/9ants386v2.iso.gz)
+
+## [http://files.9gridchan.org/9ants64.iso.gz](http://files.9gridchan.org/9ants64.iso.gz)
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -47,11 +49,11 @@ The standard rio is launched by the default profile, but the "grio" command will
 
 * ANTS boot process creates a separate namespace with no connection to the root fileserver
 
-The modified ANTS boot sequence creates a self-sufficient admin environment using a ramdisk and the kernel's compiled-in paqfs. A full ANTS install to disk also includes additional utilities loaded into the ramdisk from a tools.tgz file stored in the 9fat partition. On the livecd, you can access this namespace either via the hubfs at /srv/hubfs started during boot, or by providing a password to the rcpu listener on port 17060 also started during boot. A standard key-adding command like:
+The modified ANTS boot sequence creates a self-sufficient admin environment using a ramdisk and the kernel's compiled-in paqfs. A full ANTS install to disk also includes additional utilities loaded into the ramdisk from a tools.tgz file stored in the 9fat partition. On the livecd, you can access this namespace either via the hubfs at /srv/hubfs started during boot, or by providing a password to the rcpu listeners on ports 17019 (standard namespace) or 17060 (rootless admin namespace) also started during boot. A standard key-adding command like:
 
 	echo 'key proto=dp9ik user=glenda dom=antslive !password=whatever' >/mnt/factotum/ctl
 
-enables remote access to the independent namespace via drawterm/cpu to port 17060.
+enables remote access.
 
 * Namespace manipulation scripts such as rerootwin
 
@@ -70,9 +72,9 @@ You now have an environment that behaves the same as the main environment, altho
 
 ANTS is compatible with the standard 9front fileservers, but restores the option of installing fossil and venti because fossil rootscores offer a powerful mechanism for efficiently working with multiple root filesystems. Fossil is generally considered less reliable than the other fileservers, so if you do choose to use Fossil, make sure to have a good backup system for your data. ANTS includes some tools for assisting with replicating data between Venti servers and managing rootscore archives. See man ventiprog for usage example.
 
-* Install process lets you add a password to plan9.ini to setup boot/admin namespace access
+* Install process adds a password to plan9.ini to setup remote access
 
-The only additional step in the installer, pwsetup, either adds a value to plan9.ini to provide a password for access to the independent admin namespace. This option does not set up a full authsrv/keyfs system, it just adds the password to factotum for hostowner access on port 17060. There is also an option to configure the system as a full cpu/auth server which means no gui/rio by default. The cpu option also means that the console shell is running in the boot/admin namespace. You can start rio with the command
+The only additional step in the installer, pwsetup, either adds a value to plan9.ini to provide a password for access to the independent admin namespace. This option does not set up a full authsrv/keyfs system, it just adds the password to factotum for hostowner access on port 17060 or the standard namespace on port 17019. There is also an option to configure the system as a full cpu/auth server which means no gui/rio by default. The cpu option also means that the console shell is running in the boot/admin namespace. You can start rio with the command
 
 	gui
 
@@ -91,26 +93,6 @@ ANTS should be regarded as experimental software intended for experienced Plan 9
 The vast majority of code on the live/install cd is the same as standard 9front, which builds on the earlier work of Bell Labs. The intention of this release is to offer an easy to test and install ANTS environment for 9front developers and users who are curious about these namespace tools. It is not intended as a new fork or competitor to standard 9front. Thanks especially to Cinap Lenrek for his leadership of the 9front project and generous time and assistance with everything I have needed to learn during the course of ANTS development.
 
 #### Known issues
-
-* If you specify manual network configuration, the ants-installer fails to add necessary parameters to plan9.ini.
-
-To fix this, 9fs 9fat and edit /n/9fat/plan9.ini to include these variables:
-
-	ipaddress=
-	gateway=
-	ipmask=
-
-Set them to the numeric values that are appropriate so that the ipconfig in the boot process uses them.
-
-* The standard 9front 'fshalt' command doesn't know how to shut down the fossil file server, use 'foshalt' instead.
-
-There is a script included which does know how to stop a fossil server. Use
-
-	foshalt
-
-To sync and halt your fossil file server before reboot/shutdown if that is what you installed. Alternatively, you can update /sys/src/ants via hg pull && hg update and copy the edited fshalt from frontmods/rcbin/fshalt to your /rc/bin directory. It will be included in the next release. There is also a version of '9fs' which understands how to correctly mount the archival dump from fossil with '9fs dump'.
-
-* The /sys/src/ants directory's hgrc is owned by sys which means hg will give a trust error. For some reason this only happens with cwfs/hjfs, not fossil. You can either ignore that error and issue hg pull https://bitbucket.org/mycroftiv/antsexperiments to update it, or delete and recreate the file with the permissions of your user so a standard hg pull will work.
 
 * Updating and rebuilding the system using the 9front sysupdate command may result in the loss of some ANTS features, and require rebuilding/reinstalling some of the ANTS toolkit, because ANTS attempts to mostly contain its modifications and not overwrite the standard distribution, so for instance the customized rc with rfork V available will be overwritten if the system is rebuilt with a standard mk install in /sys/src. 
 
