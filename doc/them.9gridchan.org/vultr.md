@@ -49,7 +49,7 @@ After the system reboots, you will need to use the vultr website interface to re
 ## using the ANTS environment ##
 
 You probably do not want to use the vps much through the vultr console. The best method to access is with drawterm. This can be downloaded from [http://drawterm.9front.org](http://drawterm.9front.org). It is built from source for linux/bsd/os x, and there is also a windows binary available. You can connect as hostowner without using an auth server. A command line like
-	
+
 	drawterm -a 0.0.0.0 -h your.node.ip.address -u glenda
 
 should give you a prompt like "glenda@9front dp9ik password:". Type the password selected, and you will then be given a cpu% rc prompt.
