@@ -1,11 +1,18 @@
 #!/bin/rc
 # build script for advanced namespace tools/rootless boot kernel
 
+if(~ $#1 0){
+	echo 'build needs a target, valid targets include:'
+	echo '9front, fronthost, frontkernel'
+	echo '9frontinstall, vultr, vultrfossil'
+	echo '9frontcd, distromod, clean'
+	echo 'frontpatched, extras, tools'
+	exit no.target
+}
 if(! test -e bootdir.extras){
 	echo 'This build script must be run only from the base rootless directory'
 	exit wrong.dir
 }
-
 if(~ `{pwd} /tmp*){
 	echo 'The /tmp directory is used by the build process - cannot build here'
 	exit wrong.dir
@@ -14,6 +21,14 @@ if(~ `{pwd} /tmp*){
 rfork ne
 . /$objtype/mkfile
 builddir=`{pwd}
+
+if(~ $1 distromod){
+	cp frontmods/libauthsrv/readnvram.c /sys/src/libauthsrv/readnvram.c
+	cp frontmods/rcbin/9fs /rc/bin/9fs
+	cp frontmods/rcbin/fshalt /rc/bin/fshalt
+	cp frontmods/rcbin/termrc /rc/bin/termrc
+	exit
+}
 
 if(~ $1 9frontcd){
 	if(~ $objtype amd64){
@@ -42,55 +57,22 @@ if(~ $1 9frontcd){
 	exit
 }
 
-if(~ $1 distromod){
-	cp frontmods/libauthsrv/readnvram.c /sys/src/libauthsrv/readnvram.c
-	cp frontmods/rcbin/9fs /rc/bin/9fs
-	cp frontmods/rcbin/fshalt /rc/bin/fshalt
-	cp frontmods/rcbin/termrc /rc/bin/termrc
-	exit
-}
-
-if(test -d /dist/plan9front){
-	if(! test -e /sys/include/libc.h.orig){
-		echo 'backing up libc at libc.h.orig'
-		cp /sys/include/libc.h /sys/include/libc.h.orig
-	}
-	if(! test -e /$objtype/bin/rc.orig){
-		echo 'backing up rc at rc.orig'
-		cp /$objtype/bin/rc /$objtype/bin/rc.orig
-	}
-	if(! test -e frontmods/include/libc.rebuild.complete){
-		echo 'rebuilding libs with modified libc for rfork V'
-		sleep 5
-		cp frontmods/include/libc.h /sys/include/libc.h
-		cd /sys/src
-		mk cleanlibs
-		mk libs
-		mk cleanlibs
-		cd $builddir
-		touch frontmods/include/libc.rebuild.complete
-	}
-}
-
 if(! test -d compiletemp){
 	echo 'mkdir compiletemp'	
 	mkdir compiletemp
 }
-
 if(! test -d bootdir.extras/root/n){
 	echo 'creating bootdir.extras/root skeleton'
 	cd bootdir.extras
 	tar xf skel.tar
 	cd $builddir
 }
-
 if(! test -e root/acme/bin/$objtype/win){
 	echo 'copying acme binaries'
 	cp /acme/bin/$objtype/mkwnew root/acme/bin/$objtype
 	cp /acme/bin/$objtype/spout root/acme/bin/$objtype
 	cp /acme/bin/$objtype/win root/acme/bin/$objtype
 }
-
 if(! test -e root/lib/font/bit/lucidasans/NOTICE){
 	echo 'copying fonts'
 	dircp /lib/font/bit/lucidasans root/lib/font/bit/lucidasans
@@ -99,11 +81,81 @@ if(! test -e root/lib/font/bit/lucidasans/NOTICE){
 	cp /lib/font/bit/lucm/latin1.9.font bootdir.extras/root/lib/font/bit/lucm
 	cp /lib/font/bit/lucm/unicode.9.font bootdir.extras/root/lib/font/bit/lucm
 }
-
 if(! test -e doc/ants.ps)
 	troff -ms doc/antspaper.ms | dpost >doc/ants.ps
-
 rm -rf compiletemp/*
+
+if(~ $1 clean){
+	echo building mk clean
+	cd grio
+	mk clean
+	cd $builddir
+	cd hubfs
+	mk clean
+	cd $builddir
+	rm root/bin/* >/dev/null >[2=1]
+	exit ''
+}
+
+if(! test -e /sys/include/libc.h.orig){
+	echo 'backing up libc at libc.h.orig'
+	cp /sys/include/libc.h /sys/include/libc.h.orig
+}
+if(! test -e /$objtype/bin/rc.orig){
+	echo 'backing up rc at rc.orig'
+	cp /$objtype/bin/rc /$objtype/bin/rc.orig
+}
+if(! test -e frontmods/include/libc.rebuild.complete){
+	echo 'rebuilding libs with modified libc for rfork V'
+	sleep 5
+	cp frontmods/include/libc.h /sys/include/libc.h
+	cd /sys/src
+	mk cleanlibs
+	mk libs
+	mk cleanlibs
+	cd $builddir
+	touch frontmods/include/libc.rebuild.complete
+}
+
+if(~ $1 frontpatched){
+	echo building patched
+	ramfs
+	mkdir /tmp/rc
+	dircp /sys/src/cmd/rc /tmp/rc
+	cp frontmods/rc/plan9.c /tmp/rc/plan9.c
+	cd /tmp/rc
+	mk install
+	cd $builddir
+	mkdir /tmp/factotum
+	dircp /sys/src/cmd/auth/factotum /tmp/factotum
+	cp frontmods/factotum/* /tmp/factotum
+	cd /tmp/factotum
+	mk $O.factotum
+	cp $O.factotum $builddir/bootdir.extras/factotum
+	cd $builddir
+	strip bootdir.extras/factotum >/dev/null >[2=1]
+	rm -rf /tmp/factotum
+	exit ''
+}
+
+if(~ $1 extras){
+	echo building extras
+	cd grio
+	mk clean
+	mk
+	cp $O.out ../bootdir.extras/grio
+	cd ../hubfs
+	mk clean
+	mk all
+	cp $O.hubfs ../bootdir.extras/hubfs
+	cp $O.hubshell ../bootdir.extras/hubshell
+	cp hub ../bootdir.extras
+	cd $builddir
+	strip bootdir.extras/grio >/dev/null >[2=1]
+	strip bootdir.extras/hubfs >/dev/null >[2=1]
+	strip bootdir.extras/hubshell >/dev/null >[2=1]
+	exit ''
+}
 
 fn checkfrontclean{
 	if(~ $objtype 386){
@@ -337,63 +389,6 @@ if(~ $1 vultrfossil){
 	exit ''
 }
 
-bind -b $builddir/scripts /bin
-bind $builddir /n/rootless
-bind -bc $builddir/compiletemp /sys/src/9/pc
-
-if(~ $1 clean){
-	echo building mk clean
-	rm compiletemp/*
-	cd grio
-	mk clean
-	cd $builddir
-	cd hubfs
-	mk clean
-	cd $builddir
-	rm root/bin/* >/dev/null >[2=1]
-	exit ''
-}
-
-if(~ $1 frontpatched){
-	echo building patched
-	ramfs
-	mkdir /tmp/rc
-	dircp /sys/src/cmd/rc /tmp/rc
-	cp frontmods/rc/plan9.c /tmp/rc/plan9.c
-	cd /tmp/rc
-	mk install
-	cd $builddir
-	mkdir /tmp/factotum
-	dircp /sys/src/cmd/auth/factotum /tmp/factotum
-	cp frontmods/factotum/* /tmp/factotum
-	cd /tmp/factotum
-	mk $O.factotum
-	cp $O.factotum $builddir/bootdir.extras/factotum
-	cd $builddir
-	strip bootdir.extras/factotum >/dev/null >[2=1]
-	rm -rf /tmp/factotum
-	exit ''
-}	
-
-if(~ $1 extras){
-	echo building extras
-	cd grio
-	mk clean
-	mk
-	cp $O.out ../bootdir.extras/grio
-	cd ../hubfs
-	mk clean
-	mk all
-	cp $O.hubfs ../bootdir.extras/hubfs
-	cp $O.hubshell ../bootdir.extras/hubshell
-	cp hub ../bootdir.extras
-	cd $builddir
-	strip bootdir.extras/grio >/dev/null >[2=1]
-	strip bootdir.extras/hubfs >/dev/null >[2=1]
-	strip bootdir.extras/hubshell >/dev/null >[2=1]
-	exit ''
-}
-
 if(~ $1 tools){
 	echo building tools
 	rm root/bin/* >/dev/null >[2=1]
@@ -409,9 +404,3 @@ if(~ $1 tools){
 	cd $builddir
 	exit ''
 }
-
-echo 'build needs a target, valid targets include:'
-echo '9front, fronthost, frontkernel'
-echo '9frontinstall, vultr, vultrfossil'
-echo '9frontcd, distromod, clean'
-echo 'frontpatched, extras, tools'
