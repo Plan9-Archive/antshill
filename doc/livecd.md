@@ -2,9 +2,9 @@
 
 ### ANTS 386v2 and new 64-bit iso based on 9front r6304 released 5 Jan 2018
 
-## [http://files.9gridchan.org/9ants386v2.iso.gz](http://files.9gridchan.org/9ants386v2.iso.gz)
+## [files.9gridchan.org/9ants386v2.iso.gz](//files.9gridchan.org/9ants386v2.iso.gz)
 
-## [http://files.9gridchan.org/9ants64.iso.gz](http://files.9gridchan.org/9ants64.iso.gz)
+## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -41,7 +41,7 @@ Multiple clients can attach to the same fs, each able to write to it, with reads
 
 * Grio customized rio integrates with hubfs and offers color selection and a customizable command in the menu
 
-The standard rio is launched by the default profile, but the "grio" command will create subrios using the customized ANTS grio. It offers several new features. It adds a "hub" command to the menu, which connects to whatever instance of hubfs is mounted at /n/hubfs. If none is mounted, it creates a new one. It adds the ability to add a custom command of your choice to the menu, by default /bin/acme. -x command -a flags/argument sets the custom command. The argument of -a cannot include spaces. Customizable colors are available and specified via their hex values. Check /sys/src/9/ants/frontmods/grio/README for full information. Sample command to start a light blue grio with stats -lems in the menu:
+The standard rio is launched by the default profile, but the "grio" command will create subrios using the customized ANTS grio. It offers several new features. It adds a "hub" command to the menu, which connects to whatever instance of hubfs is mounted at /n/hubfs. If none is mounted, it creates a new one. It adds the ability to add a custom command of your choice to the menu, by default /bin/acme. -x command -a flags/argument sets the custom command. The argument of -a cannot include spaces. Customizable colors are available and specified via their hex values. Check man grio for full information. Sample command to start a light blue grio with stats -lems in the menu:
 
 	grio-c 0x49ddddff -x /bin/stats -a -lems
 
