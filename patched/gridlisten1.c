@@ -2,6 +2,8 @@
 #include <libc.h>
 #include <auth.h>
 
+void doregister(char*);
+
 int maxprocs;
 int verbose;
 int trusted;
@@ -92,6 +94,8 @@ main(int argc, char **argv)
 
 	print("listen started\n");
 	ctl = announce(argv[0], dir);
+	fprint(2, "registering %s\n", argv[0]);
+	doregister(argv[0]);
 	if(ctl < 0)
 		sysfatal("announce %s: %r", argv[0]);
 
@@ -158,5 +162,23 @@ main(int argc, char **argv)
 			procs++;
 			break;
 		}
+	}
+}
+
+void
+doregister(char *announce)
+{
+	int regfd;
+	switch(rfork(RFPROC|RFFDG)) {
+	case -1:
+		fprint(2, "error forking\n");
+	case 0:
+		regfd=open("/mnt/registry/new", OWRITE);
+		fprint(regfd, "tcp!%s!%s sys %s user %s", getenv("myip"), announce+6, getenv("sysname"), getenv("user"));
+		for(;;)
+			sleep(1000);
+		break;
+	default:
+		return;
 	}
 }
