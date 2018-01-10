@@ -253,6 +253,9 @@ if(~ $1 fronthost){
 	$CC -FTVw gridlisten.c
 	$LD -o gridlisten gridlisten.$O
 	cp gridlisten /$objtype/bin
+	$CC -FTVw gridlisten1.c
+	$LD -o gridlisten1 gridlisten1.$O
+	cp gridlisten1 /$objtype/bin
 	cd ..
 	cp bootdir.extras/grio /$objtype/bin
 	cp scripts/* /rc/bin
@@ -291,6 +294,9 @@ if(~ $1 9frontinstall){
 	$CC -FTVw gridlisten.c
 	$LD -o gridlisten gridlisten.$O
 	cp gridlisten /$objtype/bin
+	$CC -FTVw gridlisten1.c
+	$LD -o gridlisten1 gridlisten1.$O
+	cp gridlisten1 /$objtype/bin
 	cd ..
 	cd hubfs
 	mk install
