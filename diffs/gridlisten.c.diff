@@ -1,0 +1,44 @@
+--- /sys/src/cmd/aux/listen.c	Fri May 15 03:42:00 2015
++++ ../patched/gridlisten.c	Wed Jan 10 12:26:19 2018
+@@ -31,6 +31,7 @@
+ void	scandir(char*, char*, char*);
+ void	becomenone(void);
+ void	listendir(char*, char*, int);
++void	doregister(char*);
+ 
+ char	listenlog[] = "listen";
+ 
+@@ -235,6 +236,8 @@
+ 						else
+ 							exits("ctl");
+ 					}
++					fprint(2, "registering %s\n", a->a);
++					doregister(a->a);
+ 					dolisten(proto, dir, ctl, srvdir, ds, &childs);
+ 					close(ctl);
+ 				}
+@@ -366,6 +369,24 @@
+ 	close(fd);
+ 	if(newns("none", namespace) < 0)
+ 		error("can't build namespace");
++}
++
++void
++doregister(char *announce)
++{
++	int regfd;
++	switch(rfork(RFPROC|RFFDG)) {
++	case -1:
++		error("fork");
++	case 0:
++		regfd=open("/mnt/registry/new", OWRITE);
++		fprint(regfd, "tcp!%s!%s sys %s user %s", getenv("myip"), announce+6, getenv("sysname"), getenv("user"));
++		for(;;)
++			sleep(1000);
++		break;
++	default:
++		return;
++	}
+ }
+ 
+ void

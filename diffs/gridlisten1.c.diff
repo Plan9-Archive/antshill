@@ -1,0 +1,36 @@
+--- /sys/src/cmd/aux/listen1.c	Sat Dec 31 23:31:19 2016
++++ ../patched/gridlisten1.c	Wed Jan 10 12:30:21 2018
+@@ -27,6 +27,24 @@
+ 		sysfatal("can't build namespace: %r");
+ }
+ 
++void
++doregister(char *announce)
++{
++	int regfd;
++	switch(rfork(RFPROC|RFFDG)) {
++	case -1:
++		fprint(2, "error forking\n");
++	case 0:
++		regfd=open("/mnt/registry/new", OWRITE);
++		fprint(regfd, "tcp!%s!%s sys %s user %s", getenv("myip"), announce+6, getenv("sysname"), getenv("user"));
++		for(;;)
++			sleep(1000);
++		break;
++	default:
++		return;
++	}
++}
++
+ char*
+ remoteaddr(char *dir)
+ {
+@@ -92,6 +110,8 @@
+ 
+ 	print("listen started\n");
+ 	ctl = announce(argv[0], dir);
++	fprint(2, "registering %s\n", argv[0]);
++	doregister(argv[0]);
+ 	if(ctl < 0)
+ 		sysfatal("announce %s: %r", argv[0]);
+ 

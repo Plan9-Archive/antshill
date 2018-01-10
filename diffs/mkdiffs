@@ -19,5 +19,7 @@ ape/diff -u /sys/src/cmd/rc/plan9.c ../frontmods/rc/plan9.c >rc.plan9.c.diff
 ape/diff -u /sys/src/cmd/auth/factotum/fs.c ../frontmods/factotum/fs.c >factotumfs.c.diff
 ape/diff -u /sys/src/cmd/auth/factotum/util.c ../frontmods/factotum/util.c >factotumutil.c.diff
 ape/diff -u /sys/src/cmd/auth/factotum/dat.h ../frontmods/factotum/dat.h >factotumdat.h.diff
-ape/diff -Nurp /sys/src/cmd/rio ../grio >grio.diffs
 ape/diff -u /sys/include/libc.h.orig ../frontmods/include/libc.h >libc.h.diff
+ape/diff -u /sys/src/cmd/aux/listen.c ../patched/gridlisten.c >gridlisten.c.diff
+ape/diff -u /sys/src/cmd/aux/listen1.c ../patched/gridlisten1.c >gridlisten1.c.diff
+ape/diff -Nurp /sys/src/cmd/rio ../grio >grio.diffs

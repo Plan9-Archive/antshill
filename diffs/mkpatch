@@ -20,9 +20,12 @@ cp ../frontmods/rc/plan9.c ../frontmods/rc/plan9.c.old
 cp ../frontmods/factotum/fs.c ../frontmods/factotum/fs.c.old
 cp ../frontmods/factotum/util.c ../frontmods/factotum/util.c.old
 cp ../frontmods/factotum/dat.h ../frontmods/factotum/dat.h.old
+cp ../frontmods/include/libc.h ../frontmods/include/libc.h.old
+cp ../patched/gridlisten.c ../patched/gridlisten.c.old
+cp ../patched/gridlisten1.c ../patched/gridlisten1.c.old
 mkdir ../grio.old
 dircp ../grio ../grio.old
-cp ../frontmods/include/libc.h ../frontmods/include/libc.h.old
+
 
 echo 'copying current system files to frontmods directory'
 cp /sys/src/9/boot/boot.c ../frontmods/boot/boot.c
@@ -44,8 +47,10 @@ cp /sys/src/cmd/rc/plan9.c ../frontmods/rc/plan9.c
 cp /sys/src/cmd/auth/factotum/fs.c ../frontmods/factotum/fs.c
 cp /sys/src/cmd/auth/factotum/util.c ../frontmods/factotum/util.c
 cp /sys/src/cmd/auth/factotum/dat.h ../frontmods/factotum/dat.h
-dircp /sys/src/cmd/rio ../grio
 cp /sys/include/libc.h ../frontmods/include/libc.h
+cp /sys/src/cmd/aux/listen.c ../patched/gridlisten.c
+cp /sys/src/cmd/aux/listen1.c ../patched/gridlisten1.c
+dircp /sys/src/cmd/rio ../grio
 
 echo 'patching updated files from diffs'
 ape/patch ../frontmods/boot/boot.c <boot.c.diff
@@ -67,7 +72,9 @@ ape/patch ../frontmods/rc/plan9.c <rc.plan9.c.diff
 ape/patch ../frontmods/factotum/fs.c <factotumfs.c.diff
 ape/patch ../frontmods/factotum/util.c <factotumutil.c.diff
 ape/patch ../frontmods/factotum/dat.h <factotumdat.h.diff
+ape/patch ../frontmods/include/libc.h <libc.h.diff
+ape/patch ../patched/gridlisten.c <gridlisten.c.diff
+ape/patch ../patched/gridlisten1.c <gridlisten1.c.diff
 cd ../frontmods
 ape/patch -p2 <../diffs/grio.diffs
 cd ../diffs
-ape/patch ../frontmods/include/libc.h <libc.h.diff

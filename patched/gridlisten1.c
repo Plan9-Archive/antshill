@@ -2,8 +2,6 @@
 #include <libc.h>
 #include <auth.h>
 
-void doregister(char*);
-
 int maxprocs;
 int verbose;
 int trusted;
@@ -27,6 +25,24 @@ becomenone(void)
 	close(fd);
 	if(newns("none", nsfile) < 0)
 		sysfatal("can't build namespace: %r");
+}
+
+void
+doregister(char *announce)
+{
+	int regfd;
+	switch(rfork(RFPROC|RFFDG)) {
+	case -1:
+		fprint(2, "error forking\n");
+	case 0:
+		regfd=open("/mnt/registry/new", OWRITE);
+		fprint(regfd, "tcp!%s!%s sys %s user %s", getenv("myip"), announce+6, getenv("sysname"), getenv("user"));
+		for(;;)
+			sleep(1000);
+		break;
+	default:
+		return;
+	}
 }
 
 char*
@@ -162,23 +178,5 @@ main(int argc, char **argv)
 			procs++;
 			break;
 		}
-	}
-}
-
-void
-doregister(char *announce)
-{
-	int regfd;
-	switch(rfork(RFPROC|RFFDG)) {
-	case -1:
-		fprint(2, "error forking\n");
-	case 0:
-		regfd=open("/mnt/registry/new", OWRITE);
-		fprint(regfd, "tcp!%s!%s sys %s user %s", getenv("myip"), announce+6, getenv("sysname"), getenv("user"));
-		for(;;)
-			sleep(1000);
-		break;
-	default:
-		return;
 	}
 }

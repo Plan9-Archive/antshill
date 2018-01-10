@@ -16,13 +16,14 @@ typedef struct Announce	Announce;
 struct Announce
 {
 	Announce	*next;
-	char	*a;
 	int	announced;
-	int	whined;
+	char	whined;
+	char	mark;
+	char	a[];
 };
 
 int	readstr(char*, char*, char*, int);
-void	dolisten(char*, char*, int, char*, char*);
+void	dolisten(char*, char*, int, char*, char*, long*);
 void	newcall(int, char*, char*, Service*);
 int 	findserv(char*, char*, Service*, char*);
 int	getserv(char*, char*, Service*);
@@ -30,10 +31,12 @@ void	error(char*);
 void	scandir(char*, char*, char*);
 void	becomenone(void);
 void	listendir(char*, char*, int);
-void doregister(char*);
+void	doregister(char*);
 
 char	listenlog[] = "listen";
 
+long	procs;
+long	maxprocs;
 int	quiet;
 int	immutable;
 char	*cpu;
@@ -46,7 +49,7 @@ char *namespace;
 void
 usage(void)
 {
-	error("usage: aux/listen [-q] [-n namespace] [-d servdir] [-t trustdir]"
+	error("usage: aux/listen [-q] [-n namespace] [-d servdir] [-t trustdir] [-p maxprocs]"
 		" [proto]");
 }
 
@@ -89,6 +92,7 @@ main(int argc, char *argv[])
 	quiet = 0;
 	immutable = 0;
 	argv0 = argv[0];
+	maxprocs = 0;
 	cpu = getenv("cputype");
 	if(cpu == 0)
 		error("can't get cputype");
@@ -105,6 +109,9 @@ main(int argc, char *argv[])
 		break;
 	case 'n':
 		namespace = EARGF(usage());
+		break;
+	case 'p':
+		maxprocs = atoi(EARGF(usage()));
 		break;
 	case 'i':
 		/*
@@ -162,9 +169,11 @@ void
 listendir(char *protodir, char *srvdir, int trusted)
 {
 	int ctl, pid, start;
-	char dir[40], err[128];
+	char dir[40], err[128], ds[128];
+	long childs;
 	Announce *a;
 	Waitmsg *wm;
+	int whined;
 
 	if (srvdir == 0)
 		return;
@@ -202,20 +211,25 @@ listendir(char *protodir, char *srvdir, int trusted)
 
 			sleep((pid*10)%200);
 
+			/* copy to stack */
+			strncpy(ds, a->a, sizeof(ds));
+			whined = a->whined;
+
 			/* a process per service */
-			switch(pid = rfork(RFFDG|RFPROC)){
+			switch(pid = rfork(RFFDG|RFPROC|RFMEM)){
 			case -1:
-				syslog(1, listenlog, "couldn't fork for %s", a->a);
+				syslog(1, listenlog, "couldn't fork for %s", ds);
 				break;
 			case 0:
+				childs = 0;
 				for(;;){
-					ctl = announce(a->a, dir);
+					ctl = announce(ds, dir);
 					if(ctl < 0) {
 						errstr(err, sizeof err);
-						if (!a->whined)
+						if (!whined)
 							syslog(1, listenlog,
 							   "giving up on %s: %r",
-							a->a);
+							ds);
 						if(strstr(err, "address in use")
 						    != nil)
 							exits("addr-in-use");
@@ -224,7 +238,7 @@ listendir(char *protodir, char *srvdir, int trusted)
 					}
 					fprint(2, "registering %s\n", a->a);
 					doregister(a->a);
-					dolisten(proto, dir, ctl, srvdir, a->a);
+					dolisten(proto, dir, ctl, srvdir, ds, &childs);
 					close(ctl);
 				}
 			default:
@@ -282,65 +296,32 @@ addannounce(char *str)
 	/* look for duplicate */
 	l = &announcements;
 	for(a = announcements; a; a = a->next){
-		if(strcmp(str, a->a) == 0)
+		if(strcmp(str, a->a) == 0){
+			a->mark = 0;
 			return;
+		}
 		l = &a->next;
 	}
 
 	/* accept it */
 	a = mallocz(sizeof(*a) + strlen(str) + 1, 1);
-	if(a == 0)
+	if(a == nil)
 		return;
-	a->a = ((char*)a)+sizeof(*a);
 	strcpy(a->a, str);
-	a->announced = 0;
 	*l = a;
-}
-
-/*
- *  delete a service for announcement list
- */
-void
-delannounce(char *str)
-{
-	Announce *a, **l;
-
-	/* look for service */
-	l = &announcements;
-	for(a = announcements; a; a = a->next){
-		if(strcmp(str, a->a) == 0)
-			break;
-		l = &a->next;
-	}
-	if (a == nil)
-		return;
-	*l = a->next;			/* drop from the list */
-	if (a->announced > 0)
-		postnote(PNPROC, a->announced, "die");
-	a->announced = 0;
-	free(a);
-}
-
-static int
-ignore(char *srvdir, char *name)
-{
-	int rv;
-	char *file = smprint("%s/%s", srvdir, name);
-	Dir *d = dirstat(file);
-
-	rv = !d || d->length <= 0;	/* ignore unless it's non-empty */
-	free(d);
-	free(file);
-	return rv;
 }
 
 void
 scandir(char *proto, char *protodir, char *dname)
 {
+	Announce *a, **l;
 	int fd, i, n, nlen;
 	char *nm;
 	char ds[128];
 	Dir *db;
+
+	for(a = announcements; a != nil; a = a->next)
+		a->mark = 1;
 
 	fd = open(dname, OREAD);
 	if(fd < 0)
@@ -350,20 +331,31 @@ scandir(char *proto, char *protodir, char *dname)
 	while((n=dirread(fd, &db)) > 0){
 		for(i=0; i<n; i++){
 			nm = db[i].name;
-			if(!(db[i].qid.type&QTDIR) &&
-			    strncmp(nm, proto, nlen) == 0) {
-				snprint(ds, sizeof ds, "%s!*!%s", protodir,
-					nm + nlen);
-				if (ignore(dname, nm))
-					delannounce(ds);
-				else
-					addannounce(ds);
-			}
+			if(db[i].qid.type&QTDIR)
+				continue;
+			if(db[i].length <= 0)
+				continue;
+			if(strncmp(nm, proto, nlen) != 0)
+				continue;
+			snprint(ds, sizeof ds, "%s!*!%s", protodir, nm + nlen);
+			addannounce(ds);
 		}
 		free(db);
 	}
 
 	close(fd);
+
+	l = &announcements;
+	while((a = *l) != nil){
+		if(a->mark){
+			*l = a->next;
+			if (a->announced > 0)
+				postnote(PNPROC, a->announced, "die");
+			free(a);
+			continue;
+		}
+		l = &a->next;
+	}
 }
 
 void
@@ -398,14 +390,57 @@ doregister(char *announce)
 }
 
 void
-dolisten(char *proto, char *dir, int ctl, char *srvdir, char *dialstr)
+dolisten(char *proto, char *dir, int ctl, char *srvdir, char *dialstr, long *pchilds)
 {
 	Service s;
-	char ndir[40];
-	int nctl, data;
+	char ndir[40], wbuf[64];
+	int nctl, data, wfd, nowait;
 
 	procsetname("%s %s", dir, dialstr);
+
+	wfd = -1;
+	nowait = RFNOWAIT;
+	if(pchilds && maxprocs > 0){
+		snprint(wbuf, sizeof(wbuf), "/proc/%d/wait", getpid());
+		if((wfd = open(wbuf, OREAD)) >= 0)
+			nowait = 0;
+	}
+
 	for(;;){
+		if(!nowait){
+			static int hit = 0;
+			Dir *d;
+
+			/*
+			 *  check for exited subprocesses
+			 */
+			if(procs >= maxprocs || (*pchilds % 8) == 0)
+				while(*pchilds > 0){
+					d = dirfstat(wfd);
+					if(d == nil || d->length == 0){
+						free(d);
+						break;
+					}
+					free(d);
+					if(read(wfd, wbuf, sizeof(wbuf)) > 0){
+						adec(&procs);
+						pchilds[0]--;
+					}
+				}
+
+			if(procs >= maxprocs){
+				if(!quiet && !hit)
+					syslog(1, listenlog, "%s: process limit of %ld reached",
+						proto, maxprocs);
+				if(hit < 8)
+					hit++;
+				sleep(10<<hit);
+				continue;
+			} 
+			if(hit > 0)
+				hit--;
+		}
+
 		/*
 		 *  wait for a call (or an error)
 		 */
@@ -413,13 +448,15 @@ dolisten(char *proto, char *dir, int ctl, char *srvdir, char *dialstr)
 		if(nctl < 0){
 			if(!quiet)
 				syslog(1, listenlog, "listen: %r");
+			if(wfd >= 0)
+				close(wfd);
 			return;
 		}
 
 		/*
 		 *  start a subprocess for the connection
 		 */
-		switch(rfork(RFFDG|RFPROC|RFNOWAIT|RFENVG|RFNAMEG|RFNOTEG)){
+		switch(rfork(RFFDG|RFPROC|RFMEM|RFENVG|RFNAMEG|RFNOTEG|RFREND|nowait)){
 		case -1:
 			reject(nctl, ndir, "host overloaded");
 			close(nctl);
@@ -444,10 +481,16 @@ dolisten(char *proto, char *dir, int ctl, char *srvdir, char *dialstr)
 			fprint(nctl, "keepalive");
 			close(ctl);
 			close(nctl);
+			if(wfd >= 0)
+				close(wfd);
 			newcall(data, proto, ndir, &s);
 			exits(0);
 		default:
 			close(nctl);
+			if(nowait)
+				break;
+			ainc(&procs);
+			pchilds[0]++;
 			break;
 		}
 	}
@@ -539,19 +582,17 @@ newcall(int fd, char *proto, char *dir, Service *s)
 	if(!quiet){
 		if(dir != nil){
 			p = remoteaddr(dir);
-			syslog(0, listenlog, "%s call for %s on chan %s (%s)",
-				proto, s->serv, dir, p);
+			syslog(0, listenlog, "%s call for %s on chan %s (%s)", proto, s->serv, dir, p);
 			free(p);
 		} else
-			syslog(0, listenlog, "%s call for %s on chan %s",
-				proto, s->serv, dir);
+			syslog(0, listenlog, "%s call for %s on chan %s", proto, s->serv, dir);
 	}
 
 	snprint(data, sizeof data, "%s/data", dir);
 	bind(data, "/dev/cons", MREPL);
 	dup(fd, 0);
 	dup(fd, 1);
-	dup(fd, 2);
+	/* dup(fd, 2); keep stderr */
 	close(fd);
 
 	/*
