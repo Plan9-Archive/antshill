@@ -1,8 +1,12 @@
 #!/bin/rc
 
 rfork e
-cd /usr/rsc
+mypid=$pid
+venticall = $1
+if(~ $venticall '')
+	venticall = 'http://127.1:8000/index'
 . bkup.info
+
 fn x {
 	echo x $*
 	y=$1
@@ -17,10 +21,21 @@ fn x {
 		whatis $y >>bkup.info
 	}
 }
-hget http://127.1:8000/index | 
+
+hget $venticall | 
 awk '
 /^index=/ { blockSize=0+substr($3, 11); }
 /^arena=/ { arena=substr($1, 7); }
-/^	arena=/ { start=0+substr($5, 2)-blockSize; printf("x %s %d %s\n", arena, start, $3); }
-' |rc
+/^	arena=/ { printf("x %s %s %s\n", arena, substr($5 ,2), $3); }
+' | sed 's/\,.*\)//g' >/tmp/offsetparse
 
+numarenas=`{wc /tmp/offsetparse}
+count=0
+while(! ~ $count $numarenas(1)){
+	data = `{grep arenas^$count /tmp/offsetparse}
+	offset=`{echo $data(3) ' - 8192' |pc |sed 's/;//g'}
+	echo x $data(2) $offset $data(4) >>/tmp/offsets.$mypid
+	count=`{echo $count ' + 1' |hoc}
+}
+
+cat /tmp/offsets.$mypid |rc
