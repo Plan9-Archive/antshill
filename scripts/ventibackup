@@ -1,11 +1,32 @@
 #!/bin/rc
+# progressively replicates venti datablocks
+# ventibackup [-p prepfile] [-f infofile] [ventihttp_dialstring]
 
 rfork e
+
+infofile=bkup.info
+while (~ $1 -*){
+	switch($1){
+	case -f
+		infofile = $2
+		shift
+		shift
+	case -p
+		prepfile = $2
+		shift
+		shift
+	case *
+		echo bad flag $1 >[1=2]
+		exit bad.flag
+	}
+}
 mypid=$pid
 venticall = $1
 if(~ $venticall '')
 	venticall = 'http://127.1:8000/index'
-. bkup.info
+if(~ $# prepfile 1)
+	. $prepfile
+. $infofile
 
 fn x {
 	echo x $*
