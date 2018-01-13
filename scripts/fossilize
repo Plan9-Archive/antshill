@@ -2,12 +2,15 @@
 # freeze a fossil for preservation
 # fossilize [partition]
 
-rfork e
+rfork en
+
 fossil=$1
 fsname=$2
 if (~ $#fsname 0)
 	fsname=$sysname
 
+if(! test -e /dev/sd*)
+	bind -b '#S' /dev
 if(~ $fossil ''){
 	fossil=`{ls /dev/fs/fossil* /dev/sd*/fossil* >[2]/dev/null}
 	if(~ $fossil ''){
