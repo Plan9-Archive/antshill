@@ -28,4 +28,7 @@ if(! test -e /n/9fat/plan9.ini){
 }
 
 echo $score $fsname >>/n/9fat/scores.$fsname
-echo stored $score $fsname
+echo $score $fsname
+echo $score $fsname >[1=2]
+
+exit ''
