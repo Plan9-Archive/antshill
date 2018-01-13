@@ -9,8 +9,16 @@ if(! ~ $score ???????????????????????????*){
 	exit no.rootscore
 }
 fossil=$2
-if(~ $fossil '')
-	fossil=/dev/sdC0/fossil
+if(~ $fossil ''){
+	fossil=`{ls /dev/fs/fossil* /dev/sd*/fossil* >[2]/dev/null}
+	if(~ $fossil ''){
+		echo 'no fossil partition found, please specify a target fossil' >[1=2]
+		exit no.fossil
+	}
+	if(! ~ $#fossil 1){
+		echo 'found multiple partitions named fossil, please specify which is the target' >[1=2]
+		exit toomany.fossils
+}
 if(! ~ $3 '')
 	venti=$3
 if(~ $venti ''){
