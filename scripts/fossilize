@@ -4,6 +4,9 @@
 
 rfork e
 fossil=$1
+fsname=$2
+if (~ $#fsname 0)
+	fsname=$sysname
 
 if(~ $fossil ''){
 	fossil=`{ls /dev/fs/fossil* /dev/sd*/fossil* >[2]/dev/null}
@@ -42,7 +45,8 @@ if(! ~ $last vac*){
 	exit no.score
 }
 
-echo $last $fossil $venti >>/n/9fat/scores.$sysname
-echo $last $fossil $venti
+echo $last $fossil $venti >>/n/9fat/scores.$fsname
+echo $last $fsname
+echo $last $fsname >[1=2]
 
 exit ''

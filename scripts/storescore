@@ -1,0 +1,31 @@
+#!/bin/rc
+# receive a score from a remote machine and store it
+
+remdata=`{read}
+score=$remdata(1)
+fsname=$remdata(2)
+if(~ $#score 0){
+	echo 'no score received!' >[1=2]
+	exit no.score
+}
+if(~ $#fsname 0)
+	fsname=remote
+
+if(! test -e /n/9fat/plan9.ini){
+	part=`{ls /dev/fs/9fat /dev/sd*/9fat >[2]/dev/null}
+	if(~ $#part 0) {
+		echo '9fat?' >[1=2]
+		exit no.9fat
+	}
+	part=$part(1)
+	if(! test -f /srv/dos)
+		dossrv >/dev/null </dev/null >[2]/dev/null
+	mount -c /srv/dos /n/9fat $part
+	if(! test -e /n/9fat/plan9.ini){
+		echo '9fat?' >[1=2]
+		exit no.plan9ini
+	}
+}
+
+echo $score $fsname >>/n/9fat/scores.$fsname
+echo stored $score $fsname
