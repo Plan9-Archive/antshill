@@ -4,6 +4,7 @@
 remdata=`{read}
 score=$remdata(1)
 fsname=$remdata(2)
+
 if(~ $#score 0){
 	echo 'no score received!' >[1=2]
 	exit no.score
@@ -11,6 +12,8 @@ if(~ $#score 0){
 if(~ $#fsname 0)
 	fsname=remote
 
+if(! test -e /dev/sd*)
+	bind -b '#S' /dev
 if(! test -e /n/9fat/plan9.ini){
 	part=`{ls /dev/fs/9fat /dev/sd*/9fat >[2]/dev/null}
 	if(~ $#part 0) {
