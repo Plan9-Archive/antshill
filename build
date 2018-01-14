@@ -359,12 +359,17 @@ if(~ $1 vultrfossil){
 	cd $builddir
 	if (! test -e /mnt/web/ctl)
 		webfs
-	hg clone https://bitbucket.org/mycroftiv/fossiloventi
-	cd fossiloventi
-	INSTALL
-	cd fossil
+	hg clone https://bitbucket.org/mycroftiv/fossilnewventi
+	cd /
+	ape/patch -p0 <$builddir/diffs/fromlegacy/libventi-noarchive.diff
+	ape/patch -p0 <$builddir/diffs/fromlegacy/libventi-redial.diff
+	ape/patch -p0 <$builddir/diffs/fromlegacy/libventi-sha1.diff
+	cd /sys/src/libventi
 	mk clean
-	cd ../liboventi
+	mk install
+	mk clean
+	cd $builddir/fossilnewventi
+	mk install
 	mk clean
 	cd $builddir
 	build 9front
