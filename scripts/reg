@@ -1,0 +1,20 @@
+#!/bin/rc
+# register a service with a mounted registry
+
+dialstring=$1
+name=$2
+if(! test -e /mnt/registry new){
+	if(test -e /srv/registry)
+		mount -c /srv/registry /mnt/registry
+	if not{
+		echo 'please mount a registry at /mnt/registry' >[1=2]
+		exit no.registry
+	}
+}
+if(~ $#dialstring 0){
+	echo 'please provide a dialstring for this service' >[1=2]
+	exit no.dialstring
+}
+if(~ $#name 0)
+	name=unspecified
+>/mnt/registry/new {echo $dialstring sys $sysname service $name; while (sleep 3600);}&
