@@ -28,7 +28,7 @@ becomenone(void)
 }
 
 void
-doregister(char *announce)
+doregister(char *announce, char *service)
 {
 	int regfd;
 	char *loc;
@@ -40,7 +40,7 @@ doregister(char *announce)
 		if((loc=getenv("myip")) == 0)
 			loc=getenv("sysname");
 		regfd=open("/mnt/registry/new", OWRITE);
-		fprint(regfd, "tcp!%s!%s sys %s user %s", loc, announce+6, getenv("sysname"), getenv("user"));
+		fprint(regfd, "tcp!%s!%s sys %s service %s", loc, announce+6, getenv("sysname"), service);
 		for(;;)
 			sleep(1000);
 		break;
@@ -115,7 +115,7 @@ main(int argc, char **argv)
 	print("listen started\n");
 	ctl = announce(argv[0], dir);
 	fprint(2, "registering %s\n", argv[0]);
-	doregister(argv[0]);
+	doregister(argv[0], argv[1]);
 	if(ctl < 0)
 		sysfatal("announce %s: %r", argv[0]);
 
