@@ -1,6 +1,7 @@
 Plan 9 from Bell Labs is available under both Lucent and GPL
 licensing.  9front uses the same licenses along with MIT for
-non-derivative original work.  The ANTS modifications and original
-components are offered under the same licensing as 9front, Lucent for
-modifications of Bell Labs code, MIT for original work and changes to
-9front original code.
+non-derivative original work.  The patches in diffs/fromlegacy are
+borrowed from the 9legacy.org patch series.  The ANTS modifications
+and original components are offered under the same licensing as
+9front, Lucent for modifications of Bell Labs code, MIT for original
+work and changes to 9front original code.
