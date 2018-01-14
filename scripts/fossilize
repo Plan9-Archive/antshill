@@ -1,6 +1,6 @@
 #!/bin/rc
 # freeze a fossil for preservation
-# fossilize [partition]
+# fossilize [partition] [fsname]
 
 rfork en
 

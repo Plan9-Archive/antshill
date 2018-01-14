@@ -1,6 +1,8 @@
 #!/bin/rc
 # receive a score from a remote machine and store it
 
+rfork en
+
 remdata=`{read}
 score=$remdata(1)
 fsname=$remdata(2)

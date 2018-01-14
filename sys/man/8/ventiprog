@@ -1,17 +1,34 @@
 .TH VENTIPROG 8
 .SH NAME
 ventiprog,
+fossilize,
+storescore,
 cpsys,
 fosreset,
-fossilize,
 fossilstart,
 foshalt \- backup between ventis, replicate fossils, and archive rootscores
 .SH SYNOPSIS
 .PP
 .B ventiprog
 [
-.I ventilist
+.I -p prepfile  
 ]
+[
+.I -f infofile
+]
+[
+.I ventihttp_dialstring
+]
+.PP
+.B fossilize
+[
+.I partition
+]
+[
+.I fsname
+]
+.PP
+.B storescore
 .PP
 .B cpsys
 .I source
@@ -24,11 +41,6 @@ foshalt \- backup between ventis, replicate fossils, and archive rootscores
 ]
 [
 .I ventiaddr
-]
-.PP
-.B fossilize
-[
-.I partition
 ]
 .PP
 .B fossilstart
@@ -80,26 +92,26 @@ prints the output of
 .I 9fat 
 partition if necessary, and
 appends the rootscore to 
-.I /n/9fat/rootscor
-which is taken as a conventional storage location for fossil rootscores and venti offset data. Rootscores need to be kept secure so this file should be treated in the same manner as nvram.
+.I /n/9fat/scores.$fsname
+which is taken as a conventional storage location for fossil rootscores and venti offset data. Two optional parameters may be provided, first a partition location, and second the value of fsname, which will otherwise default to $sysname. Rootscores need to be kept secure so this file should be treated in the same manner as nvram.
+.PP
+.I storescore
+is a small helper script which stores its input, conventionally produced by
+.I fossilize
+in the form of a vacscore and system fsname, in the 9fat partition appended to the file
+.B scores.fsname
 .PP
 After a snapshot has been completed and the rootscore saved, replicating data from the venti used by that fossil to other ventis will make that rootscore available for use. The task of progressively replicating data between ventis is given to the
 .IR ventiprog
-script which takes an optional list of
-.I targetventis
-to direct the data replication. Prior to using 
+script. Prior to using 
 .IR ventiprog
 , the user must create the file
-.B /n/9fat/wrcmd
-which contains a venti/wrarena command with the correct arena offset. As described by
-.IR venti-backup (8)
-this command will take a form such as:
-"wrarena -h tcp!ip.of.venti.server!17034 -o 537665536 /dev/sdC0/arenas 0x0"
-to begin. The first parameter to -o is calculated by subtracting 8192 from the location of venti partition as retrieved from the 
-.I /index 
-file of the venti http server. Each time 
+.B bkup.info
+which begins with the dialstring of the venti to which data will be replicated. Each time 
 .IR ventiprog 
-is run it updates this command with a new final clump offset parameter. It is the user's responsibility to note when a venti arenas partition is filled and adjust the -o parameter and reset the final parameter to 0x0.
+is run it updates this file with a new final clump offset parameter. The optional parameters to the ventibackup script are
+.B [-p prepfile] [-f infofile] [ventihttp_dialstring]
+which allow you to specify an additional script to run (prepfile) prior to the main backup operation, a differently named infofile rather than bkup.info (perhaps beginning with a different dialstring for a different target venti), and a different http address to dial than the default of 127.1:8000.
 .SS Fossil replication
 Resetting running fossils to a different score and replicating fossils between systems is done with
 .IR fosreset
@@ -152,23 +164,22 @@ is given, it will be used as a stem for the fossil file
 and also its 
 .IR fossilcons (8)
 .SH EXAMPLE
-These commands are issued from the service namespace of a 
+These commands are issued from a 
 .IR venti (8)
 server.
 .IP
 .EX
-% rx fileserver echo fsys main snap -a '>>/srv/fscons' 
+% rcpu -h fs -c 'echo fsys main snap -a >>/srv/fscons'
 # begin a snap and then wait for it to complete
 
-% rx fileserver fossilize >>/n/9fat/rootscor 
-# saves the rootscore both on the file and venti server
+% ventiprog 
+# assumes the user has a bkup.info file with the first line
+# venti=tcp!target.venti.ip.addr!17034
 
-% ventiprog $ventis 
-# assumes the user has a variable in the environment like
-# ventis=(ip.addr.one ip.addr.two ip.addr.three)
-
-% cp /n/9fat/rootscor /n/remote/backup 
-# copy the rootscores to the backup venti hosts
+% unmount '#S' /dev
+% rcpu -h fs -c fossilize |storescore |rcpu -h backup -c storescore
+# get most recent fs rootscore to store locally and on backup venti
+# the unmount is needed to prevent remote systems seeing local disks
 
 % cpsys fileserver backupserver 
 # reset the backup fossil to the rootscore of the snapshot
@@ -179,12 +190,14 @@ After this seequence, the backup server can choose to use one of the ventis whic
 variable in 
 .IR plan9.ini (8)
 .SH SOURCE
-.B sources/mycroftiv/rootlessnext/scripts
+.B https://bitbucket.com/mycroftiv/ants9front/scripts
 .SH SEE ALSO
 .IR fossil (4),
 .IR fossilcons (8),
 .IR venti (8),
 .IR venti-backup (8)
 .SH BUGS
-.I ventiprog
-should automate the construction of the wrcmd from the venti http/index file.
+Managing the namespace seen by remote servers during rcpu commands can lead to partition identification troubles.
+.SH NOTE
+The foundation of the ventiprog script is taken and modified from
+.B /sys/src/cmd/venti/words/backup.example
