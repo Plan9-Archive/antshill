@@ -369,8 +369,7 @@ if(~ $1 vultrfossil){
 	mk install
 	mk clean
 	cd $builddir/fossilnewventi
-	mk install
-	mk clean
+	INSTALL
 	cd $builddir
 	build 9front
 	build 9frontinstall
