@@ -1,0 +1,47 @@
+#!/bin/rc
+
+name=$1
+if(! test -e /n/chat/chat)
+	mount /srv/chat /n/chat
+if(! test -e /n/chat/chat){
+	echo 'no chat service found' >[1=2]
+	exit no.chat
+}
+echo '		-- hubchat 0.1 --'
+echo '-- /q to quit -- /n NICK to change nick --'
+sleep 2
+while(~ $#name 0){
+	echo 'please enter a chat name:'
+	name=`{read}
+}
+cat /n/chat/chat &
+catkill=$apid
+while(talk=`{read}){
+	if(~ $talk /*){
+		switch($talk){
+		case /q*
+			@{echo kill>/proc/$catkill/ctl}
+			echo 'chat ending'
+			exit
+		case /n*
+			name=$talk(2)
+			echo 'name changed to '$name
+			command=yes
+		case /h*
+			echo '-- /q to quit -- /n NICK to change nick --'
+			command=yes
+		case *
+			echo unknown command
+			command=yes
+		}
+	}
+	if(~ $talk '')
+		command=yes
+	if(! ~ $command yes){
+		ts=`{date -u}
+		ts=`{echo '('^$ts(4)^')'}
+		line=`{echo $ts $name ': ' $talk}
+		echo $line >>/n/chat/chat
+	}
+	command=no
+}
