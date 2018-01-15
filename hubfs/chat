@@ -1,34 +1,89 @@
 #!/bin/rc
 
-name=$1
-if(! test -e /n/chat/chat)
-	mount /srv/chat /n/chat
-if(! test -e /n/chat/chat){
-	echo 'no chat service found' >[1=2]
+fn helpmessage{
+	echo -------------------------
+	echo '/q to quit  |  /c to list channels  |  /h for help message'
+	echo '/n NICK to change nick  |  /j CHANNEL to change channels'
+	echo -------------------------
+}
+
+rfork enf
+channel=chat
+chatsrv=chat
+while (~ $1 -*){
+	switch($1){
+	case -n
+		name = $2
+		shift
+		shift
+	case -j
+		channel = $2
+		shift
+		shift
+	case *
+		echo bad flag $1 '-n NICK -j CHANNEL'
+		shift
+	}
+}
+if(! ~ $1 '')
+	chatsrv=$1
+
+if(! test -e /n/$chatsrv/chat)
+	mount /srv/$chatsrv /n/$chatsrv
+if(! test -e /n/$chatsrv/chat){
+	echo 'no chat service named $chatsrv found' >[1=2]
 	exit no.chat
 }
-echo '		-- hubchat 0.1 --'
-echo '-- /q to quit -- /n NICK to change nick --'
+echo '		-- hubchat 0.2 --'
+helpmessage
 sleep 2
 while(~ $#name 0){
 	echo 'please enter a chat name:'
 	name=`{read}
 }
-cat /n/chat/chat &
+echo JOIN $name to $channel >>/n/$chatsrv/$channel
+cat /n/$chatsrv/$channel &
 catkill=$apid
 while(talk=`{read}){
 	if(~ $talk /*){
 		switch($talk){
 		case /q*
+			echo PART $name from $channel >>/n/$chatsrv/$channel
 			@{echo kill>/proc/$catkill/ctl}
-			echo 'chat ending'
 			exit
 		case /n*
-			name=$talk(2)
-			echo 'name changed to '$name
+			if(! ~ $talk(2) ''){
+				echo nick $name ' -> ' $talk(2) >>/n/$chatsrv/$channel
+				name=$talk(2)
+			}
+			if not
+				echo 'you need to provide a nick for /n NICK'
+			command=yes
+		case /j*
+			if (~ $talk(2) '')
+				echo must specify a channel to join
+			if not if(test -e /n/chat/$talk(2)){
+				echo PART $name from $channel >>/n/$chatsrv/$channel
+				@{echo kill>/proc/$catkill/ctl}
+				channel=$talk(2)
+				cat /n/chat/$channel &
+				catkill=$apid
+				echo JOIN $name to $channel >>/n/$chatsrv/$channel
+			}
+			if not
+				echo channel does not exist
 			command=yes
 		case /h*
-			echo '-- /q to quit -- /n NICK to change nick --'
+			helpmessage
+			echo currently in $channel
+			echo
+			command=yes
+		case /c
+			echo Available channels:
+			lc /n/$chatsrv
+			echo -------------------
+			echo currently in $channel
+			echo
 			command=yes
 		case *
 			echo unknown command
@@ -41,7 +96,7 @@ while(talk=`{read}){
 		ts=`{date -u}
 		ts=`{echo '('^$ts(4)^')'}
 		line=`{echo $ts $name ': ' $talk}
-		echo $line >>/n/chat/chat
+		echo $line >>/n/chat/$channel
 	}
 	command=no
 }
