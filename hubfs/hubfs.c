@@ -22,6 +22,7 @@ enum buffersizes{
 	MAGIC = 77777,				/* In paranoid mode let readers lag this many bytes */
 	MAXQ = 777,					/* Maximum number of 9p requests to queue */
 	SMBUF = 777,				/* Just for names, small strings, etc */
+	MAXHUBS = 77,				/* Total number of hubs that can be created */
 };
 
 typedef struct Hub	Hub;		/* A Hub file functions as a multiplexed pipe-like data buffer */
@@ -64,6 +65,7 @@ struct Hublist{
 Hublist* firsthublist;			/* Pointer to start of linked list of hubs */
 Hublist* lasthublist;			/* Pointer to the list entry for next hub to be created */
 char *srvname;					/* Name of this hubfs service */
+int numhubs;					/* Total number of hubs in existence */
 int paranoia;					/* In paranoid mode loose reader/writer sync is maintained */
 int freeze;						/* In frozen mode the hubs operate simply as a ramfs */
 int trunc;						/* In trunc mode only new data is sent, not the buffered data */
@@ -388,7 +390,13 @@ fscreate(Req *r)
 	Hub *h;
 	File *f;
 
+	if(numhubs > MAXHUBS){
+		fprint(2, "Too many hubs created\n");
+		respond(r, Ebad);
+		return;
+	}
 	if(f = createfile(r->fid->file, r->ifcall.name, r->fid->uid, r->ifcall.perm, nil)){
+		numhubs++;
 		h = emalloc9p(sizeof(Hub));
 		zerohub(h);
 		addhub(h);
@@ -438,6 +446,7 @@ fsdestroyfile(File *f)
 {
 	Hub *h;
 
+	numhubs--;
 	h = f->aux;
 	if(h){
 		removehub(h);
@@ -616,6 +625,7 @@ main(int argc, char **argv)
 	freeze = DOWN;
 	trunc = DOWN;
 	endoffile = DOWN;
+	numhubs = 0;
 
 	ARGBEGIN{
 	case 'D':
