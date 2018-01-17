@@ -6,11 +6,12 @@ int maxprocs;
 int verbose;
 int trusted;
 char *nsfile;
+char *description;
 
 void
 usage(void)
 {
-	fprint(2, "usage: listen1 [-tv] [-p maxprocs] [-n namespace] address cmd args...\n");
+	fprint(2, "usage: gridlisten1 [-tv] [-d description] [-p maxprocs] [-n namespace] address cmd args...\n");
 	exits("usage");
 }
 
@@ -40,7 +41,10 @@ doregister(char *announce, char *service)
 		if((loc=getenv("myip")) == 0)
 			loc=getenv("sysname");
 		regfd=open("/mnt/registry/new", OWRITE);
-		fprint(regfd, "tcp!%s!%s sys %s service %s", loc, announce+6, getenv("sysname"), service);
+		if(description != nil)
+			fprint(regfd, "tcp!%s!%s sys %s service %s description %s", loc, announce+6, getenv("sysname"), service, description);
+		else
+			fprint(regfd, "tcp!%s!%s sys %s service %s", loc, announce+6, getenv("sysname"), service);
 		for(;;)
 			sleep(1000);
 		break;
@@ -94,6 +98,9 @@ main(int argc, char **argv)
 		break;
 	case 'n':
 		nsfile = EARGF(usage());
+		break;
+	case 'd':
+		description = EARGF(usage());
 		break;
 	}ARGEND
 
