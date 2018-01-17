@@ -28,9 +28,9 @@ void	newcall(int, char*, char*, Service*);
 int 	findserv(char*, char*, Service*, char*);
 int	getserv(char*, char*, Service*);
 void	error(char*);
-void	scandir(char*, char*, char*);
+void	scandir(char*, char*, char*, char*);
 void	becomenone(void);
-void	listendir(char*, char*, int);
+void	listendir(char*, char*, char*, int);
 void	doregister(char*);
 
 char	listenlog[] = "listen";
@@ -41,6 +41,7 @@ int	quiet;
 int	immutable;
 char	*cpu;
 char	*proto;
+char	*addr;
 Announce *announcements;
 #define SEC 1000
 
@@ -49,8 +50,8 @@ char *namespace;
 void
 usage(void)
 {
-	error("usage: aux/listen [-q] [-n namespace] [-d servdir] [-t trustdir] [-p maxprocs]"
-		" [proto]");
+	error("usage: aux/listen [-iq] [-d srvdir] [-t trustsrvdir] [-n namespace] [-p maxprocs]"
+		" [-a addr] [proto]");
 }
 
 /*
@@ -86,6 +87,7 @@ main(int argc, char *argv[])
 	char *trustdir;
 	char *servdir;
 
+	addr = "*";
 	servdir = 0;
 	trustdir = 0;
 	proto = "tcp";
@@ -98,6 +100,9 @@ main(int argc, char *argv[])
 		error("can't get cputype");
 
 	ARGBEGIN{
+	case 'a':
+		addr = EARGF(usage());
+		break;
 	case 'd':
 		servdir = EARGF(usage());
 		break;
@@ -150,8 +155,8 @@ main(int argc, char *argv[])
 		proto = protodir;
 	else
 		proto++;
-	listendir(protodir, servdir, 0);
-	listendir(protodir, trustdir, 1);
+	listendir(protodir, addr, servdir, 0);
+	listendir(protodir, addr, trustdir, 1);
 
 	/* command returns */
 	exits(0);
@@ -166,7 +171,7 @@ dingdong(void*, char *msg)
 }
 
 void
-listendir(char *protodir, char *srvdir, int trusted)
+listendir(char *protodir, char *addr, char *srvdir, int trusted)
 {
 	int ctl, pid, start;
 	char dir[40], err[128], ds[128];
@@ -192,14 +197,14 @@ listendir(char *protodir, char *srvdir, int trusted)
 		return;
 	}
 
-	procsetname("%s %s %s", protodir, srvdir, namespace);
+	procsetname("%s %s %s %s", protodir, addr, srvdir, namespace);
 	if (!trusted)
 		becomenone();
 
 	notify(dingdong);
 
 	pid = getpid();
-	scandir(proto, protodir, srvdir);
+	scandir(proto, protodir, addr, srvdir);
 	for(;;){
 		/*
 		 * loop through announcements and process trusted services in
@@ -276,7 +281,7 @@ listendir(char *protodir, char *srvdir, int trusted)
 		}
 		if(!immutable){
 			alarm(0);
-			scandir(proto, protodir, srvdir);
+			scandir(proto, protodir, addr, srvdir);
 		}
 		start = 60 - (time(0)-start);
 		if(start > 0)
@@ -312,7 +317,7 @@ addannounce(char *str)
 }
 
 void
-scandir(char *proto, char *protodir, char *dname)
+scandir(char *proto, char *protodir, char *addr, char *dname)
 {
 	Announce *a, **l;
 	int fd, i, n, nlen;
@@ -337,7 +342,7 @@ scandir(char *proto, char *protodir, char *dname)
 				continue;
 			if(strncmp(nm, proto, nlen) != 0)
 				continue;
-			snprint(ds, sizeof ds, "%s!*!%s", protodir, nm + nlen);
+			snprint(ds, sizeof ds, "%s!%s!%s", protodir, addr, nm + nlen);
 			addannounce(ds);
 		}
 		free(db);
