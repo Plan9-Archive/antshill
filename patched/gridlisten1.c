@@ -7,6 +7,7 @@ int verbose;
 int trusted;
 char *nsfile;
 char *description;
+char *mountpoint;
 
 void
 usage(void)
@@ -41,10 +42,7 @@ doregister(char *announce, char *service)
 		if((loc=getenv("myip")) == 0)
 			loc=getenv("sysname");
 		regfd=open("/mnt/registry/new", OWRITE);
-		if(description != nil)
-			fprint(regfd, "tcp!%s!%s sys %s service %s description %s", loc, announce+6, getenv("sysname"), service, description);
-		else
-			fprint(regfd, "tcp!%s!%s sys %s service %s", loc, announce+6, getenv("sysname"), service);
+		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, announce+6, getenv("sysname"), service, mountpoint, description);
 		for(;;)
 			sleep(1000);
 		break;
@@ -83,6 +81,8 @@ main(int argc, char **argv)
 	int ctl, nctl, fd;
 	int wfd, nowait, procs;
 	Dir *d;
+	description="unknown";
+	mountpoint="unknown";
 
 	ARGBEGIN{
 	default:
@@ -101,6 +101,9 @@ main(int argc, char **argv)
 		break;
 	case 'd':
 		description = EARGF(usage());
+		break;
+	case 'm':
+		mountpoint = EARGF(usage());
 		break;
 	}ARGEND
 
