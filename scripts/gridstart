@@ -20,11 +20,11 @@ if(~ $tls yes){
 	auth/factotum
 	echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
 	srvtls tcp!registry.9gridchan.org!16675 gridregistry /mnt/registry
-	cat /mnt/registry/index |grep tlssrv |sed 's/^/srvtls -c /g' |sed 's/is //g' |sed 's/mountpoint //g' |sed 's/service.*$//g' >>/tmp/gridscript
+	cat /mnt/registry/index |grep tlssrv |sed 's/^/srvtls -c /g' |sed 's/is //g' |sed 's/mountpoint //g' |sed 's/service.*$//g' >/tmp/gridscript
 }
 if(! ~ $tls yes){
 	srv tcp!registry.9gridchan.org!6675 gridregistry /mnt/registry
-	cat /mnt/registry/index |grep exportfs |sed 's/^/srv -c /g' |sed 's/is //g' |sed 's/mountpoint //g' |sed 's/service.*$//g' >>/tmp/gridscript
+	cat /mnt/registry/index |grep exportfs |sed 's/^/srv -c /g' |sed 's/is //g' |sed 's/mountpoint //g' |sed 's/service.*$//g' >/tmp/gridscript
 }
 
 . /tmp/gridscript
@@ -44,7 +44,7 @@ window -r 0 0 700 400 chat
 window -r 700 0 1300 400 acme -l/tmp/gridacme
 window -r 0 400 700 750 mothra -a http://wiki.9gridchan.org/message_board
 window -r 700 400 1300 750 page /n/gridroot/lib/musicant.png
-' >>/tmp/gridrio
+' >/tmp/gridrio
 
 chmod +x /tmp/gridrio
 if(! test -e /mnt/web/ctl)
