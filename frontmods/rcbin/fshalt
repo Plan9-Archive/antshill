@@ -81,7 +81,7 @@ fn x {
 		sleep 2
 	}
 	for(i in $f){
-		echo halt >>$i
+		echo fsys all halt >>$i
 		sleep 3
 	}
 	echo
