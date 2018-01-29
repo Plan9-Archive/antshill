@@ -1,4 +1,4 @@
-.TH GRIDLISTEN 8
+.TH GRIDLISTEN1 8
 .SH NAME
 gridlisten1 \- start listener and announce to registry
 .SH SYNOPSIS
@@ -38,7 +38,7 @@ eliminates the need for this but does mean the listener is run as the invoking u
 Mount a registry service and announce a read-only export of Glenda's home directory:
 .IP
 .EX
-srv -c tcp!registry.9gridchan.org!7675
+srv -c tcp!registry.9gridchan.org!7675 gridregistry /mnt/registry
 gridlisten1 -t -d home -m /n/glen /bin/exportfs -R -r /usr/glenda
 .EE
 .SH SOURCE

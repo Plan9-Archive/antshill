@@ -270,6 +270,7 @@ if(~ $1 fronthost){
 	cp sys/man/1/rerootwin /sys/man/1/rerootwin
 	cp sys/man/1/addwrroot /sys/man/1/addwrroot
 	cp sys/man/1/rc /sys/man/1/rc
+	cp sys/man/1/chat /sys/man/1/chat
 	cp sys/man/2/fork /sys/man/2/fork
 	cp sys/man/3/srv /sys/man/3/srv
 	cp sys/man/3/proc /sys/man/3/proc
@@ -321,6 +322,7 @@ if(~ $1 9frontinstall){
 	cp sys/man/1/rerootwin /sys/man/1/rerootwin
 	cp sys/man/1/addwrroot /sys/man/1/addwrroot
 	cp sys/man/1/rc /sys/man/1/rc
+	cp sys/man/1/chat /sys/man/1/chat
 	cp sys/man/2/fork /sys/man/2/fork
 	cp sys/man/3/srv /sys/man/3/srv
 	cp sys/man/3/proc /sys/man/3/proc
