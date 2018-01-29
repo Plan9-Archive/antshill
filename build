@@ -275,6 +275,7 @@ if(~ $1 fronthost){
 	cp sys/man/3/proc /sys/man/3/proc
 	cp sys/man/8/plan9rc /sys/man/8/plan9rc
 	cp sys/man/8/ventiprog /sys/man/8/ventiprog
+	cp sys/man/8/gridlisten1 /sys/man/8/gridlisten1
 	cp doc/antspaper.ms /sys/doc/ants.ms
 	cp doc/ants.ps /sys/doc/ants.ps
 	echo 'ANTS userspace installed, if using ANTS kernel add this to the end of /rc/bin/termrc:'
@@ -325,6 +326,7 @@ if(~ $1 9frontinstall){
 	cp sys/man/3/proc /sys/man/3/proc
 	cp sys/man/8/plan9rc /sys/man/8/plan9rc
 	cp sys/man/8/ventiprog /sys/man/8/ventiprog
+	cp sys/man/8/gridlisten1 /sys/man/8/gridlisten1
 	cp doc/antspaper.ms /sys/doc/ants.ms
 	cp doc/ants.ps /sys/doc/ants.ps
 	if(! ~ $buildingvultrfossil yes){

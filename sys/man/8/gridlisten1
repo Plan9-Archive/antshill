@@ -1,0 +1,49 @@
+.TH GRIDLISTEN 8
+.SH NAME
+gridlisten1 \- start listener and announce to registry
+.SH SYNOPSIS
+.B gridlisten
+[
+.RB -d
+.IR description
+]
+[
+.RB -m
+.IR mountpoint
+]
+.I addr
+.I cmd
+[
+.I args...
+]
+.PP
+.B /mnt/registry
+.SH DESCRIPTION
+.I gridlisten1
+has the same basic functionality as
+.IR listen1 (8)
+but also announces to an inferno registry service mounted at
+.B /mnt/registry
+.PP
+The registry service must be mounted previously for the announcement to succeed. The basic parameters and command syntax from
+.I listen1(8)
+also apply. It should be noted that unless the
+.I -t
+flag is used, the registry will need to be mounted by the
+.B /lib/namespace
+file on the system, because the change to user none rebuilds the namespace and the mount of the registry will be lost. The use of 
+.I -t
+eliminates the need for this but does mean the listener is run as the invoking user.
+.SH EXAMPLES
+Mount a registry service and announce a read-only export of Glenda's home directory:
+.IP
+.EX
+srv -c tcp!registry.9gridchan.org!7675
+gridlisten1 -t -d home -m /n/glen /bin/exportfs -R -r /usr/glenda
+.EE
+.SH SOURCE
+.B ants9front/patched/gridlisten1.c
+.SH SEE ALSO
+.IR listen1 (8)
+.SH BUGS
+If the registry announcement fails, no error message or warning is printed
