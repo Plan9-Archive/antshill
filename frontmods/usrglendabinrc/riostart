@@ -1,4 +1,5 @@
 #!/bin/rc
 
 window 0,0,161,117 stats -lems
+sleep 1
 window -miny 130 /usr/glenda/bin/rc/firstwin

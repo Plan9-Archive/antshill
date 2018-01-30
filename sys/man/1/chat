@@ -14,7 +14,6 @@ chat \- simple chat client for hubfs
 [
 .I chatsrv
 ]
-.B /srv/chat
 .PP
 .SH DESCRIPTION
 .I chat
