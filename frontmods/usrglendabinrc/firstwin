@@ -1,0 +1,4 @@
+#!/bin/rc
+
+cat /usr/glenda/lib/gridinfo
+exec rc -i

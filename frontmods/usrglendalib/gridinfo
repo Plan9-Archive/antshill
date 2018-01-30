@@ -1,0 +1,12 @@
+- Advanced Namespace Tools v4.0 -
+Connect to public 9p service grid:
+	gridstart
+Begin installation:
+	inst/start
+View 9front FQA:
+	mothra http://fqa.9front.org
+View ANTS live/install CD intro:
+	mothra http://doc.9gridchan.org/guides/livecd
+Manpages exist for most ANTS-specific tools, additional documentation
+and source code can be found in /sys/src/ants and on the 9gridchan.org
+website

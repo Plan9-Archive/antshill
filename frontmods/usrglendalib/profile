@@ -26,8 +26,9 @@ case cpu
 			wsys=/mnt/term^$wsys
 	} 
 	bind -a /mnt/term/dev /dev
-	prompt=('cpu% ' '	')
-	fn cpu%{ $* }
+	prompt=($sysname'% ')
+	echo fn $sysname'%{ $* }' >/tmp/sysfn
+	. /tmp/sysfn
 case con
 	prompt=('cpu% ' '	')
 }
