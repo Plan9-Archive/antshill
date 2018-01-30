@@ -1,4 +1,4 @@
 #!/bin/rc
 
 window 0,0,161,117 stats -lems
-window -miny 130 /usr/glenda/rc/bin/firstwin
+window -miny 130 /usr/glenda/bin/rc/firstwin
