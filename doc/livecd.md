@@ -2,13 +2,35 @@
 
 ### ANTS 386v2 and new 64-bit iso based on 9front r6304 released 5 Jan 2018
 
-## [files.9gridchan.org/9ants386v2.iso.gz](//files.9gridchan.org/9ants386v2.iso.gz)
+## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
 ### New features and applications
+
+#### Grid tools
+
+* A script to connect to the 9gridchan.org public 9p services.
+
+Just type
+
+	gridstart
+
+to mount public resources and start a subrio within that namespace. Add the -t flag to use tls for the connections. The -m flag will dial and mount the services without starting a subrio or launching applications.
+
+* A chat script that provides irc-like service in collaboration with hubfs.
+
+The chat script requires access to a /srv/chat file provided by a hubfs containing a 'chat' file. The public 9gridchan.org services include a chat service, started as part of gridstart. To use it on its own:
+
+	srv tcp!chat.9gridchan.org!9997 chat
+	chat
+
+* A gridlisten1 program which functions analogously to aux/listen1 but which also announces services to an inferno-hosted registry. A world-writable registry (different from the base 9gridchan registry) is part of the services. To perform a read-only share of a directory and announce it:
+
+	srv -c tcp!registry.9gridchan.org!7675 pubreg /mnt/registry
+	gridlisten1 -t tcp!*!9898 /bin/exportfs -R -r /tmp/publicshare
 
 #### Kernel
 
@@ -96,7 +118,11 @@ Also installed is the shareware wad file for doom, so
 
 	games/doom
 
-will launch the standard Doom 1 game without needing to download, place, and rename any .wad files.
+will launch the standard Doom 1 game without needing to download, place, and rename any .wad files. The 64-bit livecd also includes a chess program by Umbraticus with some engine ports by QWX. Read
+
+	man chess
+
+for usage instructions. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume. 
 
 ### Who is this for?
 
