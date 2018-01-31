@@ -1,6 +1,6 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTS 386v2 and new 64-bit iso based on 9front r6304 released 5 Jan 2018
+### ANTS 386 and 64-bit iso based on 9front r6348 released 31 Jan 2018
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
@@ -30,7 +30,7 @@ The chat script requires access to a /srv/chat file provided by a hubfs containi
 * A gridlisten1 program which functions analogously to aux/listen1 but which also announces services to an inferno-hosted registry. A world-writable registry (different from the base 9gridchan registry) is part of the services. To perform a read-only share of a directory and announce it:
 
 	srv -c tcp!registry.9gridchan.org!7675 pubreg /mnt/registry
-	gridlisten1 -t tcp!*!9898 /bin/exportfs -R -r /tmp/publicshare
+	gridlisten1 -t tcp!\*!9898 /bin/exportfs -R -r /tmp/publicshare
 
 #### Kernel
 
@@ -122,7 +122,7 @@ will launch the standard Doom 1 game without needing to download, place, and ren
 
 	man chess
 
-for usage instructions. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume. 
+for usage instructions. Byouki-onna contributed "ehget", a directory-downloader script for ehentai.org. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume.
 
 ### Who is this for?
 
