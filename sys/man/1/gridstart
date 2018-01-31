@@ -31,7 +31,6 @@ and
 are also opened, and will receive messages from the grid plumber, so plumbed weblinks or plumbed files uploaded to /n/gridram will be seen by all connected clients.
 .PP
 .SH SOURCE
-.B ants9front/scripts/gridstart
+.B /sys/src/ants/scripts/gridstart
 .SH BUGS
 It took almost ten years to figure out how to make a useful public 9p service grid.
-

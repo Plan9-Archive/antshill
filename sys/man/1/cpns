@@ -132,7 +132,7 @@ will allow you to shoot yourself in the foot. Use of the
 .B -t 
 flag is recommended until you are confident you understand the results of a given operation.
 .SH SOURCE
-.B sources/contrib/mycroftiv/rootlessnext/scripts
+.B /sys/src/ants/scripts
 .SH SEE ALSO
 .IR bind (1),
 .IR bind (2),

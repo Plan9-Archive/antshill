@@ -70,9 +70,8 @@ chmod 666 /srv/chat
 aux/listen1 tcp!*!9997 /bin/exportfs -S /srv/chat &
 .EE
 .SH SOURCE
-.B ants9front/hubfs/chat
+.B /sys/src/ants/hubfs/chat
 .SH SEE ALSO
 .IR hubfs (4)
 .SH BUGS
 All chat logic is handled client side, so there is little protection from abuse.
-

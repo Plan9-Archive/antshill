@@ -190,7 +190,7 @@ After this seequence, the backup server can choose to use one of the ventis whic
 variable in 
 .IR plan9.ini (8)
 .SH SOURCE
-.B https://bitbucket.com/mycroftiv/ants9front/scripts
+.B /sys/src/ants/scripts/ventiprog
 .SH SEE ALSO
 .IR fossil (4),
 .IR fossilcons (8),

@@ -335,7 +335,7 @@ from
 .IR cpurc (8)
 analog script for access to the rootless environment
 .SH SOURCE
-.B sources/contrib/mycroftiv/rootlessnext/bootdir.extras
+.B /sys/src/ants/bootdir.extras/plan9rc
 .SH "SEE ALSO"
 .IR srv (4),
 .IR namespace (6),

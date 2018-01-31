@@ -42,7 +42,7 @@ srv -c tcp!registry.9gridchan.org!7675 gridregistry /mnt/registry
 gridlisten1 -t -d home -m /n/glen /bin/exportfs -R -r /usr/glenda
 .EE
 .SH SOURCE
-.B ants9front/patched/gridlisten1.c
+.B /sys/src/ants/patched/gridlisten1.c
 .SH SEE ALSO
 .IR listen1 (8)
 .SH BUGS

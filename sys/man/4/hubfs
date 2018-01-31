@@ -208,7 +208,7 @@ echo quit >/n/hubfs/ctl #kill the fs
 
 .PP
 .SH SOURCE
-.B /n/sources/contrib/mycroftiv/hubfs.tgz
+.B /sys/src/ants/hubfs
 .SH "SEE ALSO"
 UNIX pipes,
 .IR pipe (3)

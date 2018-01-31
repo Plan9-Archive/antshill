@@ -131,7 +131,7 @@ grio -c 0xff0000ff -u 0x00ccff -y 0x00ff00ff -t 0xffff00ff \e
 .EE
 .PP
 .SH SOURCE
-.B /sys/src/ants/frontmods/grio
+.B /sys/src/ants/grio
 .SH BUGS
 It would be nice if the
 .B -a

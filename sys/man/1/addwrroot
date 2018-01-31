@@ -44,7 +44,7 @@ This is intended as a way to briefly work with binaries or other files from the 
 Please do not make sources your main fileserver with this method.
 .SH SOURCE
 .PP
-.BR sources/contrib/mycroftiv/rootlessnext/scripts
+.BR /sys/src/ants/scripts
 .SH "SEE ALSO
 .IR rerootwin (1),
 .IR bind (1),

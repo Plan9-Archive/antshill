@@ -108,7 +108,7 @@ hub hubfs oldshell
 getdevs prehub
 .EE
 .SH SOURCE
-.B sources/mycroftiv/rootlessnext/scripts
+.B /sys/src/ants/scripts/rerootwin
 .SH SEE ALSO
 .IR bind (1),
 .IR srvfs (4)
