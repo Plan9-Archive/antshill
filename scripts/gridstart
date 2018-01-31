@@ -1,6 +1,7 @@
 #!/bin/rc
 # connects to 9gridchan grid services and starts a new subrio
 # options -t tls -m mountonly
+# awk '/exportfs/{print "srv -c", $1, $3, $5}' /mnt/registry/index
 
 while (~ $1 -*){
 	switch($1){
