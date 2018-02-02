@@ -95,9 +95,9 @@ while(talk=`{read}){
 	if(~ $talk '')
 		command=yes
 	if(! ~ $command yes){
-		ts=`{date -u}
-		ts=`{echo '('^$ts(4)^')'}
-		line=`{echo $ts $name ': ' $talk}
+#		ts=`{date -u}
+#		ts=`{echo '('^$ts(4)^')'}
+		line=`{echo $name ': ' $talk}
 		echo $line >>/n/chat/$channel
 	}
 	command=no
