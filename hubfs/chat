@@ -1,5 +1,6 @@
 #!/bin/rc
 # minimal chat client for hubfs: chat [-n NICK] [-j CHANNEL] [chatsrv]
+# dd -bs `{du -n /n/chat/chat | sed 's/ .*//'} -skip 1 -if /n/chat/chat
 
 fn helpmessage{
 	echo -------------------------
