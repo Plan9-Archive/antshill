@@ -4,7 +4,11 @@
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
+md5sum: 5cbf14acdfc44e513bb5972752a2c41b
+
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
+
+md5sum: cded394390047fcbc9322bc6c3d63880
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -96,7 +100,7 @@ ANTS is compatible with the standard 9front fileservers, but restores the option
 
 * Install process adds a password to plan9.ini to setup remote access
 
-The only additional step in the installer, pwsetup, either adds a value to plan9.ini to provide a password for access to the independent admin namespace. This option does not set up a full authsrv/keyfs system, it just adds the password to factotum for hostowner access on port 17060 or the standard namespace on port 17019. There is also an option to configure the system as a full cpu/auth server which means no gui/rio by default. The cpu option also means that the console shell is running in the boot/admin namespace. You can start rio with the command
+The only additional step in the installer, pwsetup, either adds a value to plan9.ini to provide a password for access to the independent admin namespace. This option does not set up a full authsrv/keyfs system, it just adds the password to factotum for hostowner access on port 17060 or the standard namespace on port 17019. There is also an option to configure the system as a full cpu/auth server which means no gui/rio by default. IMPORTANT: make sure to enter "glenda" at the "authid:" prompt if you are configuring as an authserver, or it botches the whole install. The cpu option also means that the console shell is running in the boot/admin namespace. You can start rio with the command
 
 	gui
 
@@ -133,6 +137,8 @@ ANTS should be regarded as experimental software intended for experienced Plan 9
 The vast majority of code on the live/install cd is the same as standard 9front, which builds on the earlier work of Bell Labs. The intention of this release is to offer an easy to test and install ANTS environment for 9front developers and users who are curious about these namespace tools. It is not intended as a new fork or competitor to standard 9front. Thanks especially to Cinap Lenrek for his leadership of the 9front project and generous time and assistance with everything I have needed to learn during the course of ANTS development.
 
 #### Known issues
+
+* If the user enters an incorrect value (non-glenda) for the authid: during the auth/wrkey section of the auth server install option, it will cause the whole install process to fail during the bootsetup step.
 
 * Updating and rebuilding the system using the 9front sysupdate command may result in the loss of some ANTS features, and require rebuilding/reinstalling some of the ANTS toolkit, because ANTS attempts to mostly contain its modifications and not overwrite the standard distribution, so for instance the customized rc with rfork V available will be overwritten if the system is rebuilt with a standard mk install in /sys/src. 
 

@@ -14,6 +14,7 @@
 - [grio](#grio)
 - [grid utilities](#gridutilities)
 - [venti and fossil management](#ventifossil)
+- [preinstalled images](#preinstalled)
 - [Bell Labs and 9legacy support](#labslegacy)
 
 ## Overview
@@ -188,6 +189,15 @@ The ramfossil script creates a ramdisk which servers fossil from the given roots
 - [ramfossil script](//ants.9gridchan.org/scripts/ramfossil)
 
 There are additional fossil utility scripts for managing rootscores and some other operations.
+
+## Preinstalled images
+<a name="preinstalled"></a>
+
+ANTS user henesy has contributed a pair of preinstalled images for use with virtual machines. There is a vbox (virtualbox) and qcow2 (qemu) format image of the 64-bit install of the "Gridscape Navigator" release of 31 January 2018.
+
+- [preinstalled vm images](http://9.postnix.us/9ants/)
+
+The images include a preset password for remote access, so the first step on booting them should be to change the password, stored in the plan9.ini file 9fat. "9fs 9fat" and edit plan9.ini to chage the privpassword= to a secure personal password, save, and then fshalt -r to reboot.
 
 ## Bell Labs and 9legacy support
 <a name="labslegacy"></a>
