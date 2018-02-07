@@ -107,8 +107,10 @@ fdonecat(int infd, int outfd, Shell *s)
 
 	while((n=read(infd, buf, (long)sizeof(buf)))>0){
 		sleep(s->fdonedelay);
-		if(write(outfd, buf, n)!=n)
+		if(write(outfd, buf, n)!=n){
 			fprint(2, "hubshell: write error copying on fd %d\n", outfd);
+			exits(nil);
+		}
 		if(s->shellctl == 'q')
 			exits(nil);
 	}
@@ -127,8 +129,10 @@ fdtwocat(int infd, int outfd, Shell *s)
 
 	while((n=read(infd, buf, (long)sizeof(buf)))>0){
 		sleep(s->fdtwodelay);
-		if(write(outfd, buf, n)!=n)
+		if(write(outfd, buf, n)!=n){
 			fprint(2, "hubshell: write error copying on fd %d\n", outfd);
+			exits(nil);
+		}
 		if(s->shellctl == 'q')
 			exits(nil);
 	}

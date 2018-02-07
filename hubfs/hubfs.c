@@ -35,11 +35,11 @@ struct Hub{
 	char *inbuckp;				/* location to store next message */
 	int buckfull;				/* amount of data stored in bucket */
 	char *buckwrap;				/* exact limit of written data before pointer reset */
-	Req *qreqs[MAXQ];			/* pointers to queued read Reqs */
+	Req *qreads[MAXQ];			/* pointers to queued read Reqs */
 	int rstatus[MAXQ];			/* status of read requests */
 	int qrnum;					/* index of read Reqs waiting to be filled */
 	int qrans;					/* number of read Reqs answered */
-	Req *qwrits[MAXQ];			/* Similar for write Reqs */
+	Req *qwrites[MAXQ];			/* Similar for write Reqs */
 	int wstatus[MAXQ];
 	int qwnum;
 	int qwans;
@@ -57,13 +57,13 @@ struct Msgq{
 };
 
 struct Hublist{
-	Hub* targethub;				/* Hub referenced by this entry */
+	Hub *targethub;				/* Hub referenced by this entry */
 	char *hubname;				/* Name of referenced Hub */
-	Hublist* nexthub;			/* Pointer to next Hublist entry in list */
+	Hublist *nexthub;			/* Pointer to next Hublist entry in list */
 };
 
-Hublist* firsthublist;			/* Pointer to start of linked list of hubs */
-Hublist* lasthublist;			/* Pointer to the list entry for next hub to be created */
+Hublist *firsthublist;			/* Pointer to start of linked list of hubs */
+Hublist *lasthublist;			/* Pointer to the list entry for next hub to be created */
 char *srvname;					/* Name of this hubfs service */
 int numhubs;					/* Total number of hubs in existence */
 int paranoia;					/* In paranoid mode loose reader/writer sync is maintained */
@@ -82,11 +82,13 @@ void addhub(Hub *h);
 void removehub(Hub *h);
 void eofall(void);
 void eofhub(char *target);
+int flushcheck(Hub *h, Req *r);
 
 void fsread(Req *r);
 void fswrite(Req *r);
 void fscreate(Req *r);
 void fsopen(Req *r);
+void fsflush(Req *r);
 void fsdestroyfile(File *f);
 void usage(void);
 
@@ -95,6 +97,7 @@ Srv fs = {
 	.read = fsread,
 	.write = fswrite,
 	.create = fscreate,
+	.flush = fsflush,
 };
 
 /*
@@ -132,7 +135,7 @@ msgsend(Hub *h)
 		}
 
 		/* request found, if it has already read all data keep it waiting unless eof was sent */
-		r = h->qreqs[i];
+		r = h->qreads[i];
 		mq = r->fid->aux;
 		if(mq->nxt == h->inbuckp){
 			if(paranoia == UP)
@@ -212,7 +215,7 @@ wrsend(Hub *h)
 				h->qwans++;
 			continue;
 		}
-		r = h->qwrits[i];
+		r = h->qwrites[i];
 		count = r->ifcall.count;
 
 		/* BUCKET WRAPAROUND LOGIC CHECK HERE FOR BUGS */
@@ -283,7 +286,7 @@ fsread(Req *r)
 			if(h->qrnum >= MAXQ - 2){
 				j = 1;
 				for(i = h->qrans; i <= h->qrnum; i++) {
-					h->qreqs[j] = h->qreqs[i];
+					h->qreads[j] = h->qreads[i];
 					h->rstatus[j] = h->rstatus[i];
 					j++;
 				}
@@ -292,7 +295,7 @@ fsread(Req *r)
 			}
 			h->qrnum++;
 			h->rstatus[h->qrnum] = WAIT;
-			h->qreqs[h->qrnum] = r;
+			h->qreads[h->qrnum] = r;
 			return;
 		}
 		count = r->ifcall.count;
@@ -316,7 +319,7 @@ fsread(Req *r)
 	if(h->qrnum >= MAXQ - 2){
 		j = 1;
 		for(i = h->qrans; i <= h->qrnum; i++) {
-			h->qreqs[j] = h->qreqs[i];
+			h->qreads[j] = h->qreads[i];
 			h->rstatus[j] = h->rstatus[i];
 			j++;
 		}
@@ -325,7 +328,7 @@ fsread(Req *r)
 	}
 	h->qrnum++;
 	h->rstatus[h->qrnum] = WAIT;
-	h->qreqs[h->qrnum] = r;
+	h->qreads[h->qrnum] = r;
 	msgsend(h);
 }
 
@@ -367,7 +370,7 @@ fswrite(Req *r)
 	if(h->qwnum >= MAXQ - 2){
 		j = 1;
 		for(i = h->qwans; i <= h->qwnum; i++) {
-			h->qwrits[j] = h->qwrits[i];
+			h->qwrites[j] = h->qwrites[i];
 			h->wstatus[j] = h->wstatus[i];
 			j++;
 		}
@@ -376,7 +379,7 @@ fswrite(Req *r)
 	}
 	h->qwnum++;
 	h->wstatus[h->qwnum] = WAIT;
-	h->qwrits[h->qwnum] = r;
+	h->qwrites[h->qwnum] = r;
 	wrsend(h);
 	msgsend(h);
 	/* CRUCIAL - we do msgsend here after wrsend because we KNOW a write has happened */
@@ -438,6 +441,67 @@ fsopen(Req *r)
 	}
 	r->fid->aux = q;
 	respond(r, nil);
+}
+
+/* flush a pending request if the client asks us to */
+void
+fsflush(Req *r)
+{
+	Hublist *currenthub;
+	int flushed;
+
+	currenthub = firsthublist;
+	flushed = flushcheck(currenthub->targethub, r);
+	if(flushed)
+		return;
+	while(currenthub->nexthub->targethub != nil){
+		currenthub=currenthub->nexthub;
+		flushed = flushcheck(currenthub->targethub, r);
+		if(flushed)
+			return;
+	}
+//	fprint(2, "Hubfs: Tflush no tag matches %d\n", r->ifcall.oldtag);
+	respond(r, nil);
+}
+
+/* check a hub to see if it contains a pending Req with matching tag */
+int
+flushcheck(Hub *h, Req *r)
+{
+	Req *tr;
+	int i;
+
+	for(i = h->qrans; i <= h->qrnum; i++){
+		if(h->rstatus[i] != WAIT)
+			continue;
+		tr=h->qreads[i];
+		if(tr->tag == r->ifcall.oldtag){
+			tr->ofcall.count = 0;
+			h->rstatus[i] = DONE;
+			if((i == h->qrans) && (i < h->qrnum))
+				h->qrans++;
+			respond(tr, nil);
+//			fprint(2, "Hubfs: flushed read tag %d\n", r->ifcall.oldtag);
+			respond(r, nil);
+			return 1;
+		}
+	}
+	for(i = h->qwans; i <= h->qwnum; i++){
+		if(h->wstatus[i] != WAIT)
+			continue;
+		tr=h->qwrites[i];
+		if(tr->tag == r->ifcall.oldtag){
+			tr->ofcall.count = 0;
+			h->wstatus[i] = DONE;
+			if((i == h->qwans) && (i < h->qwnum))
+				h->qwans++;
+			respond(tr, nil);
+//			fprint(2, "Hubfs: flushed write tag %d\n", r->ifcall.oldtag);
+			respond(r, nil);
+			return 1;
+		}
+	}
+	return 0;
 }
 
 /* delete the hub. Note that we don't track the associated mqs of clients so we leak them. */
@@ -570,7 +634,7 @@ hubcmd(char *cmd)
 /* send eof to specific named hub */
 void
 eofhub(char *target){
-	Hublist* currenthub;
+	Hublist *currenthub;
 
 	currenthub = firsthublist;
 	if(currenthub->targethub == nil)
@@ -593,7 +657,7 @@ eofhub(char *target){
 /* send eof to all hub readers */
 void
 eofall(){
-	Hublist* currenthub;
+	Hublist *currenthub;
 
 	currenthub = firsthublist;
 	if(currenthub->targethub == nil)
