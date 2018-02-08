@@ -152,17 +152,19 @@ msgsend(Hub *h)
 		}
 		count = r->ifcall.count;
 
-		/* BUCKET WRAPAROUND LOGIC CHECK HERE FOR BUGS */
+		/* if the mq has read to the wrap point, send it back to start */
 		if(mq->nxt >= h->buckwrap){
 			mq->nxt = h->bucket;
 			mq->bufuse = 0;
 		}
+		/* if the mq next read would go past wrap point, read up to wrap */
 		if(mq->nxt + count > h->buckwrap)
 			count = h->buckwrap - mq->nxt;
+		/* if reader asks for more data than remains in bucket, adjust down */
 		if((mq->bufuse + count > h->buckfull) && (mq->bufuse < h->buckfull))
 			count = h->buckfull - mq->bufuse;
 
-		/* Done with wraparound checks, now we can send the data */
+		/* Done with reader location and count checks, now we can send the data */
 		memmove(r->ofcall.data, mq->nxt, count);
 		r->ofcall.count = count;
 		mq->nxt += count;
@@ -208,7 +210,7 @@ wrsend(Hub *h)
 		}
 	}
 
-	/* LOOP through queued 9p write requests for this hub */
+	/* loop through queued 9p write requests for this hub */
 	for(i = h->qwans; i <= h->qwnum; i++){
 		if(h->wstatus[i] != WAIT){
 			if((i == h->qwans) && (i < h->qwnum))
@@ -218,7 +220,7 @@ wrsend(Hub *h)
 		r = h->qwrites[i];
 		count = r->ifcall.count;
 
-		/* BUCKET WRAPAROUND LOGIC CHECK HERE FOR BUGS */
+		/* bucket wraparound check - old buckwrap bug fixed below inbuckp count update */
 		if((h->buckfull + count) >= BUCKSIZE - 8192){
 			h->buckwrap = h->inbuckp;
 			h->inbuckp = h->bucket;
@@ -228,6 +230,8 @@ wrsend(Hub *h)
 		/* Move the data into the bucket, update our counters, and respond */
 		memmove(h->inbuckp, r->ifcall.data, count);
 		h->inbuckp += count;
+		if(h->inbuckp > h->buckwrap)
+			h->buckwrap=h->inbuckp+1;
 		h->buckfull += count;
 		r->fid->file->length = h->buckfull;
 		r->ofcall.count = count;
@@ -382,8 +386,8 @@ fswrite(Req *r)
 	h->qwrites[h->qwnum] = r;
 	wrsend(h);
 	msgsend(h);
-	/* CRUCIAL - we do msgsend here after wrsend because we KNOW a write has happened */
-	/* THEREFORE we know that there will be new data for readers and should send it to them ASAP */
+	/* we do msgsend here after wrsend because we know a write has happened */
+	/* that means there will be new data for readers and should send it to them asap */
 }
 
 /* making a file is making a new hub, prepare it for i/o and add to list of hubs */
