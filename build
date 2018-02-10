@@ -30,6 +30,51 @@ if(~ $1 distromod){
 	exit
 }
 
+if(~ $1 portsinstall){
+	cd hubfs
+	mk install
+	cd $builddir/grio
+	mk install
+	cp grio.man /sys/man/1/grio
+	cd $builddir/patched
+	$CC -FTVw gridlisten.c
+	$LD -o gridlisten gridlisten.$O
+	cp gridlisten /$objtype/bin
+	$CC -FTVw gridlisten1.c
+	$LD -o gridlisten1 gridlisten1.$O
+	cp gridlisten1 /$objtype/bin
+	cd $builddir/scripts
+	cp gridstart /rc/bin
+	cp rerootwin /rc/bin
+	cd $builddir/bootdir.extras
+	cp namespace.saveterm /lib
+	cp namespace.save9front /lib
+	cd $builddir
+	cp sys/man/1/rerootwin /sys/man/1
+	cp sys/man/1/gridstart /sys/man/1
+	cp sys/man/1/gridlisten1 /sys/man/8
+}
+
+if(~ $1 portsuninstall){
+	rm /bin/hubfs
+	rm /bin/hubshell
+	rm /bin/hub
+	rm /bin/chat
+	rm /bin/grio
+	rm /bin/gridlisten
+	rm /bin/gridlisten1
+	rm /bin/rerootwin
+	rm /bin/gridstart
+	rm /sys/man/1/grio
+	rm /sys/man/4/hubfs
+	rm /sys/man/1/chat
+	rm /sys/man/1/gridstart
+	rm /sys/man/1/gridlisten1
+	rm /sys/man/1/rerootwin
+	rm /lib/namespace.saveterm
+	rm /lib/namespace.save9front
+}
+
 if(~ $1 9frontcd){
 	if(~ $objtype amd64){
 		if(! test -f /$objtype/9ants64 || ! test -f /$objtype/tools.tgz){
