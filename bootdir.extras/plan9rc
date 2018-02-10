@@ -494,6 +494,7 @@ if(~ $#bootargs 0){
 }
 factotumopts=`{echo $factotumopts}
 bootparse=`{echo $bootargs}
+ipparams=`{echo $ipparams}
 if(~ $bootparse(1) *fossil)
 	getrootfs=fossil
 if(~ $bootparse(1) *fs)

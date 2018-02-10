@@ -118,6 +118,7 @@ fn ants{
 	bind -a /boot /bin
 	hostcheck
 	dochecksys
+	ipparams=`{echo $ipparams}
 
 ##	set up ramfs as a rootlike fs
 	
