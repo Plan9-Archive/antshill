@@ -14,6 +14,7 @@
 - [grio](#grio)
 - [grid utilities](#gridutilities)
 - [venti and fossil management](#ventifossil)
+- [divergences from 9front](#divergences)
 - [preinstalled images](#preinstalled)
 - [Bell Labs and 9legacy support](#labslegacy)
 
@@ -189,6 +190,29 @@ The ramfossil script creates a ramdisk which servers fossil from the given roots
 - [ramfossil script](//ants.9gridchan.org/scripts/ramfossil)
 
 There are additional fossil utility scripts for managing rootscores and some other operations.
+
+## Divergences from 9front
+<a name="divergences"></a>
+
+In most aspects, ANTS adds additional features without changing the standard behavior and configuration of 9front. There are a few administrative/configuration differences which should be mentioned, however. The following lists some of the most notable. They are mostly the result of additional configuration variables in plan9.ini to set up the ants boot/admin namespace.
+
+#### Privpassword and cpu service
+
+If the variable "privpassword=" is set to a password in plan9.ini, this is used to create a factotum key for cpu service, which runs from both the ants boot/admin namespace and (if ANTS was installed from the iso) in the main namespace on the standard cpu port, even if service is set to terminal. If privpassword is not set and no other key is provided, the listeners still run but will not be usable. The 9fat containing plan9.ini and the /dev/kmesg which prints plan9.ini variables are hostowner-access only and must not be publicly exposed if privpassword= is used. Be aware that the 9front 'sysinfo' script -p flag uploads the kmesg to a public archive, so make sure to change the privpassword if you choose to sysinfo -p.
+
+If you convert an install from terminal to cpu service, you probably want to remove the privpassword= setting from plan9.ini and use only the machine key from nvram read by factotum at boot.
+
+#### Static IP configuration
+
+Because of the boot/admin cpu listener, as well as the possible use of venti/fossil, ipconfig in ANTS usually happens in boot prior to mounting the rootfs. As a result, static ip needs to be configured via plan9.ini variables. To use a static ip, add the following variables with correct values to plan9.ini. (The iso installer will do this for you if you select static ip configuration at install time).
+
+* ipaddress=
+* ipmask=
+* gateway=
+
+#### System name configuration
+
+Also due to the boot/admin namespace and early ipconfig, the system name should be set with a plan9.ini variable. Simply set sysname= in plan9.ini. You still need to match this name in your /lib/ndb/local configuration.
 
 ## Preinstalled images
 <a name="preinstalled"></a>
