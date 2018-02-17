@@ -5,6 +5,7 @@
 - [overview](#overview)
 - [livecd](#livecd)
 - [installing from source](#sourceinstall)
+- [updating](#updating)
 - [kernel namespace manipulation](#kernelnamespace)
 - [boot process](#bootprocess)
 - [admin namespace](#adminnamespace)
@@ -49,6 +50,31 @@ ANTS is a set of tools to structure and manage Plan 9 namespaces to make systems
 #### Instructions
 
 - [instructions](//ants.9gridchan.org/INSTALLING) : instructions for building and installing from source
+
+## Updating
+<a name="updating"></a>
+
+ANTS tries to stay current with 9front updates. The general flow for updating is: run the 9front sysupdate script, build/install the changed applications, then pull updates from the "antshill" repository and build/install. Exactly what is required depends on what has been changed. The summary provided below covers cases where the changes are extensive to both userspace and the kernel. The standard flow for extensive 9front userspace updates is:
+
+	sysupdate
+	cd /sys/src
+	mk clean
+	mk install
+	mk clean
+
+To then update and install latest ANTS:
+
+	cd /sys/src/ants #or wherever your ANTS repo is located if not installed from livecd
+	hg pull https://bitbucket.org/mycroftiv/antshill
+	hg update
+	rm frontmods/include/libc.rebuild.complete
+	build 9front
+	build fronthost
+	9fs 9fat
+	cp 9ants /n/9fat	#or 9ants64
+	cp tools.tgz /n/9fat
+
+The above assumes that you did a full mk install in /sys/src and that a new kernel version is desired. In the case of smaller updates where you just built/installed individually updated applications and don't need/want a new kernel version, it is generally only necessary to pull and update the ants repo and then "build fronthost".
 
 ## Kernel namespace manipulation
 <a name="kernelnamespace"></a>
