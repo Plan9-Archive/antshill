@@ -331,7 +331,6 @@ main()
 	}else
 		links();
 	chandevreset();
-	netconsole();
 	preallocpages();
 	pageinit();
 	userinit();
