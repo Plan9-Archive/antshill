@@ -389,12 +389,12 @@ fn doinitscript{
 }
 
 fn dorootstart{
-	cat /root/adm/timezone/local >/env/timezone
 	switch($rootstart){
 	case grid
 		service=cpu
 		echo grid service started mounting $bootsrv and starting hubrc
 		mount $bootsrv /root
+		cat /root/adm/timezone/local >/env/timezone
 		if(test -e /root/rc/bin/hubrc)
 			auth/newns -n /root/lib/namespace /root/rc/bin/hubrc
 		if not{
@@ -413,6 +413,7 @@ fn dorootstart{
 		service=cpu
 		echo mounting $bootsrv to /root and starting cpurc
 		mount $bootsrv /root
+		cat /root/adm/timezone/local >/env/timezone
 		if(test -e /root/rc/bin/cpurc)
 			auth/newns -n /root/lib/namespace /root/rc/bin/cpurc
 		if not
@@ -421,6 +422,7 @@ fn dorootstart{
 		service=terminal
 		echo mounting $bootsrv to /root and starting termrc
 		mount $bootsrv /root
+		cat /root/adm/timezone/local >/env/timezone
 		if(~ $#user 0){
 			user=`{cat /dev/hostowner}
 		}
