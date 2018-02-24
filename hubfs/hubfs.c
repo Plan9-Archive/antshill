@@ -93,7 +93,7 @@ vlong bytespersecond;			/* Bytes per second allowed by rate limiting */
 vlong separationinterval;		/* Minimum time between writes in nanoseconds */
 vlong resettime;				/* Number of seconds between writes ratelimit reset */
 u32int maxmsglen;				/* Maximum message length accepted */
-ulong bucksize;					/* Size of data bucket per hub */
+uvlong bucksize;					/* Size of data bucket per hub */
 
 static char Ebad[] = "something bad happened";
 static char Enomem[] = "no memory";
@@ -368,7 +368,7 @@ fsread(Req *r)
 		}
 		sprint(tmpstr, "\tHubfs %s status (1 is active, 0 is inactive):\n \
 Paranoia == %d  Freeze == %d  Trunc == %d  Applylimits == %d\n \
-Buffersize == %uld \n", srvname, paranoia, freeze, trunc, applylimits, bucksize);
+Buffersize == %ulld \n", srvname, paranoia, freeze, trunc, applylimits, bucksize);
 		if(strlen(tmpstr) <= count)
 			count = strlen(tmpstr);
 		else
@@ -611,6 +611,9 @@ fsdestroyfile(File *f)
 	h = f->aux;
 	if(h){
 		removehub(h);
+		if(applylimits)
+			free(h->lp);
+		free(h->bucket);
 		free(h);
 	}
 }
@@ -811,7 +814,7 @@ main(int argc, char **argv)
 		qua = ARGF();
 		if (qua == nil)
 			usage();
-		bucksize = strtoul(qua, 0 , 10);
+		bucksize = strtoull(qua, 0 , 10);
 		break;
 	case 'b':
 		bps = ARGF();

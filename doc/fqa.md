@@ -224,7 +224,7 @@ In most aspects, ANTS adds additional features without changing the standard beh
 
 #### Privpassword and cpu service
 
-If the variable "privpassword=" is set to a password in plan9.ini, this is used to create a factotum key for cpu service, which runs from both the ants boot/admin namespace and (if ANTS was installed from the iso) in the main namespace on the standard cpu port, even if service is set to terminal. If privpassword is not set and no other key is provided, the listeners still run but will not be usable. The 9fat containing plan9.ini and the /dev/kmesg which prints plan9.ini variables are hostowner-access only and must not be publicly exposed if privpassword= is used. Be aware that the 9front 'sysinfo' script -p flag uploads the kmesg to a public archive, so make sure to change the privpassword if you choose to sysinfo -p.
+If the variable "privpassword=" is set to a password in plan9.ini, this is used to create a factotum key for cpu service, which runs from both the ants boot/admin namespace and (if ANTS was installed from the iso) in the main namespace on the standard cpu port, even if service is set to terminal. If privpassword is not set and no other key is provided, the listeners still run but will not be usable. The 9fat containing plan9.ini and the /dev/kmesg which prints plan9.ini variables are hostowner-access only and must not be publicly exposed if privpassword= is used.
 
 If you convert an install from terminal to cpu service, you probably want to remove the privpassword= setting from plan9.ini and use only the machine key from nvram read by factotum at boot.
 
