@@ -138,8 +138,8 @@ fn doramsetup{
 			mount -c /srv/ramboot /mnt/rboot
 			bind -ac /mnt/rboot/lib /lib
 		}
-		echo 'timezone...'
-		timezone=`{cat /adm/timezone/local}
+#		echo 'timezone...'
+#		timezone=`{cat /adm/timezone/local}
 	}
 }
 
@@ -237,7 +237,7 @@ fn dostartventi{
 fn dogetrootfs{
 	switch($getrootfs){
 	case hjfs
-		bootpartition=`{findpart fs}
+#		bootpartition=`{findpart fs}
 		if(~ $interactive yes){
 			echo 'parsed hjfs bootpartition as ' $bootpartition ' enter new value if this is incorrect'
 			getans bootpartition $bootpartition
@@ -254,7 +254,7 @@ fn dogetrootfs{
 		{hjfs -s -f $bootpartition $bootparse(2-) &} <[0=1] | echo 0 >/srv/boot
 		bootsrv=/srv/boot		
 	case cwfs
-		bootpartition=`{findpart fscache}
+#		bootpartition=`{findpart fscache}
 		if(~ $interactive yes){
 			echo 'parsed cwfs bootpartition as ' $bootpartition ' enter new value if this is incorrect'
 			getans bootpartition $bootpartition
@@ -272,7 +272,7 @@ fn dogetrootfs{
 		bootsrv=/srv/boot
 	case fossil
 		if(! ~ $fossil ?*){
-			bootpartition=`{findpart fossil}
+#			bootpartition=`{findpart fossil}
 			if(~ $interactive yes){
 				echo 'parsed fossil bootpartition as ' $bootpartition ' enter new value if this is incorrect'
 				getans bootpartition $bootpartition
@@ -389,6 +389,7 @@ fn doinitscript{
 }
 
 fn dorootstart{
+	cat /root/adm/timezone/local >/env/timezone
 	switch($rootstart){
 	case grid
 		service=cpu
@@ -495,29 +496,26 @@ if(~ $#bootargs 0){
 factotumopts=`{echo $factotumopts}
 bootparse=`{echo $bootargs}
 ipparams=`{echo $ipparams}
-if(~ $bootparse(1) *fossil)
-	getrootfs=fossil
-if(~ $bootparse(1) *fs)
-	getrootfs=hjfs
-if(~ $bootparse(1) *fscache)
-	getrootfs=cwfs
-if(~ $bootparse(1) tcp*){
+switch($bootparse(1)){
+case tcp*
 	getrootfs=tcp
 	if(! ~ $bootparse(2) '')
 		ipparams=`{shifter $bootparse}
-}
-if(~ $bootparse(1) tls*){
+case tls*
 	getrootfs=tls
 	if(! ~ $bootparse(2) '')
 		ipparams=`{shifter $bootparse}
-}
-if(~ $bootparse(1) aan*){
+case aan*
 	getrootfs=aan
 	if(! ~ $bootparse(2) '')
 		ipparams=`{shifter $bootparse}
-}
-if(~ $bootparse(1) srv*)
+case srv*
 	getrootfs=srv
+case *
+	getrootfs=`{echo $bootparse | sed 's,!, ,'}
+	bootpartition=$getrootfs(2)
+	getrootfs=`{fstype $bootpartition}
+}
 if(~ $#ramsetup 0)
 	ramsetup=ramskel
 if(~ $#initscript 0)
