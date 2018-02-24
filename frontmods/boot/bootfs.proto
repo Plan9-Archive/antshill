@@ -77,7 +77,7 @@ rc
 		local.rc 555 sys sys ../boot/local.rc
 		net.rc 555 sys sys ../boot/net.rc
 	bin
-		fstype
+		fstype - - - /n/rootless/frontmods/rcbin/fstype
 		diskparts
 		hub - - - /n/rootless/bootdir.extras/hub
 		initskel - - - /n/rootless/bootdir.extras/initskel
