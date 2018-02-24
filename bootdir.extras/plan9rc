@@ -253,7 +253,7 @@ fn dogetrootfs{
 		hjfs=$bootpartition
 		{hjfs -s -f $bootpartition $bootparse(2-) &} <[0=1] | echo 0 >/srv/boot
 		bootsrv=/srv/boot		
-	case cwfs
+	case cwfs*
 #		bootpartition=`{findpart fscache}
 		if(~ $interactive yes){
 			echo 'parsed cwfs bootpartition as ' $bootpartition ' enter new value if this is incorrect'
@@ -637,29 +637,26 @@ fn starttrad{
 		bootparse=`{echo $bootanswer}
 	if not
 		bootparse=`{echo $bootargs}
-	if(~ $bootparse(1) *fossil)
-		getrootfs=fossil
-	if(~ $bootparse(1) *fs)
-		getrootfs=hjfs
-	if(~ $bootparse(1) *fscache)
-		getrootfs=cwfs
-	if(~ $bootparse(1) tcp*){
+	switch($bootparse(1)){
+	case tcp*
 		getrootfs=tcp
 		if(! ~ $bootparse(2) '')
 			ipparams=`{shifter $bootparse}
-	}
-	if(~ $bootparse(1) tls*){
+	case tls*
 		getrootfs=tls
 		if(! ~ $bootparse(2) '')
 			ipparams=`{shifter $bootparse}
-	}
-	if(~ $bootparse(1) aan*){
+	case aan*
 		getrootfs=aan
 		if(! ~ $bootparse(2) '')
 			ipparams=`{shifter $bootparse}
-	}
-	if(~ $bootparse(1) srv*)
+	case srv*
 		getrootfs=srv
+	case *
+		getrootfs=`{echo $bootparse | sed 's,!, ,'}
+		bootpartition=$getrootfs(2)
+		getrootfs=`{fstype $bootpartition}
+	}
 	if(~ $getrootfs tcp || ~ $getrootfs tls || ~ $getrootfs aan){
 		if (~ $#fs 0){
 			echo 'fileserver is [ ' $fs ' ]?'
