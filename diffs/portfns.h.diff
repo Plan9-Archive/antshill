@@ -1,5 +1,5 @@
---- /sys/src/9/port/portfns.h	Fri Jan  5 00:26:10 2018
-+++ ../frontmods/port/portfns.h	Fri Jan  5 00:28:04 2018
+--- /sys/src/9/port/portfns.h	Tue Jan  9 17:25:15 2018
++++ ../frontmods/port/portfns.h	Fri Feb 16 12:50:35 2018
 @@ -34,6 +34,7 @@
  void		closefgrp(Fgrp*);
  void		closepgrp(Pgrp*);

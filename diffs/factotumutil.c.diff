@@ -1,5 +1,5 @@
---- /sys/src/cmd/auth/factotum/util.c	Sat Jan 21 23:43:13 2017
-+++ ../frontmods/patched/factotumutil.c	Fri Dec 22 02:26:47 2017
+--- /sys/src/cmd/auth/factotum/util.c	Sat Feb 18 18:49:07 2017
++++ ../frontmods/factotum/util.c	Fri Feb 16 12:50:35 2018
 @@ -11,6 +11,8 @@
  
  	if(access("/net/tcp", AEXIST) < 0)

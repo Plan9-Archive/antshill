@@ -1,29 +1,22 @@
-diff -Nurp /sys/src/cmd/rio/README ../frontmods/grio/README
---- /sys/src/cmd/rio/README	Thu Jan  1 00:00:00 1970
-+++ ../frontmods/grio/README	Fri Dec 22 02:26:47 2017
-@@ -0,0 +1,19 @@
+diff -Nurp /sys/src/cmd/rio/README ../grio/README
+--- /sys/src/cmd/rio/README	Wed Dec 31 18:00:00 1969
++++ ../grio/README	Fri Feb 16 12:50:35 2018
+@@ -0,0 +1,12 @@
 +grio is a modified rio that adds hubfs integration, an extra user
 +selectable command in the menu, and appearance options.  grio expects
 +hubfs to be installed.  If an available hubfs is not mounted at
 +/n/hubfs, it starts one.  It uses /srv/riohubfs.username for the new
 +hubfs.  Additional options: the -x argument sets a command (default
 +/bin/acme), -a provides an argument to it.  Colors are defined by 8
-+digit hexidecimal numbers.  -c sets backgrouind color, -t the text
++digit hexidecimal numbers.  -c sets background color, -t the text
 +color, -u the window color, -y the border color of active windows, -z
 +the border color of backgrounded windows.  The width of borders can be
-+set with an integer parameter for -w.
++set with an integer parameter for -w. -e removes the 'exit' option from the menu.
 +
 +Example: grio -x /bin/stats -a -elm -c 0xaabbccff -y 0x11111111 -w 2
-+
-+Note: before using the %remote command in an attached hub it is
-+necessary to
-+
-+bind -c /n/riohubfs.$user /n/hubfs
-+
-+in the initial hubfs shell
-diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
---- /sys/src/cmd/rio/dat.h	Sun Dec 17 12:33:20 2017
-+++ ../frontmods/grio/dat.h	Fri Dec 22 02:26:47 2017
+diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
+--- /sys/src/cmd/rio/dat.h	Wed Dec 20 16:16:56 2017
++++ ../grio/dat.h	Mon Feb 19 02:08:57 2018
 @@ -43,7 +43,7 @@ typedef	struct	Xfid Xfid;
  
  enum
@@ -33,7 +26,7 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
  	Unselborder	= 1,		/* border of unselected window */
  	Scrollwid 		= 12,		/* width of scroll bar */
  	Scrollgap 		= 4,		/* gap right of scroll bar */
-@@ -173,6 +173,12 @@ struct Window
+@@ -173,6 +173,13 @@ struct Window
  	char			*dir;
  };
  
@@ -43,10 +36,11 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
 +ulong	borderbgcolor;
 +ulong	textcolor;
 +ulong	winbgcolor;
++ulong	scrollbarcolor;
  void		winctl(void*);
  void		winshell(void*);
  Window*	wlookid(int);
-@@ -309,6 +315,7 @@ Screen	*wscreen;
+@@ -309,6 +316,7 @@ Screen	*wscreen;
  Cursor	boxcursor;
  Cursor	crosscursor;
  Cursor	sightcursor;
@@ -54,7 +48,7 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
  Cursor	whitearrow;
  Cursor	query;
  Cursor	*corners[9];
-@@ -349,6 +356,7 @@ char		srvpipe[];
+@@ -349,6 +357,7 @@ char		srvpipe[];
  char		srvwctl[];
  int		errorshouldabort;
  int		menuing;		/* menu action is pending; waiting for window to be indicated */
@@ -62,9 +56,9 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../frontmods/grio/dat.h
  int		snarfversion;	/* updated each time it is written */
  int		messagesize;		/* negotiated in 9P version setup */
  int		shiftdown;
-diff -Nurp /sys/src/cmd/rio/data.c ../frontmods/grio/data.c
---- /sys/src/cmd/rio/data.c	Sat Nov 23 21:21:19 2013
-+++ ../frontmods/grio/data.c	Fri Dec 22 02:26:47 2017
+diff -Nurp /sys/src/cmd/rio/data.c ../grio/data.c
+--- /sys/src/cmd/rio/data.c	Sat Nov 23 15:21:19 2013
++++ ../grio/data.c	Mon Feb 19 02:08:59 2018
 @@ -46,6 +46,18 @@ Cursor sightcursor = {
  	 0x21, 0x84, 0x31, 0x8C, 0x0F, 0xF0, 0x00, 0x00, }
  };
@@ -84,18 +78,25 @@ diff -Nurp /sys/src/cmd/rio/data.c ../frontmods/grio/data.c
  Cursor whitearrow = {
  	{0, 0},
  	{0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFE, 0xFF, 0xFC, 
-@@ -175,21 +187,21 @@ Cursor *corners[9] = {
+@@ -173,23 +185,38 @@ Cursor *corners[9] = {
+ };
+ 
  void
- iconinit(void)
+-iconinit(void)
++iconinit(char *bf)
  {
 -	background = allocimage(display, Rect(0,0,1,1), RGB24, 1, 0x777777FF);
++	int fd;
++	Image *bimg = nil;
++
 +	background = allocimage(display, Rect(0,0,1,1), RGB24, 1, bgtrans);
  
  	/* greys are multiples of 0x11111100+0xFF, 14* being palest */
 -	cols[BACK] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0xFFFFFFFF^reverse);
-+	cols[BACK] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, winbgcolor^reverse);
- 	cols[BORD] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x999999FF^reverse);
+-	cols[BORD] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x999999FF^reverse);
 -	cols[TEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x000000FF^reverse);
++	cols[BACK] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, winbgcolor^reverse);
++	cols[BORD] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, scrollbarcolor^reverse);
 +	cols[TEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, textcolor^reverse);
  	cols[HTEXT] = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x000000FF);
  	if(!reverse) {
@@ -110,12 +111,197 @@ diff -Nurp /sys/src/cmd/rio/data.c ../frontmods/grio/data.c
 -		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, 0x222222FF);
 +		titlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderactivecolor);
 +		lighttitlecol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, borderbgcolor);
++	}
++	if(bf != nil){
++		fd = open(bf, OREAD);
++		if(fd >= 0){
++			bimg = readimage(display, fd, 0);
++			close(fd);
++		} else
++		fprint(2, "iconinit: %r\n");
++	}
++	if(bimg){
++		background = allocimage(display, Rect(0, 0, Dx(bimg->r), Dy(bimg->r)), RGB24, 1, 0xFFFFFFFF);
++		draw(background, background->r, bimg, 0, bimg->r.min);
  	}
  	dholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DMedblue);
  	lightholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DGreyblue);
-diff -Nurp /sys/src/cmd/rio/mkfile ../frontmods/grio/mkfile
---- /sys/src/cmd/rio/mkfile	Wed Jan 18 00:12:54 2012
-+++ ../frontmods/grio/mkfile	Fri Dec 22 02:26:47 2017
+diff -Nurp /sys/src/cmd/rio/fns.h ../grio/fns.h
+--- /sys/src/cmd/rio/fns.h	Sat Dec 31 17:31:23 2016
++++ ../grio/fns.h	Fri Feb 16 12:50:35 2018
+@@ -15,7 +15,7 @@ Timer*	timerstart(int);
+ void	error(char*);
+ void	killprocs(void);
+ int	shutdown(void*, char*);
+-void	iconinit(void);
++void	iconinit(char*);
+ void	*erealloc(void*, uint);
+ void *emalloc(uint);
+ char *estrdup(char*);
+diff -Nurp /sys/src/cmd/rio/grio.man ../grio/grio.man
+--- /sys/src/cmd/rio/grio.man	Wed Dec 31 18:00:00 1969
++++ ../grio/grio.man	Mon Feb 19 02:13:17 2018
+@@ -0,0 +1,157 @@
++.TH GRIO 1
++.SH NAME
++grio \- customizable rio
++.SH SYNOPSIS
++.B grio
++[
++.B -x
++.BI ' menu_cmd '
++]
++[
++.B -a
++.BI ' cmd_argument '
++]
++[
++.B -e
++]
++[
++.B -c
++.I background color
++]
++[
++.B -t
++.I text color
++]
++[
++.B -u
++.I window color
++]
++[
++.B -y
++.I active bordercolor
++]
++[
++.B -z
++.I bkground bordercolor
++]
++[
++.B -l
++.I scrollbar color
++]
++[
++.B -B
++.I bkground image
++]
++[
++.B -w
++.I border width
++]
++.SH DESCRIPTION
++Rio with hubfs integration, command menu customization, selectable colors.
++.I Grio
++is a modified version of 
++.IR rio (1)
++All rio options are supported. Integration with
++.IR hubfs (4)
++and a user-selectable command is provided via the right mouse button menu. This manpage describes only the new features.
++.SS Menu Options
++.I Grio
++provides an 'exit' command in the right button menu, because it is often run nested. The
++.B -e
++option removes the 'exit' command from the menu. A user-selected command (or
++.B /bin/acme
++by default) is added to the menu via the
++.B -x
++option. The command must include the full path, for instance
++.B /bin/stats
++rather than simply 'stats'. A single argument containing no spaces may be passed with the
++.B -a
++argument option. If the argument is a set of flags, the - needs to be included. For instance,
++.B -lems
++as an argument to stats. The argument may not contain any spaces, and quoting does not enable the use of multi-part arguments. 
++.SS Color Selection
++Most of the colors used by 
++.I grio
++are now user-selectable via 8 digit hex codes. See 
++.IR colors (1)
++to inspect sample colors and their codes.
++.B -c
++.I colorcode
++sets the background color.
++.B -t
++.I textcolor
++sets the color of text in windows.
++.B -u
++.I windowcolor
++sets the color the windows themselves.
++.B -y
++.I bordercolor
++sets the color of the border of the currently active window, and
++.B -z
++.I bordercolor
++sets the color of the border of the unselected windows. The width of borders is set with an integer parameter to
++.B -w
++.I borderpixels
++with 2 as the minimum for visible window borders. If no theming parameters are provided, the appearance defaults to standard.
++.SS Background Image
++.B -B
++.I backimg
++sets an image for use as the background. The image must be in Plan 9 Image format. You can use the tools such as
++.IR jpg(1)
++or
++.IR png(1)
++with the
++.B -c
++option to convert other images to Plan 9 format. The image will be tiled to fill the available background space.
++.SS Hubfs integration
++Another menu option,
++.B Hub
++is present in the right mouse button menu. This provides integration with
++.IR Hubfs (4)
++such that after this command is selected, the window swept out will automatically be connected to the hubfs mounted at
++.B /n/hubfs.
++On startup, if there is not already a mounted hubfs at /n/hubfs, 
++.I grio
++will launch a new instance of 
++.I hubfs
++with the srv file posted at 
++.B /srv/riohubfs.username.
++It is often useful to import the /srv of a remote machine and mount a hubfs from it to /n/hubfs prior to starting 
++.I grio
++.
++.SH EXAMPLES
++Start with no exit command in the menu, and the ability to create a subgrio with its windows set to scroll mode. (Windows of hosting grio will not be in scroll mode because the -s option is "consumed" by the -a argument.)
++.IP
++.EX
++grio -e -x /bin/grio -a -s
++.EE
++.PP
++Start with a tasteful light purple theme and thin black borders
++.IP
++.EX
++grio -c 0xffaaffff -y 0 -w 2
++.EE
++.PP
++Import and mount a hubfs already running on a remote machine for easy use from the menu
++.IP
++.EX
++rimport kremvax /srv
++mount -c /srv/kremhub /n/hubfs
++grio
++.EE
++.PP
++Start with a theme of bold and breathtaking beauty
++.IP
++.EX
++grio -c 0xff0000ff -u 0x00ccff -y 0x00ff00ff -t 0xffff00ff -z 0xffaa00ff
++.EE
++.EX
++-w 10 -x /bin/games/catclock -f /lib/font/bit/times/latin1.bold.10.font
++.EE
++.PP
++.SH SOURCE
++.B /sys/src/ants/frontmods/grio
++.SH BUGS
++It would be nice if the
++.B -a
++argument option could parse and separate multipart arguments.
+diff -Nurp /sys/src/cmd/rio/mkfile ../grio/mkfile
+--- /sys/src/cmd/rio/mkfile	Tue Jan 17 18:12:54 2012
++++ ../grio/mkfile	Fri Feb 16 12:50:35 2018
 @@ -1,7 +1,7 @@
  </$objtype/mkfile
  BIN=/$objtype/bin
@@ -125,15 +311,17 @@ diff -Nurp /sys/src/cmd/rio/mkfile ../frontmods/grio/mkfile
  OFILES=\
  	rio.$O\
  	data.$O\
-diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
---- /sys/src/cmd/rio/rio.c	Sat Nov 19 15:46:33 2016
-+++ ../frontmods/grio/rio.c	Fri Dec 22 02:26:47 2017
-@@ -45,9 +45,13 @@ Channel* initkbd(void);
+diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
+--- /sys/src/cmd/rio/rio.c	Sat Dec 31 17:31:24 2016
++++ ../grio/rio.c	Mon Feb 19 02:12:39 2018
+@@ -44,10 +44,15 @@ void	initcmd(void*);
+ Channel* initkbd(void);
  
  char		*fontname;
- 
-+char *altcmd, *altarg;
++char		*backname;
 +
++char *altcmd, *altarg;
+ 
  enum
  {
  	New,
@@ -142,7 +330,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  	Reshape,
  	Move,
  	Delete,
-@@ -86,6 +90,8 @@ int	Hidden = Exit+1;
+@@ -86,6 +91,8 @@ int	Hidden = Exit+1;
  
  char		*menu3str[100] = {
   [New]		"New",
@@ -151,7 +339,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
   [Reshape]	"Resize",
   [Move]		"Move",
   [Delete]		"Delete",
-@@ -101,6 +107,8 @@ Menu menu3 =
+@@ -101,6 +108,8 @@ Menu menu3 =
  
  char *rcargv[] = { "rc", "-i", nil };
  char *kbdargv[] = { "rc", "-c", nil, nil };
@@ -160,12 +348,12 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  
  int errorshouldabort = 0;
  
-@@ -113,28 +121,58 @@ derror(Display*, char *errorstr)
+@@ -113,28 +122,55 @@ derror(Display*, char *errorstr)
  void
  usage(void)
  {
 -	fprint(2, "usage: rio [-b] [-f font] [-i initcmd] [-k kbdcmd] [-s]\n");
-+	fprint(2, "usage: grio [-x altcmd] [-a altarg] [-c bgcolor] [-w borderwidth] [-t textcolor] [-u wincolor ] [-y bordercolor1] [-z bordercolor2] [-f font] [-i initcmd] [-k kbdcmd] [-s]\n");
++	fprint(2, "usage: grio [-x altcmd] [-a altarg] [-c bgcolor] [-w borderwidth] [-t textcolor] [-u wincolor ] [-y bordercolor1] [-z bordercolor2] [-l scrollbarcolor] [-B backimg] [-f font] [-i initcmd] [-k kbdcmd] [-s] [-e]\n");
  	exits("usage");
  }
  
@@ -173,25 +361,23 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  threadmain(int argc, char *argv[])
  {
 -	char *initstr, *kbdin, *s;
-+	char *initstr, *kbdin, *s, *usercol, *borderwidth, *bacolor, *bbcolor, *tcolor, *ucolor;
++	char *initstr, *kbdin, *s, *usercol, *borderwidth, *bacolor, *bbcolor, *tcolor, *ucolor, *scrlcolor;
  	char buf[256];
  	Image *i;
  	Rectangle r;
+-
+-	if(strstr(argv[0], ".out") == nil){
+-		menu3str[Exit] = nil;
+-		Hidden--;
 +	bgtrans = 0x777777FF;
 +	Selborder = 4;
 +	borderactivecolor = DGreygreen;
 +	borderbgcolor = DPalegreygreen;
 +	textcolor = 0x000000FF;
 +	winbgcolor = 0xFFFFFFFF;
++	scrollbarcolor = 0x999999FF;
 +	char mountstr[512] = "/srv/riohubfs.";
 +	char hubstr[512]= "riohubfs.";
- 
-+/*
- 	if(strstr(argv[0], ".out") == nil){
- 		menu3str[Exit] = nil;
- 		Hidden--;
- 	}
-+*/
 +
 +	strcat(hubstr, getenv("user"));
 +	strcat(mountstr, getenv("user"));
@@ -207,7 +393,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
 +				execl("/bin/mount", "mount", "-c", mountstr, "/n/hubfs", nil);
 +			sleep(100);
 +		}
-+	}
+ 	}
 +	altcmd = strdup("/bin/acme");
 +
  	initstr = nil;
@@ -218,10 +404,13 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  		reverse = ~0xFF;
 +		borderactivecolor = DPurpleblue;
 +		borderbgcolor = 0x222222FF;
++		break;
++	case 'B':
++		backname = EARGF(usage());
  		break;
  	case 'f':
  		fontname = EARGF(usage());
-@@ -153,6 +191,55 @@ threadmain(int argc, char *argv[])
+@@ -153,6 +189,65 @@ threadmain(int argc, char *argv[])
  	case 'D':
  		debug++;
  		break;
@@ -274,10 +463,49 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
 +			usage();
 +		winbgcolor = strtoul(ucolor,0,0);
 +		break;
++	case 'l':
++		scrlcolor = ARGF();
++		if (scrlcolor == nil)
++			usage();
++		scrollbarcolor = strtoul(scrlcolor,0,0);
++		break;
++	case 'e':
++		menu3str[Exit] = nil;
++		Hidden--;
++		break;
  	default:
  		usage();
  	}ARGEND
-@@ -744,6 +831,7 @@ button3menu(void)
+@@ -186,7 +281,7 @@ threadmain(int argc, char *argv[])
+ 		fprint(2, "rio: can't open display: %r\n");
+ 		exits("display open");
+ 	}
+-	iconinit();
++	iconinit(backname);
+ 
+ 	exitchan = chancreate(sizeof(int), 0);
+ 	winclosechan = chancreate(sizeof(Window*), 0);
+@@ -204,7 +299,8 @@ threadmain(int argc, char *argv[])
+ 	wscreen = allocscreen(screen, background, 0);
+ 	if(wscreen == nil)
+ 		error("can't allocate screen");
+-	draw(view, viewr, background, nil, ZP);
++//	draw(view, viewr, background, nil, ZP);
++	draw(view, viewr, background, nil, viewr.min);
+ 	flushimage(display, 1);
+ 
+ 	timerinit();
+@@ -628,7 +724,8 @@ resized(void)
+ 	wscreen = allocscreen(screen, background, 0);
+ 	if(wscreen == nil)
+ 		error("can't re-allocate screen");
+-	draw(view, view->r, background, nil, ZP);
++//	draw(view, view->r, background, nil, ZP);
++	draw(view, view->r, background, nil, view->r.min);
+ 	o = subpt(viewr.max, viewr.min);
+ 	n = subpt(view->clipr.max, view->clipr.min);
+ 	qsort(window, nwindow, sizeof(window[0]), wtopcmp);
+@@ -744,6 +841,7 @@ button3menu(void)
  		free(menu3str[i]);
  		menu3str[i] = nil;
  	}
@@ -285,7 +513,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  	sweeping = TRUE;
  	switch(i = menuhit(3, mousectl, &menu3, wscreen)){
  	case -1:
-@@ -751,6 +839,12 @@ button3menu(void)
+@@ -751,6 +849,12 @@ button3menu(void)
  	case New:
  		new(sweep(), FALSE, scrolling, 0, nil, "/bin/rc", nil);
  		break;
@@ -298,7 +526,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  	case Reshape:
  		resize();
  		break;
-@@ -1015,7 +1109,11 @@ pointto(int wait)
+@@ -1015,7 +1119,11 @@ pointto(int wait)
  	Window *w;
  
  	menuing = TRUE;
@@ -311,7 +539,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../frontmods/grio/rio.c
  	while(mouse->buttons == 0)
  		readmouse(mousectl);
  	if(mouse->buttons == 4)
-@@ -1043,6 +1141,7 @@ delete(void)
+@@ -1043,6 +1151,7 @@ delete(void)
  {
  	Window *w;
  

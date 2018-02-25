@@ -1,11 +1,26 @@
---- /sys/src/cmd/aux/listen1.c	Sat Dec 31 23:31:19 2016
-+++ ../patched/gridlisten1.c	Wed Jan 10 14:11:33 2018
-@@ -27,6 +27,28 @@
+--- /sys/src/cmd/aux/listen1.c	Sat Dec 31 17:31:19 2016
++++ ../patched/gridlisten1.c	Fri Feb 16 12:50:35 2018
+@@ -6,11 +6,13 @@
+ int verbose;
+ int trusted;
+ char *nsfile;
++char *description;
++char *mountpoint;
+ 
+ void
+ usage(void)
+ {
+-	fprint(2, "usage: listen1 [-tv] [-p maxprocs] [-n namespace] address cmd args...\n");
++	fprint(2, "usage: gridlisten1 [-tv] [-d description] [-p maxprocs] [-n namespace] address cmd args...\n");
+ 	exits("usage");
+ }
+ 
+@@ -27,6 +29,28 @@
  		sysfatal("can't build namespace: %r");
  }
  
 +void
-+doregister(char *announce)
++doregister(char *announce, char *service)
 +{
 +	int regfd;
 +	char *loc;
@@ -17,7 +32,7 @@
 +		if((loc=getenv("myip")) == 0)
 +			loc=getenv("sysname");
 +		regfd=open("/mnt/registry/new", OWRITE);
-+		fprint(regfd, "tcp!%s!%s sys %s user %s", loc, announce+6, getenv("sysname"), getenv("user"));
++		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, announce+6, getenv("sysname"), service, mountpoint, description);
 +		for(;;)
 +			sleep(1000);
 +		break;
@@ -29,12 +44,34 @@
  char*
  remoteaddr(char *dir)
  {
-@@ -92,6 +114,8 @@
+@@ -57,6 +81,8 @@
+ 	int ctl, nctl, fd;
+ 	int wfd, nowait, procs;
+ 	Dir *d;
++	description="unknown";
++	mountpoint="unknown";
+ 
+ 	ARGBEGIN{
+ 	default:
+@@ -73,6 +99,12 @@
+ 	case 'n':
+ 		nsfile = EARGF(usage());
+ 		break;
++	case 'd':
++		description = EARGF(usage());
++		break;
++	case 'm':
++		mountpoint = EARGF(usage());
++		break;
+ 	}ARGEND
+ 
+ 	if(argc < 2)
+@@ -92,6 +124,8 @@
  
  	print("listen started\n");
  	ctl = announce(argv[0], dir);
 +	fprint(2, "registering %s\n", argv[0]);
-+	doregister(argv[0]);
++	doregister(argv[0], argv[1]);
  	if(ctl < 0)
  		sysfatal("announce %s: %r", argv[0]);
  

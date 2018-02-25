@@ -1,5 +1,5 @@
---- /sys/src/9/port/devsrv.c	Sat Jun 22 17:25:03 2013
-+++ ../frontmods/port/devsrv.c	Fri Dec 22 02:26:47 2017
+--- /sys/src/9/port/devsrv.c	Sat Jun 22 12:25:03 2013
++++ ../frontmods/port/devsrv.c	Fri Feb 16 12:50:35 2018
 @@ -6,19 +6,7 @@
  #include	"../port/error.h"
  

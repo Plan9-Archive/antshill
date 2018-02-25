@@ -1,5 +1,5 @@
---- /sys/src/9/pc/pc	Mon Dec 18 08:00:36 2017
-+++ ../frontmods/pc/pc	Fri Dec 22 02:26:47 2017
+--- /sys/src/9/pc/pc	Wed Dec 20 16:16:55 2017
++++ ../frontmods/pc/pc	Fri Feb 16 12:50:35 2018
 @@ -10,6 +10,7 @@
  	proc
  	mnt

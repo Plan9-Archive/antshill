@@ -1,5 +1,5 @@
---- /sys/src/cmd/aux/listen.c	Wed Jan 17 10:38:46 2018
-+++ ../patched/gridlisten.c	Wed Jan 17 10:44:18 2018
+--- /sys/src/cmd/aux/listen.c	Wed Jan 17 04:38:46 2018
++++ ../patched/gridlisten.c	Fri Feb 16 12:50:35 2018
 @@ -31,6 +31,7 @@
  void	scandir(char*, char*, char*, char*);
  void	becomenone(void);
