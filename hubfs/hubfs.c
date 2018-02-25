@@ -5,11 +5,10 @@
 #include <thread.h>
 #include <9p.h>
 #include <ctype.h>
+#include "ratelimit.h"
 
 /* input/output multiplexing and buferring */
 /* often used in combination with hubshell client and hub wrapper script */
-
-#define SECOND 1000000000
 
 /* Flags track the state of queued 9p requests and ketchup/wait in paranoid mode */
 enum flags{
@@ -28,20 +27,7 @@ enum buffersizes{
 
 typedef struct Hub	Hub;		/* A Hub file is a multiplexed pipe-like data buffer */
 typedef struct Msgq	Msgq;		/* Client fid structure to track location */
-typedef struct Limiter Limiter; /* Tracks time/quantity limits on writes to a hub */
 typedef struct Hublist Hublist;	/* Linked list of hubs */
-
-struct Limiter{
-	vlong nspb;					/* Minimum nanoseconds per byte */
-	vlong sept;					/* Minimum nanoseconds separating messages */
-	vlong startt;				/* Start time to calculate intervals from */
-	vlong curt;					/* Current time (ns since epoch) */
-	vlong lastt;				/* Timestamp of previous message */
-	vlong resett;				/* Time after which to reset limit statistics */
-	vlong totalbytes;			/* Total bytes written since start time */
-	vlong difft;				/* Checks required minimum vs. actual data timing */
-	ulong sleept;				/* Milliseconds of sleep time needed to throttle */
-};
 
 struct Hub{
 	char name[SMBUF];			/* name */
@@ -98,9 +84,6 @@ uvlong bucksize;					/* Size of data bucket per hub */
 static char Ebad[] = "something bad happened";
 static char Enomem[] = "no memory";
 
-Limiter* startlimit(vlong nsperbyte, vlong nsmingap, vlong nstoreset);
-void limit(Limiter *lp, vlong bytes);
-
 void wrsend(Hub *h);
 void msgsend(Hub *h);
 void hubcmd(char *cmd);
@@ -131,61 +114,7 @@ Srv fs = {
  * Rate limiting is only applied if specified by flags.
  * The limiting parameters are global for the hubfs.
  * Each hubfile tracks its own limits separately.
- * Limits can be set in terms of bytes-per-second,
- * minimum permitted interval between writes, or both.
- * Limit tracking resets after a specified interval, default 60 sec.
 */
-
-/* startlimit initializes the Limiter structure and returns a pointer to it */
-Limiter*
-startlimit(vlong nsperbyte, vlong nsmingap, vlong nstoreset)
-{
-	Limiter *limiter;
-
-	limiter=(Limiter*)emalloc9p(sizeof(Limiter));
-	limiter->nspb = nsperbyte;
-	limiter->sept = nsmingap;
-	limiter->resett = nstoreset;
-	limiter->startt = 0;
-	limiter->lastt = 0;
-	limiter->curt = 0;
-	return limiter;
-}
-
-/* limit is called whenever a write happens */
-void
-limit(Limiter *lp, vlong bytes)
-{
-	lp->curt = nsec();
-	lp->totalbytes += bytes;
-	/* initialize timers if this is the first message written to a hub */
-	if(lp->startt == 0){
-		lp->startt = lp->curt;
-		lp->lastt = lp->curt;
-		return;
-	}
-	/* check if the message has arrived before the minimum interval */
-	if(lp->curt - lp->lastt < lp->sept){
-		lp->sleept = (lp->sept - (lp->curt - lp->lastt)) / 1000000;
-		lp->lastt = lp->curt;
-		sleep(lp->sleept);
-		return;
-	}
-	/* reset timer if the interval between messages is sufficient */
-	if(lp->curt - lp->lastt > lp->resett){
-		lp->startt = lp->curt;
-		lp->lastt = lp->curt;
-		lp->totalbytes = bytes;
-		return;
-	}
-	lp->lastt = lp->curt;
-	/* check the required elapsed time vs actual elapsed time */
-	lp->difft = (lp->nspb * lp->totalbytes) - (lp->curt - lp->startt);
-	if(lp->difft > 1000000){
-		lp->sleept = lp->difft / 1000000;
-		sleep(lp->sleept);
-	}
-}
 
 /*
  * Basic logic - we have a buffer/bucket of data (a hub) that is mapped to a file.
