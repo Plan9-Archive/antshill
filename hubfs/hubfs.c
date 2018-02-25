@@ -166,8 +166,8 @@ limit(Limiter *lp, vlong bytes)
 	}
 	/* check if the message has arrived before the minimum interval */
 	if(lp->curt - lp->lastt < lp->sept){
-		lp->lastt = lp->curt;
 		lp->sleept = (lp->sept - (lp->curt - lp->lastt)) / 1000000;
+		lp->lastt = lp->curt;
 		sleep(lp->sleept);
 		return;
 	}
