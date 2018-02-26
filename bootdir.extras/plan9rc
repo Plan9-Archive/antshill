@@ -34,7 +34,6 @@ fn getans{
 fn cleanenv {
 	rm /env/bootargs
 	rm /env/bootcmd
-	rm /env/bootfile
 	rm /env/bootparse
 	rm /env/bootpartition
 	rm /env/cpuport
