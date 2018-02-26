@@ -76,7 +76,7 @@ while(talk=`{read}){
 			if not
 				echo channel does not exist
 			command=yes
-		case '/h '*
+		case /h
 			helpmessage
 			echo currently in $channel
 			echo
