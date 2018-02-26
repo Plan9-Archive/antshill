@@ -1,0 +1,77 @@
+.TH CHAT 1
+.SH NAME
+chat \- simple chat client for hubfs
+.SH SYNOPSIS
+.B chat
+[
+.RB -n
+.IR nick
+]
+[
+.RB -j
+.IR channel
+]
+[
+.I chatsrv
+]
+.PP
+.SH DESCRIPTION
+.I chat
+is a simple client script for using
+.IR hubfs (4)
+as an irc-like chat service.
+.B /srv/chat
+is the default target service file, which must have been created by a previously started hubfs.
+.PP
+The
+.I -n nick
+option sets user nickname, otherwise they will be prompted for one on connection. The
+.I -j channel
+option chooses a channel to connect to, otherwise the default
+.B /n/chat/chat
+channel will be targeted. The optional
+.I chatsrv
+parameter specifies a different file in
+.B /srv
+rather than the default
+/B /srv/chat
+.PP
+.SH OPERATION 
+If invoked with no options the script will mount the hubfs at
+.B /n/chat
+and prompt for a user nickname, then begin reading and writing messages to
+.B /n/chat/chat
+in the manner of an irc session. The following commands are available during use:
+.I /n nick
+change user nickname.
+.I /j channel
+change the target of the chat to the specified channel.
+.I /c
+list the available channels within the server.
+.I /h
+print the help message and command list.
+.I /q
+quit the chat.
+.SH EXAMPLES
+Connect to a chat service and begin chatting:
+.IP
+.EX
+srv tcp!chat.9gridchan.org!9997 chat
+chat
+.EE
+.PP
+Start a new hubfs providing chat service and allow remote users to connect
+.IP
+.EX
+hubfs -s chat
+mount -c /srv/chat /n/chat
+touch /n/chat/chat
+chmod 666 /srv/chat
+aux/listen1 tcp!*!9997 /bin/exportfs -S /srv/chat &
+.EE
+.SH SOURCE
+.B /sys/src/ants/hubfs/chat
+.SH SEE ALSO
+.IR hubfs (4)
+.SH BUGS
+All chat logic is handled client side, so there is little protection from abuse.
