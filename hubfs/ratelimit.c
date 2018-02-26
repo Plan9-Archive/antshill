@@ -14,7 +14,9 @@ startlimit(vlong nsperbyte, vlong nsmingap, vlong nstoreset)
 {
 	Limiter *limiter;
 
-	limiter=(Limiter*)emalloc9p(sizeof(Limiter));
+	limiter=(Limiter*)malloc(sizeof(Limiter));
+	if(!limiter)
+		sysfatal("out of memory");
 	limiter->nspb = nsperbyte;
 	limiter->sept = nsmingap;
 	limiter->resett = nstoreset;
