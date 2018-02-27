@@ -24,17 +24,16 @@ case go
 		password=$rd
 		export password
 	case yes
-		echo 'Enter hostowner password info for glenda nvram machine key.'
+		echo 'Enter hostowner password info for nvram machine key.'
 		echo 'You will need to use this same password for the keyfs.'
-		echo 'auth/wrkey'
+		echo 'The authid: MUST be set to glenda.'
 
 		auth/factotum -S
 	
-		echo 'Enter the same password you just gave for the keyfs database.'
-		echo 'auth/changeuser'
+		echo 'Enter password for keyfs. This MUST be the same password you just entered.'
+
 		auth/keyfs /n/newfs/adm/keys
 		auth/changeuser glenda
-
 		factkey=`{cat /mnt/factotum/ctl |grep dp9ik}
 		ndbauthdom=`{echo $factkey(4) |sed 's/dom/authdom/'}
 		export ndbauthdom
