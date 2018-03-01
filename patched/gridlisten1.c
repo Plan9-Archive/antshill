@@ -34,6 +34,7 @@ doregister(char *announce, char *service)
 {
 	int regfd;
 	char *loc;
+	char *port;
 
 	switch(rfork(RFPROC|RFFDG)) {
 	case -1:
@@ -41,8 +42,10 @@ doregister(char *announce, char *service)
 	case 0:
 		if((loc=getenv("myip")) == 0)
 			loc=getenv("sysname");
+		if((port=strrchr(announce, '!')) != 0)
+			port++;
 		regfd=open("/mnt/registry/new", OWRITE);
-		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, announce+6, getenv("sysname"), service, mountpoint, description);
+		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, port, getenv("sysname"), service, mountpoint, description);
 		for(;;)
 			sleep(1000);
 		break;
