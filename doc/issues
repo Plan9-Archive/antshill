@@ -8,8 +8,6 @@ when controlling linux machines via hubfs, it is necessary to use bash if you wi
 
 ------ non-ants specific random questions ------
 
-How to fix the issue involving a bad interaction of ip/httpd/httpd and hget? In some circumstances, .tgz files are incorrectly transferred due to httpd trying to be 'smart' and claiming it is serving gzipped content, rather than just sending the base file with no 'commentary' and hget automatically decompressing.
-
 The u9fs in the bell labs distribution needs two minor patches to build correctly. First is taken from https://code.google.com/p/plan9front/source/diff?spec=svn4be476d6a993298bb5a797a6f872212536c69541&r=4be476d6a993298bb5a797a6f872212536c69541&format=side&path=/sys/src/cmd/unix/u9fs/plan9.h&old_path=/sys/src/cmd/unix/u9fs/plan9.h&old=eaccc3e8d22668badfdfd7fa12c67f3fbb94c67d
 
 in file u9fs/plan9.h in the enum around line 100 specifying 
@@ -19,7 +17,6 @@ in file u9fs/plan9.h in the enum around line 100 specifying
 is one, and the other is adding in u9fs/rune.c in the obvious spot at the top enum
 
 	Bit5 =2;
-
 
 How exactly does inferno achieve equivalent functionality to plan 9 /srv? chan seems the same but different...
 

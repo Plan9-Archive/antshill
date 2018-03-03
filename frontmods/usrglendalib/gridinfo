@@ -1,12 +1,15 @@
-- Advanced Namespace Tools v4.0 "Gridscape Navigator"-
+- Advanced Namespace Tools Series 4 "Gridscape Navigator" -
+- Release 4.2 "Grid Radio Killed the Video Star" -
 Connect to public 9p service grid:
 	gridstart
 Begin installation:
 	inst/start
-View 9front FQA:
+9front FQA:
 	mothra http://fqa.9front.org
-View ANTS live/install CD intro:
+ANTS live/install CD intro:
 	mothra http://doc.9gridchan.org/guides/livecd
+ANTS FQA:
+	mothra http://doc.9gridchan.org/guides/fqa
 Manpages exist for most ANTS-specific tools, additional documentation
 and source code can be found in /sys/src/ants and on the 9gridchan.org
 website
