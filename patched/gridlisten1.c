@@ -45,6 +45,8 @@ doregister(char *announce, char *service)
 		if((port=strrchr(announce, '!')) != 0)
 			port++;
 		regfd=open("/mnt/registry/new", OWRITE);
+		if(regfd == -1)
+			sysfatal("didn't find /mnt/registry/new, can't announce\n");
 		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, port, getenv("sysname"), service, mountpoint, description);
 		for(;;)
 			sleep(1000);
