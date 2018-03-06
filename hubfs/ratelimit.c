@@ -23,6 +23,7 @@ startlimit(vlong nsperbyte, vlong nsmingap, vlong nstoreset)
 	limiter->startt = 0;
 	limiter->lastt = 0;
 	limiter->curt = 0;
+	limiter->totalbytes = 0;
 	return limiter;
 }
 
