@@ -34,3 +34,5 @@ are also opened, and will receive messages from the grid plumber, so plumbed web
 .B /sys/src/ants/scripts/gridstart
 .SH BUGS
 It took almost ten years to figure out how to make a useful public 9p service grid.
+.SH META
+"A simple task, connecting using a script, but still to many, untouchable. Climbing a mountain is simple, you find a mountain and you walk forward until you reach the top, stopping to rest and eat. Running a script is simple, you download the tools required and run the script. Both require one to truly want the end result when they are things that the person is not accustomed to." - henesy
