@@ -1,14 +1,14 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTS 386 and 64-bit iso based on 9front r6348 released 31 Jan 2018
+### ANTS 386 and 64-bit iso based on 9front r6395 released 11 Mar 2018
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
-md5sum: 5cbf14acdfc44e513bb5972752a2c41b
+uncompressed md5sum: 50691ffc41e6ddacbf69a57b2b93c2d4
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
-md5sum: cded394390047fcbc9322bc6c3d63880
+uncompressed md5sum: 6bc938a2f0abc0f661dc8f44a505cce9
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -34,6 +34,7 @@ The chat script requires access to a /srv/chat file provided by a hubfs containi
 * A gridlisten1 program which functions analogously to aux/listen1 but which also announces services to an inferno-hosted registry. A world-writable registry (different from the base 9gridchan registry) is part of the services. To perform a read-only share of a directory and announce it:
 
 	srv -c tcp!registry.9gridchan.org!7675 pubreg /mnt/registry
+	myip=public.ip.or.domain
 	gridlisten1 -t tcp!\*!9898 /bin/exportfs -R -r /tmp/publicshare
 
 #### Kernel
