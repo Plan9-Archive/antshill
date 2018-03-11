@@ -1,6 +1,7 @@
 #!/bin/rc
 # minimal chat client for hubfs: chat [-n NICK] [-j CHANNEL] [chatsrv]
 # dd -bs `{du -n /n/chat/chat | sed 's/ .*//'} -skip 1 -if /n/chat/chat
+rfork enf
 
 fn helpmessage{
 	echo -------------------------
@@ -9,19 +10,34 @@ fn helpmessage{
 	echo -------------------------
 }
 
-rfork enf
+fn close{
+	echo PART $name from $channel >>/n/$chatsrv/$channel
+	@{echo kill>/proc/$catkill/ctl}
+}
+
+fn shutdown{
+	close
+	exit
+}
+
+fn sighup{
+	shutdown
+}
+
+fn sigint{
+	shutdown
+}
+
 channel=chat
 chatsrv=chat
 while (~ $1 -*){
 	switch($1){
 	case -n
 		name = $2
-		shift
-		shift
+		shift 2
 	case -j
 		channel = $2
-		shift
-		shift
+		shift 2
 	case *
 		echo bad flag $1 '-n NICK -j CHANNEL'
 		shift
@@ -48,55 +64,42 @@ cat /n/$chatsrv/$channel &
 catkill=$apid
 
 while(talk=`{read}){
-	if(~ $talk /*){
-		switch($talk){
-		case /q
-			echo PART $name from $channel >>/n/$chatsrv/$channel
-			@{echo kill>/proc/$catkill/ctl}
-			exit
-		case '/n '*
-			if(! ~ $talk(2) ''){
-				echo nick $name ' -> ' $talk(2) >>/n/$chatsrv/$channel
-				name=$talk(2)
-			}
-			if not
-				echo 'you need to provide a nick for /n NICK'
-			command=yes
-		case '/j '*
-			if (~ $talk(2) '')
-				echo must specify a channel to join
-			if not if(test -e /n/chat/$talk(2)){
-				echo PART $name from $channel >>/n/$chatsrv/$channel
-				@{echo kill>/proc/$catkill/ctl}
-				channel=$talk(2)
-				cat /n/chat/$channel &
-				catkill=$apid
-				echo JOIN $name to $channel >>/n/$chatsrv/$channel
-			}
-			if not
-				echo channel does not exist
-			command=yes
-		case /h
-			helpmessage
-			echo currently in $channel
-			echo
-			command=yes
-		case /c
-			echo Available channels:
-			lc /n/$chatsrv
-			echo -------------------
-			echo currently in $channel
-			echo
-			command=yes
+	switch($talk(1)){
+	case /q
+		shutdown
+	case /n
+		if(! ~ $talk(2) ''){
+			echo nick $name ' -> ' $talk(2) >>/n/$chatsrv/$channel
+			name=$talk(2)
 		}
-	}
-	if(~ $talk '')
-		command=yes
-	if(! ~ $command yes){
+		if not
+			echo 'you need to provide a nick for /n NICK'
+	case /j
+		if (~ $talk(2) '')
+			echo must specify a channel to join
+		if not if(test -e /n/chat/$talk(2)){
+			close
+			channel=$talk(2)
+			cat /n/chat/$channel &
+			catkill=$apid
+			echo JOIN $name to $channel >>/n/$chatsrv/$channel
+		}
+		if not
+			echo channel does not exist
+	case /h
+		helpmessage
+		echo currently in $channel
+		echo
+	case /c
+		echo Available channels:
+		lc /n/$chatsrv
+		echo -------------------
+		echo currently in $channel
+		echo
+	case *
 #		ts=`{date -u}
 #		ts=`{echo '('^$ts(4)^')'}
 		line=`{echo $name ': ' $talk}
 		echo $line >>/n/chat/$channel
 	}
-	command=no
 }
