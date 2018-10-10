@@ -23,6 +23,8 @@ struct Shell {
 	char cmdresult;
 };
 
+int notereceived;
+
 /* string storage for names of hubs and paths */
 char initname[SMBUF];
 char hubdir[SMBUF];
@@ -180,9 +182,11 @@ readloop:
 				fprint(2, "hubshell: error writing to %s on fd %d\n", ctlname, ctlfd);
 		close(ctlfd);
 	}
-	/* commented out error message because it printed after interrupt note-passing */
-//	if(n < 0)
-//		fprint(2, "hubshell: error reading fd %d\n", infd);
+	/* hack to fix infinite loop bug with headless drawterm */
+	if(n < 0)
+		if(notereceived == 0)
+			exits(nil);
+	notereceived = 0;
 	goto readloop;		/* Use more gotos, they aren't harmful */
 }
 
@@ -490,6 +494,7 @@ sendinterrupt(void *regs, char *notename)
 
 	if(strcmp(notename, "interrupt") != 0)
 		return 0;
+	notereceived = 1;
 	if(regs == nil)		/* this is just to shut up a compiler warning */
 		fprint(2, "error in note registers\n");
 	sprint(notehub, "%s%s.note", hubdir, basehub);
@@ -512,6 +517,7 @@ main(int argc, char *argv[])
 		sysfatal("usage\n");
 	}
 
+	notereceived = 0;
 	fortunate = 0;
 	echoes = 1;		/* maybe a questionable default */
 
