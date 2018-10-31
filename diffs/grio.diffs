@@ -1,6 +1,6 @@
 diff -Nurp /sys/src/cmd/rio/README ../grio/README
---- /sys/src/cmd/rio/README	Wed Dec 31 18:00:00 1969
-+++ ../grio/README	Fri Feb 16 12:50:35 2018
+--- /sys/src/cmd/rio/README	Wed Dec 31 19:00:00 1969
++++ ../grio/README	Wed Oct 31 22:08:50 2018
 @@ -0,0 +1,12 @@
 +grio is a modified rio that adds hubfs integration, an extra user
 +selectable command in the menu, and appearance options.  grio expects
@@ -15,8 +15,8 @@ diff -Nurp /sys/src/cmd/rio/README ../grio/README
 +
 +Example: grio -x /bin/stats -a -elm -c 0xaabbccff -y 0x11111111 -w 2
 diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
---- /sys/src/cmd/rio/dat.h	Wed Dec 20 16:16:56 2017
-+++ ../grio/dat.h	Mon Feb 19 02:08:57 2018
+--- /sys/src/cmd/rio/dat.h	Sun Jul  8 10:18:10 2018
++++ ../grio/dat.h	Wed Oct 31 22:08:50 2018
 @@ -43,7 +43,7 @@ typedef	struct	Xfid Xfid;
  
  enum
@@ -57,8 +57,8 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
  int		messagesize;		/* negotiated in 9P version setup */
  int		shiftdown;
 diff -Nurp /sys/src/cmd/rio/data.c ../grio/data.c
---- /sys/src/cmd/rio/data.c	Sat Nov 23 15:21:19 2013
-+++ ../grio/data.c	Mon Feb 19 02:08:59 2018
+--- /sys/src/cmd/rio/data.c	Sun Jul  8 10:18:10 2018
++++ ../grio/data.c	Wed Oct 31 22:08:50 2018
 @@ -46,6 +46,18 @@ Cursor sightcursor = {
  	 0x21, 0x84, 0x31, 0x8C, 0x0F, 0xF0, 0x00, 0x00, }
  };
@@ -127,8 +127,8 @@ diff -Nurp /sys/src/cmd/rio/data.c ../grio/data.c
  	dholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DMedblue);
  	lightholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DGreyblue);
 diff -Nurp /sys/src/cmd/rio/fns.h ../grio/fns.h
---- /sys/src/cmd/rio/fns.h	Sat Dec 31 17:31:23 2016
-+++ ../grio/fns.h	Fri Feb 16 12:50:35 2018
+--- /sys/src/cmd/rio/fns.h	Sun Jul  8 10:18:10 2018
++++ ../grio/fns.h	Wed Oct 31 22:08:50 2018
 @@ -15,7 +15,7 @@ Timer*	timerstart(int);
  void	error(char*);
  void	killprocs(void);
@@ -139,8 +139,8 @@ diff -Nurp /sys/src/cmd/rio/fns.h ../grio/fns.h
  void *emalloc(uint);
  char *estrdup(char*);
 diff -Nurp /sys/src/cmd/rio/grio.man ../grio/grio.man
---- /sys/src/cmd/rio/grio.man	Wed Dec 31 18:00:00 1969
-+++ ../grio/grio.man	Mon Feb 19 02:13:17 2018
+--- /sys/src/cmd/rio/grio.man	Wed Dec 31 19:00:00 1969
++++ ../grio/grio.man	Wed Oct 31 22:08:50 2018
 @@ -0,0 +1,157 @@
 +.TH GRIO 1
 +.SH NAME
@@ -300,8 +300,8 @@ diff -Nurp /sys/src/cmd/rio/grio.man ../grio/grio.man
 +.B -a
 +argument option could parse and separate multipart arguments.
 diff -Nurp /sys/src/cmd/rio/mkfile ../grio/mkfile
---- /sys/src/cmd/rio/mkfile	Tue Jan 17 18:12:54 2012
-+++ ../grio/mkfile	Fri Feb 16 12:50:35 2018
+--- /sys/src/cmd/rio/mkfile	Sun Jul  8 10:18:10 2018
++++ ../grio/mkfile	Wed Oct 31 22:08:50 2018
 @@ -1,7 +1,7 @@
  </$objtype/mkfile
  BIN=/$objtype/bin
@@ -312,8 +312,8 @@ diff -Nurp /sys/src/cmd/rio/mkfile ../grio/mkfile
  	rio.$O\
  	data.$O\
 diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
---- /sys/src/cmd/rio/rio.c	Sat Dec 31 17:31:24 2016
-+++ ../grio/rio.c	Mon Feb 19 02:12:39 2018
+--- /sys/src/cmd/rio/rio.c	Sun Jul  8 10:18:10 2018
++++ ../grio/rio.c	Wed Oct 31 22:08:50 2018
 @@ -44,10 +44,15 @@ void	initcmd(void*);
  Channel* initkbd(void);
  

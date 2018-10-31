@@ -1,5 +1,5 @@
---- /sys/src/cmd/aux/listen1.c	Sat Dec 31 17:31:19 2016
-+++ ../patched/gridlisten1.c	Fri Feb 16 12:50:35 2018
+--- /sys/src/cmd/aux/listen1.c	Sun Jul  8 10:17:59 2018
++++ ../patched/gridlisten1.c	Wed Oct 31 22:08:50 2018
 @@ -6,11 +6,13 @@
  int verbose;
  int trusted;
@@ -15,7 +15,7 @@
  	exits("usage");
  }
  
-@@ -27,6 +29,28 @@
+@@ -27,6 +29,33 @@
  		sysfatal("can't build namespace: %r");
  }
  
@@ -24,6 +24,7 @@
 +{
 +	int regfd;
 +	char *loc;
++	char *port;
 +
 +	switch(rfork(RFPROC|RFFDG)) {
 +	case -1:
@@ -31,8 +32,12 @@
 +	case 0:
 +		if((loc=getenv("myip")) == 0)
 +			loc=getenv("sysname");
++		if((port=strrchr(announce, '!')) != 0)
++			port++;
 +		regfd=open("/mnt/registry/new", OWRITE);
-+		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, announce+6, getenv("sysname"), service, mountpoint, description);
++		if(regfd == -1)
++			sysfatal("didn't find /mnt/registry/new, can't announce\n");
++		fprint(regfd, "tcp!%s!%s sys %s service %s mountpoint %s is %s", loc, port, getenv("sysname"), service, mountpoint, description);
 +		for(;;)
 +			sleep(1000);
 +		break;
@@ -44,7 +49,7 @@
  char*
  remoteaddr(char *dir)
  {
-@@ -57,6 +81,8 @@
+@@ -57,6 +86,8 @@
  	int ctl, nctl, fd;
  	int wfd, nowait, procs;
  	Dir *d;
@@ -53,7 +58,7 @@
  
  	ARGBEGIN{
  	default:
-@@ -73,6 +99,12 @@
+@@ -73,6 +104,12 @@
  	case 'n':
  		nsfile = EARGF(usage());
  		break;
@@ -66,7 +71,7 @@
  	}ARGEND
  
  	if(argc < 2)
-@@ -92,6 +124,8 @@
+@@ -92,6 +129,8 @@
  
  	print("listen started\n");
  	ctl = announce(argv[0], dir);

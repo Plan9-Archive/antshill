@@ -1,5 +1,5 @@
---- /sys/src/cmd/auth/factotum/fs.c	Tue Jan  9 17:25:15 2018
-+++ ../frontmods/factotum/fs.c	Fri Feb 16 12:50:35 2018
+--- /sys/src/cmd/auth/factotum/fs.c	Sun Jul  8 10:17:59 2018
++++ ../frontmods/factotum/fs.c	Wed Oct 31 22:08:50 2018
 @@ -12,6 +12,7 @@
  char		*service;
  int		sflag;
@@ -8,7 +8,7 @@
  
  extern Srv		fs;
  static void		notifyf(void*, char*);
-@@ -103,6 +104,8 @@
+@@ -104,6 +105,8 @@
  	case 'u':		/* user: set hostowner */
  		uflag = 1;
  		break;

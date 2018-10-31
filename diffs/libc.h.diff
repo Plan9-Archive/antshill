@@ -1,6 +1,6 @@
---- /tmp/libc.h	Tue Jan  2 20:48:12 2018
-+++ frontmods/include/libc.h	Tue Jan  2 20:45:54 2018
-@@ -596,6 +596,7 @@
+--- /sys/include/libc.h.orig	Wed Oct 31 22:09:01 2018
++++ ../frontmods/include/libc.h	Wed Oct 31 22:08:50 2018
+@@ -602,6 +602,7 @@
  	RFPROC		= (1<<4),
  	RFMEM		= (1<<5),
  	RFNOWAIT	= (1<<6),

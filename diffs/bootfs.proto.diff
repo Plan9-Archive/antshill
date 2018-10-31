@@ -1,5 +1,5 @@
---- /sys/src/9/boot/bootfs.proto	Sat Dec 31 17:31:12 2016
-+++ ../frontmods/boot/bootfs.proto	Fri Feb 23 23:30:49 2018
+--- /sys/src/9/boot/bootfs.proto	Wed Oct 31 21:39:35 2018
++++ ../frontmods/boot/bootfs.proto	Wed Oct 31 22:08:50 2018
 @@ -1,16 +1,22 @@
  $objtype
  	bin
@@ -74,7 +74,7 @@
  		xd
  rc
  	lib
-@@ -51,8 +77,16 @@
+@@ -52,8 +78,16 @@
  		local.rc 555 sys sys ../boot/local.rc
  		net.rc 555 sys sys ../boot/net.rc
  	bin
@@ -92,7 +92,7 @@
  		srvtls
  		nusbrc 555 sys sys ../boot/nusbrc
  		bootrc 555 sys sys ../boot/bootrc
-@@ -60,3 +94,7 @@
+@@ -61,3 +95,7 @@
  lib
  	firmware
  		+

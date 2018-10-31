@@ -1,5 +1,5 @@
---- /sys/src/9/port/devproc.c	Sat Feb 24 20:59:14 2018
-+++ ../frontmods/port/devproc.c	Sat Feb 24 20:54:05 2018
+--- /sys/src/9/port/devproc.c	Sun Jul  8 10:17:56 2018
++++ ../frontmods/port/devproc.c	Wed Oct 31 22:08:50 2018
 @@ -92,7 +92,7 @@
  	"note",		{Qnote},	0,			0000,
  	"noteid",	{Qnoteid},	0,			0664,

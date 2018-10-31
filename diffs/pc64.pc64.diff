@@ -1,5 +1,5 @@
---- /sys/src/9/pc64/pc64	Sat Feb 24 20:59:13 2018
-+++ ../frontmods/pc64/pc64	Fri Feb 16 12:50:35 2018
+--- /sys/src/9/pc64/pc64	Sun Jul  8 10:17:56 2018
++++ ../frontmods/pc64/pc64	Wed Oct 31 22:08:50 2018
 @@ -10,6 +10,7 @@
  	proc
  	mnt
@@ -8,7 +8,7 @@
  	shr
  	dup
  	rtc
-@@ -152,6 +153,7 @@
+@@ -153,6 +154,7 @@
  
  bootdir
  	/$objtype/bin/paqfs
