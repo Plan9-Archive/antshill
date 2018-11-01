@@ -307,6 +307,7 @@ main()
 	i8253init();
 	cpuidentify();
 	meminit();
+	ramdiskinit();
 	confinit();
 	xinit();
 	archinit();
@@ -537,7 +538,7 @@ mathemu(Ureg *ureg, void*)
 	case FPinit:
 		fpinit();
 		index = up->fpstate >> FPindexs;
-		if(index < 0 || index > FPindexm)
+		if(index < 0 || index > (FPindexm>>FPindexs))
 			panic("fpslot index overflow: %d", index);
 		if(userureg(ureg)){
 			if(index != 0)
@@ -589,7 +590,7 @@ void
 mathinit(void)
 {
 	trapenable(VectorCERR, matherror, 0, "matherror");
-	if(X86FAMILY(m->cpuidax) == 3)
+	if(m->cpuidfamily == 3)
 		intrenable(IrqIRQ13, matherror, 0, BUSUNKNOWN, "matherror");
 	trapenable(VectorCNA, mathemu, 0, "mathemu");
 	trapenable(VectorCSO, mathover, 0, "mathover");
@@ -686,7 +687,7 @@ procsave(Proc *p)
 		 * emulation fault to activate the FPU.
 		 */
 		fpsave(p->fpsave);
-		p->fpstate = FPinactive | (p->fpstate & (FPpush|FPnouser|FPkernel|FPindexm));
+		p->fpstate = FPinactive | (p->fpstate & ~FPactive);
 		break;
 	}
 
@@ -731,7 +732,8 @@ fpurestore(int ostate)
 		if((astate & ~(FPnouser|FPkernel|FPindexm)) == FPactive)
 			_stts();
 		up->fpsave = up->fpslot[ostate>>FPindexs];
-		ostate = FPinactive | (ostate & (FPillegal|FPpush|FPnouser|FPkernel|FPindexm));
+		if(ostate & FPactive)
+			ostate = FPinactive | (ostate & ~FPactive);
 	}
 	up->fpstate = ostate;
 }

@@ -489,6 +489,9 @@ extern	int	rwakeup(Rendez*);
 extern	int	rwakeupall(Rendez*);
 extern	void**	privalloc(void);
 
+extern void	procsetname(char*, ...);
+#pragma varargck argpos procsetname 1
+
 /*
  *  network dialing
  */
@@ -526,6 +529,9 @@ struct NetConnInfo
 };
 extern	NetConnInfo*	getnetconninfo(char*, int);
 extern	void		freenetconninfo(NetConnInfo*);
+
+extern	int	idn2utf(char*, char*, int);
+extern	int	utf2idn(char*, char*, int);
 
 /*
  * system calls

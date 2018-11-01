@@ -63,7 +63,7 @@ link
 	ether82598	pci
 	ether83815	pci
 	etherbcm        pci
-	etherdp83820	pci
+	etherdp83820	pci ethermii
 	etherec2t	ether8390
 	etherelnk3	pci
 	etherga620	pci
@@ -107,6 +107,7 @@ misc
 	sdmmc		pci pmmc
 	sdnvme		pci
 	sdloop
+	sdram
 
 	uarti8250
 	uartisa
