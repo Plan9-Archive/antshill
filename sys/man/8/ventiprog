@@ -107,7 +107,7 @@ script. Prior to using
 .IR ventiprog
 , the user must create the file
 .B bkup.info
-which begins with the dialstring of the venti to which data will be replicated. Each time 
+which begins by setting the venti environment variable to the dialstring of the venti to which data will be replicated. Each time 
 .IR ventiprog 
 is run it updates this file with a new final clump offset parameter. The optional parameters to the ventibackup script are
 .B [-p prepfile] [-f infofile] [ventihttp_dialstring]

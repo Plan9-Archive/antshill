@@ -38,10 +38,6 @@ modes:
 9front build script modes
 -------------------------
 
-build - with no arguments, this builds a 9pcram.gz kernel with the
-kernel and its compilation files located in compiletemp. Requires 
-build extras build patched build bootpaq be run first.
-
 build 9front - this builds a 9ants kernel and tools.tgz and copies
 them to the root of the ants directory
 
