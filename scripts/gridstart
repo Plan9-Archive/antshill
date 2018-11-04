@@ -1,6 +1,6 @@
 #!/bin/rc
 # connects to 9gridchan grid services and starts a new subrio
-# options -t tls -m mountonly
+# options -t tls -m mountonly -s scriptonly
 # awk '/exportfs/{print "srv -c", $1, $3, $5}' /mnt/registry/index
 
 fn cpl{
@@ -25,6 +25,20 @@ while (~ $1 -*){
 		shift
 	}
 }
+
+if(test -e /srv/gridregistry){
+	echo 'old grid connections found in /srv, remove? (y/n)'
+	ans=`{read}
+	if(~ $ans y){
+		rm /srv/gridchat
+		rm /srv/gridplumber
+		rm /srv/gridram
+		rm /srv/gridregistry
+		rm /srv/gridroot
+		rm /srv/gridwiki
+		rm /srv/pubregistry
+	}
+}		
 
 if(~ $tls yes){
 	auth/factotum
