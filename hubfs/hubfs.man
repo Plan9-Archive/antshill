@@ -239,7 +239,7 @@ Making new shells and moving in hubshell:
 .PP
 .IP
 .EX
-%unecho # turn off echo flush, %echoes to reactivate
+%echoes # turn on echo flush, %unecho to turn off
 .EE
 .PP
 .IP

@@ -519,7 +519,7 @@ main(int argc, char *argv[])
 
 	notereceived = 0;
 	fortunate = 0;
-	echoes = 1;		/* maybe a questionable default */
+	echoes = 0;		/* default changed to no echoes */
 
 	/* parse initname and set srvname hubdir and ctlname from it */
 	strncpy(initname, argv[1], SMBUF);
