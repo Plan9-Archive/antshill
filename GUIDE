@@ -3,7 +3,7 @@
 build 9front
 build fronthost
 cp 9ants /n/9fat/9ants
-cp tools.tgz /n/9fat
+cp tools.tgz /n/9fat/tools.tgz
 echo 'home=/usr/$user; cd; . $home/lib/profile' >>/rc/bin/termrc
 ed /n/9fat/plan9.ini 	# adjust config as needed
 bootfile=9ants

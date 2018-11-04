@@ -78,6 +78,7 @@ is found within the doc subdirectory.
 revisions may work as well, these were tested during the development
 process)
 
+hg up -r145 builds vs 9front 6855
 hg up -r123 builds vs 9front 6384
 hg up -r83 builds vs 9front release 6350
 hg up -r5 builds vs 9front r6299
