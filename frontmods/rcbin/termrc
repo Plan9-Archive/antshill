@@ -2,8 +2,11 @@
 # this file is run if service=terminal
 TIMESYNCARGS=(-rLa1000000)
 
+# parallelism for mk
+NPROC=`{wc -l </dev/sysstat}
+
 # bind all likely devices
-for(i in S f k t m i v L P u U A '$' Σ κ)
+for(i in u v t m i f S P L A '$')
 	bind -a '#'^$i /dev >/dev/null >[2=1]
 rm -f /env/i
 
@@ -24,15 +27,6 @@ unmount /mnt/temp
 # usb listener
 nusbrc
 
-# set up any partitions
-diskparts
-
-# start up local swapping
-disk=`{ls /dev/sd*/swap >[2]/dev/null}
-if (! ~ $#disk 0)
-	swap $disk(1) >/dev/null >[2=1]
-rm -f /env/disk
-
 # we do this before we have a name.  we may need to do network
 # setup so that we can get a name.
 if(test -e /rc/bin/termrc.local)
@@ -47,8 +41,14 @@ if(~ $#sysname 0 || ~ $sysname ''){
 	echo -n $sysname >/dev/sysname
 }
 
-# parallelism for mk
-NPROC=`{wc -l </dev/sysstat}
+# set up any partitions
+diskparts
+
+# start up local swapping
+disk=`{ls /dev/sd*/swap >[2]/dev/null}
+if (! ~ $#disk 0)
+	swap $disk(1) >/dev/null >[2=1]
+rm -f /env/disk
 
 # machine specific startup (e.g., for devices not probed)
 if(test -e /cfg/$sysname/termrc)
@@ -56,13 +56,24 @@ if(test -e /cfg/$sysname/termrc)
 
 # automatic ip address setup
 if(test -r /net/ipselftab){
-	if(! grep u /net/ipselftab | grep -sv 127.0.0.1){
-		ether=`{ndb/query sys $sysname ether}
-		if(~ $#ether 1){
-			# try /lib/ndb first, then do dhcp
-			ip/ipconfig -N >[2]/dev/null || ip/ipconfig -h $sysname
+	if(! grep u /net/ipselftab | grep -sv '^(127.0.0.1|::1)'){
+		addrs=`{ndb/query -a sys $sysname ether}
+		if(! ~ $#addrs 0){
+			for(ether in /net/ether*){
+				addr=`{cat $ether/addr}
+				switch($addr){
+				case $addrs
+					# try /lib/ndb first, then do dhcp/slaac
+					ip/ipconfig -6 ether $ether
+					ip/ipconfig -N ether $ether >[2]/dev/null || @{
+						ip/ipconfig ether $ether ra6 recvra 1 &
+						ip/ipconfig -h $sysname ether $ether &
+						wait
+					}
+				}
+			}
 		}
-		rm -f /env/ether
+		rm -f /env/ether /env/addrs /env/addr
 	}
 }
 
