@@ -52,7 +52,7 @@ basic sequence:
 	
 To allow you to select between kernels at boot, you can set bootfile=
 in plan9.ini to not provide a value.  Then at boot you will have to
-type "bootfile=9ants" or "bootfile=9pcf" (assuming that is your
+type "bootfile=9ants" or "bootfile=9pc" (assuming that is your
 original kernel name) and then "boot".  You may want to set
 "bootcmd=plan9rc".  if you set "privpassword=" to something in
 plan9.ini, a cpu listener on port 17060 will be started to allow

@@ -1,14 +1,14 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTS 386 and 64-bit iso based on 9front r6395 released 11 Mar 2018
+### ANTSv4.3 386 and 64-bit iso based on 9front r6863, beta released 5 Nov 2018
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
-uncompressed md5sum: dbcfac6189f65b9234bea49566785ae3
+uncompressed md5sum: 23028bf13a871174b62249ec549d0f9c
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
-uncompressed md5sum: 325a90e7ac87af178b43580fa952005b
+uncompressed md5sum: c22f4403bb5206fcef4454aaa1ab8f6f
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
