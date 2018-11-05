@@ -3,7 +3,7 @@ rebuild the kernel with a different selection of tools compiled into
 boot.  This is done by editing the file frontmods/boot/bootfs.proto to
 controls the tools compiled into the bootpaq.  The other method is
 customizing the optional tools.tgz.  A premade script for creating it
-is included at cfg/_toolcopy and the command build tools uses
+is included at cfg/toolcopy and the command build tools uses
 that script to control what binaries and scripts will be added to the
 /bin of the tools.tgz You can customize the initial ultra-minimal
 skelton fs by working within bootdir.extras/root.  Be cautious in
