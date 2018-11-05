@@ -44,7 +44,7 @@ ANTS is a set of tools to structure and manage Plan 9 namespaces to make systems
 #### Repository links
 
 - [development repo](https://bitbucket.org/mycroftiv/antshill) : latest code, follows 9front hg tip
-- [stable repo](https://bitbucket.org/mycroftiv/ants9front) : builds against latest 9front release iso, currently 9front-6350
+- [oldstable repo](https://bitbucket.org/mycroftiv/ants9front) : antsv4.2 builds with 9front release 9front-6350
 - [archival repo](https://bitbucket.org/mycroftiv/plan9ants) : old repo from 2017 and before, labs/legacy support is here
 
 #### Instructions
