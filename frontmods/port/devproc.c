@@ -219,7 +219,7 @@ pgrowfd(Fgrp *f, int fd)	/* fd is always >= 0 */
 		return -1;
 	}
 	newfd = malloc((f->nfd+DELTAFD)*sizeof(Chan*));
-	if(newfd == 0)
+	if(newfd == nil)
 		goto Exhausted;
 	oldfd = f->fd;
 	memmove(newfd, oldfd, f->nfd*sizeof(Chan*));
@@ -317,15 +317,14 @@ psysopen(Proc *targp, va_list list)
 {
 	int fd;
 	Chan *c;
-	char *filename;
-	ulong flags;
+	char *name;
+	ulong mode;
 
-	filename = va_arg(list, char*);
-	flags = va_arg(list, ulong);
-
-	openmode(flags);	/* error check only */
+	name = va_arg(list, char*);
+	mode = va_arg(list, ulong);
+	openmode(mode);	/* error check only */
 //	validaddr(arg[0], 1, 0);
-	c = pnamec(filename, Aopen, flags, 0, targp);
+	c = pnamec(name, Aopen, mode, 0, targp);
 	if(waserror()){
 		cclose(c);
 		nexterror();
@@ -340,28 +339,20 @@ psysopen(Proc *targp, va_list list)
 void
 pfdclose(int fd, int flag, Proc *targp)
 {
-	int i;
 	Chan *c;
 	Fgrp *f = targp->fgrp;
 
 	lock(f);
-	c = f->fd[fd];
-	if(c == 0){
-		/* can happen for users with shared fd tables */
+	c = fd <= f->maxfd ? f->fd[fd] : nil;
+	if(c == nil || (flag != 0 && (c->flag&flag) == 0)){
 		unlock(f);
 		return;
 	}
-	if(flag){
-		if(c==0 || !(c->flag&flag)){
-			unlock(f);
-			return;
-		}
+	f->fd[fd] = nil;
+	if(fd == f->maxfd){
+		while(fd > 0 && f->fd[fd] == nil)
+			f->maxfd = --fd;
 	}
-	f->fd[fd] = 0;
-	if(fd == f->maxfd)
-		for(i=fd; --i>=0 && f->fd[i]==0; )
-			f->maxfd = i;
-
 	unlock(f);
 	cclose(c);
 }
@@ -1934,7 +1925,7 @@ procbindmount(int ismount, int fd, int afd, char* arg0, char* arg1, ulong flag, 
 		ac = nil;
 		bc = pfdtochan(fd, ORDWR, 0, 1, targp);
 		if(waserror()) {
-			if(ac)
+			if(ac != nil)
 				cclose(ac);
 			cclose(bc);
 			nexterror();
@@ -1943,13 +1934,11 @@ procbindmount(int ismount, int fd, int afd, char* arg0, char* arg1, ulong flag, 
 		if(afd >= 0)
 			ac = pfdtochan(afd, ORDWR, 0, 1, targp);
 
-//		ret = devno('M', 0);
-//		c0 = devtab[ret]->attach((char*)&bogus);
 		c0 = mntattach(bc, ac, spec, flag&MCACHE);
 		qunlock(&targp->procmount);
-//		print("c0 devtab attach assigned\n");
+//		print("c0 mntattach(bc, ac, spec, flag&MCACHE)\n");
 		poperror();	/* ac bc */
-		if(ac)
+		if(ac != nil)
 			cclose(ac);
 		cclose(bc);
 	}else{
@@ -1979,50 +1968,41 @@ procbindmount(int ismount, int fd, int afd, char* arg0, char* arg1, ulong flag, 
 	cclose(c0);
 	if(ismount){
 		pfdclose(fd, 0, targp);
-		poperror();	/* spec */
+		poperror();
 		free(spec);	
 	}
 	return ret;
 }
 
 long
-procunmount(char *new, char *old, Proc *targp)
+procunmount(char *name, char *old, Proc *targp)
 {
 	Chan *cmount, *cmounted;
 
-	cmounted = 0;
-
+	cmounted = nil;
 //	validaddr(arg[1], 1, 0);
 	cmount = pnamec(old, Amount, 0, 0, targp);
-
-	if(new) {
-		if(waserror()) {
-			cclose(cmount);
-			nexterror();
-		}
-//		validaddr(arg[0], 1, 0);
+	if(waserror()) {
+		cclose(cmount);
+		if(cmounted != nil)
+			cclose(cmounted);
+		nexterror();
+	}
+	if(name != nil) {
 		/*
 		 * This has to be namec(..., Aopen, ...) because
 		 * if arg[0] is something like /srv/cs or /fd/0,
 		 * opening it is the only way to get at the real
 		 * Chan underneath.
 		 */
-		cmounted = pnamec(new, Aopen, OREAD, 0, targp);
-		poperror();
+//		validaddr(arg[0], 1, 0);
+		cmounted = pnamec(name, Aopen, OREAD, 0, targp);
 	}
-
-	if(waserror()) {
-		cclose(cmount);
-		if(cmounted)
-			cclose(cmounted);
-		nexterror();
-	}
-
 	pcunmount(cmount, cmounted, targp);
-	cclose(cmount);
-	if(cmounted)
-		cclose(cmounted);
 	poperror();
+	cclose(cmount);
+	if(cmounted != nil)
+		cclose(cmounted);
 	return 0;
 }
 
