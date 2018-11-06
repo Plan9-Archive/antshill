@@ -1,5 +1,5 @@
---- /sys/src/9/port/devproc.c	Sun Jul  8 10:17:56 2018
-+++ ../frontmods/port/devproc.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/port/devproc.c	Mon Nov  5 07:29:45 2018
++++ ../frontmods/port/devproc.c	Tue Nov  6 15:54:10 2018
 @@ -92,7 +92,7 @@
  	"note",		{Qnote},	0,			0000,
  	"noteid",	{Qnoteid},	0,			0664,
@@ -22,7 +22,7 @@
  
  static Traceevent *tevents;
  static Lock tlock;
-@@ -185,6 +187,186 @@
+@@ -185,6 +187,177 @@
  
  static int lenwatchpt(Proc *);
  
@@ -58,7 +58,7 @@
 +		return -1;
 +	}
 +	newfd = malloc((f->nfd+DELTAFD)*sizeof(Chan*));
-+	if(newfd == 0)
++	if(newfd == nil)
 +		goto Exhausted;
 +	oldfd = f->fd;
 +	memmove(newfd, oldfd, f->nfd*sizeof(Chan*));
@@ -156,15 +156,14 @@
 +{
 +	int fd;
 +	Chan *c;
-+	char *filename;
-+	ulong flags;
++	char *name;
++	ulong mode;
 +
-+	filename = va_arg(list, char*);
-+	flags = va_arg(list, ulong);
-+
-+	openmode(flags);	/* error check only */
++	name = va_arg(list, char*);
++	mode = va_arg(list, ulong);
++	openmode(mode);	/* error check only */
 +//	validaddr(arg[0], 1, 0);
-+	c = pnamec(filename, Aopen, flags, 0, targp);
++	c = pnamec(name, Aopen, mode, 0, targp);
 +	if(waserror()){
 +		cclose(c);
 +		nexterror();
@@ -179,28 +178,20 @@
 +void
 +pfdclose(int fd, int flag, Proc *targp)
 +{
-+	int i;
 +	Chan *c;
 +	Fgrp *f = targp->fgrp;
 +
 +	lock(f);
-+	c = f->fd[fd];
-+	if(c == 0){
-+		/* can happen for users with shared fd tables */
++	c = fd <= f->maxfd ? f->fd[fd] : nil;
++	if(c == nil || (flag != 0 && (c->flag&flag) == 0)){
 +		unlock(f);
 +		return;
 +	}
-+	if(flag){
-+		if(c==0 || !(c->flag&flag)){
-+			unlock(f);
-+			return;
-+		}
++	f->fd[fd] = nil;
++	if(fd == f->maxfd){
++		while(fd > 0 && f->fd[fd] == nil)
++			f->maxfd = --fd;
 +	}
-+	f->fd[fd] = 0;
-+	if(fd == f->maxfd)
-+		for(i=fd; --i>=0 && f->fd[i]==0; )
-+			f->maxfd = i;
-+
 +	unlock(f);
 +	cclose(c);
 +}
@@ -209,7 +200,7 @@
  static int
  procgen(Chan *c, char *name, Dirtab *tab, int, int s, Dir *dp)
  {
-@@ -412,6 +594,10 @@
+@@ -412,6 +585,10 @@
  	case Qsegment:
  	case Qprofile:
  	case Qns:
@@ -220,7 +211,7 @@
  	case Qfd:
  		if(omode != OREAD)
  			error(Eperm);
-@@ -668,6 +854,8 @@
+@@ -668,6 +845,8 @@
  		int2flag(cm->mflag, flag);
  		if(strcmp(cm->to->path->s, "#M") == 0){
  			srv = srvname(cm->to->mchan);
@@ -229,7 +220,7 @@
  			i = snprint(buf, nbuf, (cm->spec && *cm->spec)?
  				"mount %s %q %q %q\n": "mount %s %q %q\n", flag,
  				srv? srv: cm->to->mchan->path->s, mh->from->path->s, cm->spec);
-@@ -1188,7 +1376,8 @@
+@@ -1188,7 +1367,8 @@
  
  	eqlock(&p->debug);
  	if(waserror()){
@@ -239,7 +230,7 @@
  		nexterror();
  	}
  	if(p->pid != PID(c->qid))
-@@ -1281,12 +1470,21 @@
+@@ -1281,12 +1461,21 @@
  	case Qwatchpt:
  		writewatchpt(p, va, n, off);
  		break;
@@ -262,7 +253,7 @@
  	return n;
  }
  
-@@ -1699,4 +1897,249 @@
+@@ -1699,4 +1888,238 @@
  		p->newtlb = 1;
  
  	return n;
@@ -303,7 +294,7 @@
 +		ac = nil;
 +		bc = pfdtochan(fd, ORDWR, 0, 1, targp);
 +		if(waserror()) {
-+			if(ac)
++			if(ac != nil)
 +				cclose(ac);
 +			cclose(bc);
 +			nexterror();
@@ -312,13 +303,11 @@
 +		if(afd >= 0)
 +			ac = pfdtochan(afd, ORDWR, 0, 1, targp);
 +
-+//		ret = devno('M', 0);
-+//		c0 = devtab[ret]->attach((char*)&bogus);
 +		c0 = mntattach(bc, ac, spec, flag&MCACHE);
 +		qunlock(&targp->procmount);
-+//		print("c0 devtab attach assigned\n");
++//		print("c0 mntattach(bc, ac, spec, flag&MCACHE)\n");
 +		poperror();	/* ac bc */
-+		if(ac)
++		if(ac != nil)
 +			cclose(ac);
 +		cclose(bc);
 +	}else{
@@ -348,50 +337,41 @@
 +	cclose(c0);
 +	if(ismount){
 +		pfdclose(fd, 0, targp);
-+		poperror();	/* spec */
++		poperror();
 +		free(spec);	
 +	}
 +	return ret;
 +}
 +
 +long
-+procunmount(char *new, char *old, Proc *targp)
++procunmount(char *name, char *old, Proc *targp)
 +{
 +	Chan *cmount, *cmounted;
 +
-+	cmounted = 0;
-+
++	cmounted = nil;
 +//	validaddr(arg[1], 1, 0);
 +	cmount = pnamec(old, Amount, 0, 0, targp);
-+
-+	if(new) {
-+		if(waserror()) {
-+			cclose(cmount);
-+			nexterror();
-+		}
-+//		validaddr(arg[0], 1, 0);
++	if(waserror()) {
++		cclose(cmount);
++		if(cmounted != nil)
++			cclose(cmounted);
++		nexterror();
++	}
++	if(name != nil) {
 +		/*
 +		 * This has to be namec(..., Aopen, ...) because
 +		 * if arg[0] is something like /srv/cs or /fd/0,
 +		 * opening it is the only way to get at the real
 +		 * Chan underneath.
 +		 */
-+		cmounted = pnamec(new, Aopen, OREAD, 0, targp);
-+		poperror();
++//		validaddr(arg[0], 1, 0);
++		cmounted = pnamec(name, Aopen, OREAD, 0, targp);
 +	}
-+
-+	if(waserror()) {
-+		cclose(cmount);
-+		if(cmounted)
-+			cclose(cmounted);
-+		nexterror();
-+	}
-+
 +	pcunmount(cmount, cmounted, targp);
-+	cclose(cmount);
-+	if(cmounted)
-+		cclose(cmounted);
 +	poperror();
++	cclose(cmount);
++	if(cmounted != nil)
++		cclose(cmounted);
 +	return 0;
 +}
 +
