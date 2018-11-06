@@ -26,7 +26,6 @@ cp ../patched/gridlisten1.c ../patched/gridlisten1.c.old
 mkdir ../grio.old
 dircp ../grio ../grio.old
 
-
 echo 'copying current system files to frontmods directory'
 cp /sys/src/9/boot/boot.c ../frontmods/boot/boot.c
 cp /sys/src/9/boot/bootfs.proto ../frontmods/boot/bootfs.proto
@@ -50,6 +49,7 @@ cp /sys/src/cmd/auth/factotum/dat.h ../frontmods/factotum/dat.h
 cp /sys/include/libc.h ../frontmods/include/libc.h
 cp /sys/src/cmd/aux/listen.c ../patched/gridlisten.c
 cp /sys/src/cmd/aux/listen1.c ../patched/gridlisten1.c
+rm ../grio/*
 dircp /sys/src/cmd/rio ../grio
 
 echo 'patching updated files from diffs'
@@ -75,6 +75,6 @@ ape/patch ../frontmods/factotum/dat.h <factotumdat.h.diff
 ape/patch ../frontmods/include/libc.h <libc.h.diff
 ape/patch ../patched/gridlisten.c <gridlisten.c.diff
 ape/patch ../patched/gridlisten1.c <gridlisten1.c.diff
-cd ../frontmods
-ape/patch -p2 <../diffs/grio.diffs
-cd ../diffs
+cd ..
+ape/patch -p1 <diffs/grio.diffs
+cd diffs
