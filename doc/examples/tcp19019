@@ -1,0 +1,14 @@
+#!/bin/rc
+if(~ $#* 3){
+	netdir=$3
+	remote=$2!`{cat $3/remote}
+}
+fn server {
+	~ $#remote 0 || echo -n $netdir $remote >/proc/$pid/args
+	rm -f /env/'fn#server'
+	. <{n=`{read} && ! ~ $#n 0 && read -c $n} >[2=1]
+}
+namefossil 9a52b9ecf61c9a3ab627a8328da0c90df1d4970f rf^$pid f^$pid
+sed 's/boot/f'^$pid^'fossil/g' /lib/namespace >/tmp/ramns.$pid
+sleep 1
+exec tlssrvns -n /tmp/ramns.$pid -a /bin/rc -c server
