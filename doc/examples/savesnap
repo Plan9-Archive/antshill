@@ -1,0 +1,18 @@
+#!/bin/rc
+
+fossrv=/srv/ramfscons
+fosfile=/n/ram/fossil
+scorefile=/n/9fat/scorenames
+savename=$1
+
+curscore=`{fossil/last $fosfile}
+echo 'fsys main snap -a' >> $fossrv
+sleep 5
+newscore=`{fossil/last $fosfile}
+while(~ $newscore $curscore){
+	sleep 5
+	newscore=`{fossil/last $fosfile}
+}
+
+echo $savename '=' $newscore
+echo $savename '=' $newscore >>$scorefile

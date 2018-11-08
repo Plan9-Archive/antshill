@@ -1,0 +1,11 @@
+#!/bin/rc
+
+mntgen -s slashn /n
+mntgen -s slashmnt /mnt
+mntgen -s mntexport /mnt/exportfs
+chmod 666 /srv/slashn
+chmod 666 /srv/slashmnt
+chmod 666 /srv/mntexport
+auth/factotum -s factotum
+ndb/cs
+ndb/dns -r

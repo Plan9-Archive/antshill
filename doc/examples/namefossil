@@ -17,8 +17,6 @@ if(~ $#fos 0)
 	fos=ram
 score=`{echo $score |sed 's/vac://'}
 
-
-
 echo fsys main config /n/$ramsrv/fossil >/tmp/ramfosconf
 echo fsys main open -c 3000 >>/tmp/ramfosconf
 echo srv -p $fos^fscons >>/tmp/ramfosconf

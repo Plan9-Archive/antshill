@@ -1,0 +1,23 @@
+#!/bin/rc
+
+rfork
+scorefile=/n/9fat/scorenames
+key=dangerzone
+port=20019
+
+. /n/9fat/scorenames
+
+rfork V
+namefossil $$1
+sleep 1
+mv /srv/ramfossil /srv/boot
+hub -b $1.$pid
+sleep 1
+mount /srv/$1.$pid /n/h
+echo 'auth/newns' >>/n/h/io0
+sleep 1
+echo 'startsrvs' >>/n/h/io0
+sleep 1
+mount -b /srv/factotum /mnt
+echo 'key proto=dp9ik user='^$user^' dom=ramns !password='^$key >/mnt/factotum/ctl
+echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019' >>/n/h/io0
