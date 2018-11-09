@@ -2,10 +2,25 @@
 
 rfork
 scorefile=/n/9fat/scorenames
-key=dangerzone
+key=xzxzxzxz
 port=20019
 
-. /n/9fat/scorenames
+while(~ $1 -*){
+	switch($1){
+	case -k
+		key=$2
+		shift
+	case -p
+		port=$2
+		shift
+	case -v
+		scorefile=$2
+		shift
+	}
+	shift
+}
+
+. $scorefile
 
 rfork V
 namefossil $$1

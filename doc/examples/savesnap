@@ -3,7 +3,30 @@
 fossrv=/srv/ramfscons
 fosfile=/n/ram/fossil
 scorefile=/n/9fat/scorenames
+
+while (~ $1 -*){
+	switch($1){
+	case -s
+		fossrv=$2
+		shift
+	case -f
+		fosfile=$2
+		shift
+	case -v
+		scorefile=$2
+		shift
+	}
+	shift
+}
+
 savename=$1
+if(! test -e $fosfile){
+	mount /srv/ramdisk /n/ram
+	if(! test -e $fosfile){
+		echo $fosfile ' not found' >[2=1]
+		exit
+	}
+}
 
 curscore=`{fossil/last $fosfile}
 echo 'fsys main snap -a' >> $fossrv
@@ -12,6 +35,11 @@ newscore=`{fossil/last $fosfile}
 while(~ $newscore $curscore){
 	sleep 5
 	newscore=`{fossil/last $fosfile}
+}
+
+if(! ~ $newscore vac*){
+	echo 'no score received' >[2=1]
+	exit no.score
 }
 
 echo $savename '=' $newscore
