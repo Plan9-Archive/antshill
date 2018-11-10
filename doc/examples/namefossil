@@ -30,10 +30,10 @@ if(test -d /bin/fossil){
 	cp /bin/fossil/fossil /tmp/fossil.$pid
 	fossil/conf -w /n/$ramsrv/fossil /tmp/ramfosconf
 	fossil/flfmt -y -v $score /n/$ramsrv/fossil
-	tmp/fossil.$pid -f /n/$ramsrv/fossil
+	/tmp/fossil.$pid -f /n/$ramsrv/fossil
 	exit
 }
 cp /bin/fossil /tmp/fossil.$pid
 fossilconf -w /n/$ramsrv/fossil /tmp/ramfosconf
 flfmt -y -v $1 /n/$ramsrv/fossil
-tmp/fossil.$pid -f /n/$ramsrv/fossil
+/tmp/fossil.$pid -f /n/$ramsrv/fossil

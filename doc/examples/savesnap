@@ -2,7 +2,7 @@
 
 fossrv=/srv/ramfscons
 fosfile=/n/ram/fossil
-scorefile=/n/9fat/scorenames
+scorefile=/shr/9fat/scorenames
 
 while (~ $1 -*){
 	switch($1){

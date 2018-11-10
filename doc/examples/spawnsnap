@@ -1,7 +1,7 @@
 #!/bin/rc
 
 rfork
-scorefile=/n/9fat/scorenames
+scorefile=/shr/9fat/scorenames
 key=xzxzxzxz
 port=20019
 
