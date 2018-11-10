@@ -22,7 +22,8 @@ echo fsys main open -c 3000 >>/tmp/ramfosconf
 echo srv -p $fos^fscons >>/tmp/ramfosconf
 echo srv -A $fos^fossil >>/tmp/ramfosconf
 
-ramfs -S $ramsrv
+cp /bin/ramfs /tmp/ramfs.$pid
+/tmp/ramfs.$pid -S $ramsrv
 mount -c /srv/$ramsrv /n/$ramsrv
 touch /n/$ramsrv/fossil
 dd -if /dev/zero -of /n/$ramsrv/fossil -count 200000
