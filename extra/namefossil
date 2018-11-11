@@ -2,6 +2,14 @@
 # ramfossil score/vacfile [ramsrv name] [fossil fsname]
 # creates a small fossil in ram and initializes it with the provided score
 
+while (~ $1 -*){
+	switch($1){
+	case -l
+		listenport=$2
+		shift
+	}
+	shift
+}
 score=$1
 if(~ $1 *.vac)
 	score=`{cat $1}
@@ -21,6 +29,8 @@ echo fsys main config /n/$ramsrv/fossil >/tmp/ramfosconf
 echo fsys main open -c 3000 >>/tmp/ramfosconf
 echo srv -p $fos^fscons >>/tmp/ramfosconf
 echo srv -A $fos^fossil >>/tmp/ramfosconf
+if(! ~ $#listenport 0)
+	echo 'listen tcp!*!'^$listenport >>/tmp/ramfosconf
 
 cp /bin/ramfs /tmp/ramfs.$pid
 /tmp/ramfs.$pid -S $ramsrv

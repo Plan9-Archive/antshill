@@ -1,0 +1,19 @@
+fn shrscores{
+	bind -b '#S' /dev
+	9fs 9fat
+	srvfs fatsrv /n/9fat
+	mkdir '#σc'/9fat
+	echo 3 > '#σc'/9fat/fatsrv <>[3]/srv/fatsrv
+}
+
+fn updatescores{
+	while(sleep 120){
+		newname=`{cat /n/remote/shr/9fat/scorenames /shr/9fat/scorenames |sort |uniq -u}
+		if(! ~ $#newname 0){
+			echo $newname
+			echo $newname >>/shr/9fat/scorenames
+			echo $newname >>/n/tc/shr/9fat/scorenames
+		}
+	}
+}
+
