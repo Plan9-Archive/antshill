@@ -3,11 +3,15 @@
 rfork
 scorefile=/shr/9fat/scorenames
 key=xzxzxzxz
+domauth=9front
 port=20019
 dialstring=tcp!containertest!10564
 
 while(~ $1 -*){
 	switch($1){
+	case -a
+		domauth=$2
+		shift
 	case -k
 		key=$2
 		shift
@@ -34,5 +38,5 @@ sleep 1
 echo 'startsrvs' >>/n/h/io0
 sleep 1
 mount -b /srv/factotum /mnt
-echo 'key proto=dp9ik user='^$user^' dom=ramns !password='^$key >/mnt/factotum/ctl
+echo 'key proto=dp9ik user='^$user^' dom='^$domauth^' !password='^$key >/mnt/factotum/ctl
 echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019' >>/n/h/io0

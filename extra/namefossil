@@ -33,7 +33,7 @@ if(! ~ $#listenport 0)
 	echo 'listen tcp!*!'^$listenport >>/tmp/ramfosconf
 
 echo 'kill fossil.'^$pid^' |rc' >/tmp/killscript
-echo 'kill ramfs.'^$pid^' |rc' >/tmp/killscript
+echo 'kill ramfs.'^$pid^' |rc' >>/tmp/killscript
 
 cp /bin/ramfs /tmp/ramfs.$pid
 /tmp/ramfs.$pid -S $ramsrv
