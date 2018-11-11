@@ -18,5 +18,5 @@ while(~ $1 -*){
 
 . $scorefile
 
-namefossil -l $listenport $$1
+namefossil -l $listenport $$1 $1 $1
 mv /tmp/killscript /tmp/kill.$1
