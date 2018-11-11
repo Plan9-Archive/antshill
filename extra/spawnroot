@@ -3,6 +3,7 @@
 rfork
 scorefile=/shr/9fat/scorenames
 listenport=10564
+rootname=foo
 
 while(~ $1 -*){
 	switch($1){
@@ -16,7 +17,9 @@ while(~ $1 -*){
 	shift
 }
 
+rootname=$1
+
 . $scorefile
 
-namefossil -l $listenport $$1 $1 $1
-mv /tmp/killscript /tmp/kill.$1
+namefossil -l $listenport $$rootname $rootname $rootname
+mv /tmp/killscript /tmp/kill.$rootname

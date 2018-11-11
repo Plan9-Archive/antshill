@@ -6,6 +6,7 @@ key=xzxzxzxz
 domauth=9front
 port=20019
 dialstring=tcp!containertest!10564
+hubname=inithub
 
 while(~ $1 -*){
 	switch($1){
@@ -28,11 +29,14 @@ while(~ $1 -*){
 	shift
 }
 
+if(! ~ $#1 0)
+	hubname=$1
+
 rfork V
 srv $dialstring boot
-hub -b $1.$pid
+hub -b $hubname.$pid
 sleep 1
-mount /srv/$1.$pid /n/h
+mount /srv/$hubname.$pid /n/h
 echo 'auth/newns' >>/n/h/io0
 sleep 1
 echo 'startsrvs' >>/n/h/io0
