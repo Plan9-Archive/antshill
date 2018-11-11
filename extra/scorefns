@@ -12,7 +12,7 @@ fn updatescores{
 		if(! ~ $#newname 0){
 			echo $newname
 			echo $newname >>/shr/9fat/scorenames
-			echo $newname >>/n/tc/shr/9fat/scorenames
+			echo $newname >>/n/remote/shr/9fat/scorenames
 		}
 	}
 }

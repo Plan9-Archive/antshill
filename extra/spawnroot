@@ -1,0 +1,21 @@
+#!/bin/rc
+
+rfork
+scorefile=/shr/9fat/scorenames
+
+while(~ $1 -*){
+	switch($1){
+	case -l
+		listenport=$2
+		shift
+	case -v
+		scorefile=$2
+		shift
+	}
+	shift
+}
+
+. $scorefile
+
+namefossil $$1
+mv /tmp/killscript /tmp/kill.$1
