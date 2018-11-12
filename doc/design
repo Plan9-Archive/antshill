@@ -1,0 +1,18 @@
+services needed:
+
+spawnroot(scorename, listenport)
+	generate fsname and fsconsname from the scorename?
+	where do we put the /srv files?
+
+fetchroot(dialstring, startscript, listenport)
+	should automate the fact that listenport from spawnroot and dialstring here should match
+
+/* actually we should probably package spawnroot and fetchroot together at top level ui? */
+/* but make it still possible to separate because you often want multiple userspace on one root */
+
+savesnap [optional name]
+	update the rootscore of current name or provide a new name
+
+cleanup
+	free resources of the current environment
+

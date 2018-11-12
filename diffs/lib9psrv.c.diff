@@ -1,0 +1,14 @@
+--- /sys/src/lib9p/srv.c	Wed Dec 20 16:16:57 2017
++++ lib9p/srv.c	Sat Nov 10 20:39:55 2018
+@@ -924,7 +924,10 @@
+ 	int fd;
+ 	char buf[80];
+ 
+-	snprint(buf, sizeof buf, "/srv/%s", name);
++	if(strncmp(name, "/", 1) == 0)
++		snprint(buf, sizeof buf, name);
++	else
++		snprint(buf, sizeof buf, "/srv/%s", name);
+ 	if(chatty9p)
+ 		fprint(2, "postfd %s\n", buf);
+ 	fd = create(buf, OWRITE|ORCLOSE|OCEXEC, 0600);

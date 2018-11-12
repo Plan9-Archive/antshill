@@ -11,6 +11,7 @@ bind #d /fd
 bind -c #e /env
 bind #p /proc
 bind -c #s /srv
+bind -c #z /zrv
 bind -a #¤ /dev
 bind -a #S /dev
 bind -b #k /dev

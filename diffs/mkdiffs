@@ -11,6 +11,7 @@ ape/diff -u /sys/src/9/port/auth.c ../frontmods/port/auth.c >auth.c.diff
 ape/diff -u /sys/src/9/port/chan.c ../frontmods/port/chan.c >chan.c.diff
 ape/diff -u /sys/src/9/port/devproc.c ../frontmods/port/devproc.c >devproc.c.diff
 ape/diff -u /sys/src/9/port/devsrv.c ../frontmods/port/devsrv.c >devsrv.c.diff
+ape/diff -u /sys/src/9/port/devroot.c ../frontmods/port/devroot.c >devroot.c.diff
 ape/diff -u /sys/src/9/port/proc.c ../frontmods/port/proc.c >proc.c.diff
 ape/diff -u /sys/src/9/port/sysproc.c ../frontmods/port/sysproc.c >sysproc.c.diff
 ape/diff -u /sys/src/9/port/portdat.h ../frontmods/port/portdat.h >portdat.h.diff
@@ -20,6 +21,7 @@ ape/diff -u /sys/src/cmd/auth/factotum/fs.c ../frontmods/factotum/fs.c >factotum
 ape/diff -u /sys/src/cmd/auth/factotum/util.c ../frontmods/factotum/util.c >factotumutil.c.diff
 ape/diff -u /sys/src/cmd/auth/factotum/dat.h ../frontmods/factotum/dat.h >factotumdat.h.diff
 ape/diff -u /sys/include/libc.h.orig ../frontmods/include/libc.h >libc.h.diff
+ape/diff -u /sys/src/lib9p/srv.c ../frontmods/lib9p/srv.c >lib9psrv.c.diff
 ape/diff -u /sys/src/cmd/aux/listen.c ../patched/gridlisten.c >gridlisten.c.diff
 ape/diff -u /sys/src/cmd/aux/listen1.c ../patched/gridlisten1.c >gridlisten1.c.diff
 ape/diff -Nurp /sys/src/cmd/rio ../grio >grio.diffs

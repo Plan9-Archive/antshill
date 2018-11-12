@@ -12,6 +12,7 @@ cp ../frontmods/port/auth.c ../frontmods/port/auth.c.old
 cp ../frontmods/port/chan.c ../frontmods/port/chan.c.old
 cp ../frontmods/port/devproc.c ../frontmods/port/devproc.c.old
 cp ../frontmods/port/devsrv.c ../frontmods/port/devsrv.c.old
+cp ../frontmods/port/devroot.c ../frontmods/port/devroot.c.old
 cp ../frontmods/port/proc.c ../frontmods/port/proc.c.old
 cp ../frontmods/port/sysproc.c ../frontmods/port/sysproc.c.old
 cp ../frontmods/port/portdat.h ../frontmods/port/portdat.h.old
@@ -21,6 +22,7 @@ cp ../frontmods/factotum/fs.c ../frontmods/factotum/fs.c.old
 cp ../frontmods/factotum/util.c ../frontmods/factotum/util.c.old
 cp ../frontmods/factotum/dat.h ../frontmods/factotum/dat.h.old
 cp ../frontmods/include/libc.h ../frontmods/include/libc.h.old
+cp ../frontmods/lib9p/srv.c ../frontmods/lib9p/srv.c.old
 cp ../patched/gridlisten.c ../patched/gridlisten.c.old
 cp ../patched/gridlisten1.c ../patched/gridlisten1.c.old
 mkdir ../grio.old
@@ -38,6 +40,7 @@ cp /sys/src/9/port/auth.c ../frontmods/port/auth.c
 cp /sys/src/9/port/chan.c ../frontmods/port/chan.c
 cp /sys/src/9/port/devproc.c ../frontmods/port/devproc.c
 cp /sys/src/9/port/devsrv.c ../frontmods/port/devsrv.c
+cp /sys/src/9/port/devroot.c ../frontmods/port/devroot.c
 cp /sys/src/9/port/proc.c ../frontmods/port/proc.c
 cp /sys/src/9/port/sysproc.c ../frontmods/port/sysproc.c
 cp /sys/src/9/port/portdat.h ../frontmods/port/portdat.h
@@ -47,6 +50,7 @@ cp /sys/src/cmd/auth/factotum/fs.c ../frontmods/factotum/fs.c
 cp /sys/src/cmd/auth/factotum/util.c ../frontmods/factotum/util.c
 cp /sys/src/cmd/auth/factotum/dat.h ../frontmods/factotum/dat.h
 cp /sys/include/libc.h ../frontmods/include/libc.h
+cp /sys/src/lib9p/srv.c ../frontmods/lib9p/srv.c
 cp /sys/src/cmd/aux/listen.c ../patched/gridlisten.c
 cp /sys/src/cmd/aux/listen1.c ../patched/gridlisten1.c
 rm ../grio/*
@@ -64,6 +68,7 @@ ape/patch ../frontmods/port/auth.c <auth.c.diff
 ape/patch ../frontmods/port/chan.c <chan.c.diff
 ape/patch ../frontmods/port/devproc.c <devproc.c.diff
 ape/patch ../frontmods/port/devsrv.c <devsrv.c.diff
+ape/patch ../frontmods/port/devroot.c <devroot.c.diff
 ape/patch ../frontmods/port/proc.c <proc.c.diff
 ape/patch ../frontmods/port/sysproc.c <sysproc.c.diff
 ape/patch ../frontmods/port/portdat.h <portdat.h.diff
@@ -73,6 +78,7 @@ ape/patch ../frontmods/factotum/fs.c <factotumfs.c.diff
 ape/patch ../frontmods/factotum/util.c <factotumutil.c.diff
 ape/patch ../frontmods/factotum/dat.h <factotumdat.h.diff
 ape/patch ../frontmods/include/libc.h <libc.h.diff
+ape/patch ../frontmods/lib9p/srv.c <lib9psrv.c.diff
 ape/patch ../patched/gridlisten.c <gridlisten.c.diff
 ape/patch ../patched/gridlisten1.c <gridlisten1.c.diff
 cd ..
