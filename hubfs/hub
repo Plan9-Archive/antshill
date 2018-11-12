@@ -11,6 +11,9 @@ while (~ $1 -*){
 	case -t
 		trunc = yes
 		shift
+	case -z
+		usezrv = yes
+		shift
 	case *
 		echo bad flag $1
 		shift
@@ -27,10 +30,18 @@ if(~ $attach ''){
 
 fn starthubfs {
 	echo creating hubfs /srv/$srvname
-	if (! ~ $trunc yes)
-		hubfs -s $srvname
-	if (~ $trunc yes)
-		hubfs -t -s $srvname
+	if (! ~ $trunc yes){
+		if(~ $usezrv yes)
+			hubfs -s /zrv/^$srvname
+		if not
+			hubfs -s $srvname
+	}
+	if (~ $trunc yes){
+		if(~ $usezrv yes)
+			hubfs -t -s /zrv/^$srvname
+		if not
+			hubfs -t -s $srvname
+	}
 }
 
 fn makehubs {
@@ -49,9 +60,16 @@ fn makehubs {
 
 if (! test -e /n/$srvname/$attach'0'){
 	if (! test -e /n/$srvname/io0){
-		if (! test -e /srv/$srvname)
-			starthubfs
-		mount -c /srv/$srvname /n/$srvname
+		if(~ $usezrv yes)
+			if (! test -e /zrv/$srvname)
+				starthubfs
+		if not
+			if (! test -e /srv/$srvname)
+				starthubfs
+		if(~ $usezrv yes)
+			mount -c /zrv/$srvname /n/$srvname
+		if not
+			mount -c /srv/$srvname /n/$srvname
 	}
 	if (! test -e /n/$srvname/$attach'0')
 		makehubs
