@@ -1,0 +1,10 @@
+--- /sys/src/9/port/devroot.c	Sun Feb 28 16:48:50 2016
++++ ../frontmods/port/devroot.c	Mon Nov 12 06:10:36 2018
+@@ -108,6 +108,7 @@
+ 	addrootdir("root");
+ 	addrootdir("srv");
+ 	addrootdir("shr");
++	addrootdir("zrv");
+ }
+ 
+ static Chan*

@@ -1,5 +1,5 @@
---- /sys/src/lib9p/srv.c	Wed Dec 20 16:16:57 2017
-+++ lib9p/srv.c	Sat Nov 10 20:39:55 2018
+--- /sys/src/lib9p/srv.c	Mon Nov 12 06:11:12 2018
++++ ../frontmods/lib9p/srv.c	Mon Nov 12 06:10:36 2018
 @@ -924,7 +924,10 @@
  	int fd;
  	char buf[80];
