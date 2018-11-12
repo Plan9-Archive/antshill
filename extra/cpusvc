@@ -1,0 +1,20 @@
+#!/bin/rc
+
+rfork
+while(cmd=`{read}){
+	switch($cmd){
+	case spawn*
+		echo spawn not supported on cpu node
+	case fetch*
+		fetchroot -d $cmd(2) -p $cmd(3) -k $cmd(4)
+	case save*
+		echo save
+	case clean*
+		echo clean
+	case exit
+		exit
+	case *
+		echo unknown
+	}
+}
+

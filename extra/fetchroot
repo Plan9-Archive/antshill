@@ -34,13 +34,13 @@ if(! ~ $#1 0)
 
 rfork V
 srv $dialstring boot
-hub -b $hubname.$pid
+hub -b -z $hubname.$pid
 sleep 1
-mount /srv/$hubname.$pid /n/h
+mount /zrv/$hubname.$pid /n/h
 echo 'auth/newns' >>/n/h/io0
 sleep 1
 echo 'startsrvs' >>/n/h/io0
 sleep 1
 mount -b /srv/factotum /mnt
 echo 'key proto=dp9ik user='^$user^' dom='^$domauth^' !password='^$key >/mnt/factotum/ctl
-echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019' >>/n/h/io0
+echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019 &' >>/n/h/io0

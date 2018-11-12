@@ -1,0 +1,20 @@
+#!/bin/rc
+
+rfork
+while(cmd=`{read}){
+	switch($cmd){
+	case spawn*
+		spawnroot -l $cmd(2) $cmd(3)
+	case fetch*
+		echo fetch not supported on storage node
+	case save*
+		echo save
+	case clean*
+		echo clean
+	case exit
+		exit
+	case *
+		echo unknown
+	}
+}
+
