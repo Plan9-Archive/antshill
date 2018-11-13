@@ -4,11 +4,11 @@ rfork
 while(cmd=`{read}){
 	switch($cmd){
 	case spawn*
-		spawnroot -l $cmd(2) $cmd(3)
+		spawnroot -l $cmd(2) $cmd(3) &
 	case fetch*
 		echo fetch not supported on storage node
 	case save*
-		echo save
+		savesnap -r /srv^$cmd(2) -s /srv^$cmd(2)^fscons $cmd(3) &
 	case clean*
 		echo clean
 	case exit

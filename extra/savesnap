@@ -1,13 +1,17 @@
 #!/bin/rc
 
-fossrv=/srv/ramfscons
+ramsrv=/srv/ramdisk
+fscons=/srv/ramfscons
 fosfile=/n/ram/fossil
 scorefile=/shr/9fat/scorenames
 
 while (~ $1 -*){
 	switch($1){
+	case -r
+		ramsrv=$2
+		shift
 	case -s
-		fossrv=$2
+		fscons=$2
 		shift
 	case -f
 		fosfile=$2
@@ -20,8 +24,10 @@ while (~ $1 -*){
 }
 
 savename=$1
+if(~ $#savename 0)
+	savename=ramsrv
 if(! test -e $fosfile){
-	mount /srv/ramdisk /n/ram
+	mount $ramsrv /n/ram
 	if(! test -e $fosfile){
 		echo $fosfile ' not found' >[2=1]
 		exit
@@ -29,7 +35,7 @@ if(! test -e $fosfile){
 }
 
 curscore=`{fossil/last $fosfile}
-echo 'fsys main snap -a' >> $fossrv
+echo 'fsys main snap -a' >> $fscons
 sleep 5
 newscore=`{fossil/last $fosfile}
 while(~ $newscore $curscore){
