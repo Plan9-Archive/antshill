@@ -17,3 +17,23 @@ fn updatescores{
 	}
 }
 
+fn makectlhub{
+	hubfs -t -s /srv/gridsvc
+	mount -c /srv/gridsvc /n/g
+	touch /n/g/sto.in
+	touch /n/g/sto.out
+	touch /n/g/sto.err
+	touch /n/g/cpu.in
+	touch /n/g/cpu.out
+	touch /n/g/cpu.err
+}
+
+fn startstosvc{
+	mount /srv/gridsvc /n/g
+	storagesvc </n/g/sto.in >/n/g/sto.out >[2]/n/g/sto.err &
+}
+
+fn startcpusvc{
+	mount /n/sto/gridsvc /n/g
+	cpusvc </n/g/cpu.in >/n/g/cpu.out >[2]/n/g/cpu.err &
+}
