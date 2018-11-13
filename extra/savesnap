@@ -25,13 +25,11 @@ while (~ $1 -*){
 
 savename=$1
 if(~ $#savename 0)
-	savename=ramsrv
+	savename=$ramsrv
+mount $ramsrv /n/ram
 if(! test -e $fosfile){
-	mount $ramsrv /n/ram
-	if(! test -e $fosfile){
-		echo $fosfile ' not found' >[2=1]
-		exit
-	}
+	echo $fosfile ' not found' >[2=1]
+	exit
 }
 
 curscore=`{fossil/last $fosfile}
