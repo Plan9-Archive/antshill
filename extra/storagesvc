@@ -8,7 +8,7 @@ while(usercmd=`{read}){
 	case fetch*
 		echo fetch not supported on storage node
 	case save*
-		savesnap -r /srv^$usercmd(2) -s /srv^$usercmd(2)^fscons $usercmd(3) &
+		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3) &
 	case clean*
 		echo clean
 	case exit
