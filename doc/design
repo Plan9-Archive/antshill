@@ -16,3 +16,56 @@ savesnap [optional name]
 cleanup
 	free resources of the current environment
 
+setup log:
+
+install from ants4.3beta64 iso, venti - chose cpu+auth
+sysupdate
+update /sys/src/ants, remove ants/frontmods/include/libc.rebuild.complete
+build 9front && build fronthost && install in 9fat
+set venti listener parameter to public in plan9.ini
+add bind -c '#z' /zrv to /lib/namespace
+cd /sys/src && mk install && mk clean
+
+repeat process for second node but setup as terminal at first
+then change to service=cpu after install
+set ndb to point to first node as auth server
+
+fshalt -r both nodes
+
+cp ants/extra/* to /rc/bin on both nodes
+. /rc/bin/scorefns both nodes
+create bkup.info in 9fat for both nodes with venti= string set to other node
+perform fs snap on storage and create initial scorenames file in 9fat with that score on both nodes
+
+makectlhub && startstosvc on storage
+rimport storage /srv /n/sto && startcpusvc on cpu
+
+=====
+
+contest2% cd /shr/9fat
+contest2% hub proghub
+creating hubfs /srv/proghub
+io% webfs
+io% bind -b '#S' /dev
+io% while(sleep 120)ventiprog
+
+contest2% hub scosynchub
+creating hubfs /srv/scosynchub
+io% . /rc/bin/scorefns
+io% rimport contest3 / /n/remote
+io% updatescores
+
+===
+
+term% rimport -c contest2 / /n/ct2
+term% mount /n/ct2/srv/gridsvc /n/g
+term% lc /n/g
+cpu.err	cpu.in	cpu.out	sto.err	sto.in	sto.out
+term% echo spawn 20000 cleanroot >>/n/g/sto.in
+term% echo fetch tcp!contest2!20000 20000 auth.key >>/n/g/cpu.in
+term% cpu -h tcp!contest3!20000
+...
+term% echo save cleanroot addrsatoys >>/n/g/sto.in
+term% echo spawn 20100 addrsatoys >>/n/g/sto.in
+term% echo fetch tcp!contest2!20100 20100 auth.key >>/n/g/cpu.in
+term% cpu -h tcp!contest3!20100
