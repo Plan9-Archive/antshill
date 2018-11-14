@@ -1,10 +1,15 @@
 #!/bin/rc
 
+echo 20000 >/tmp/nextport
 rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
-		spawnroot -l $usercmd(2) $usercmd(3) &
+		stoport=`{cat /tmp/nextport}
+		spawnroot -l $stoport $usercmd(2) &
+		echo fetch tcp!^$sysname^!^$stoport
+		stoport=`{echo $stoport '+ 1' |hoc}
+		echo $stoport >/tmp/nextport
 	case fetch*
 		echo fetch not supported on storage node
 	case save*

@@ -28,10 +28,10 @@ fn makectlhub{
 
 fn startstosvc{
 	mount /srv/gridsvc /n/g
-	storagesvc </n/g/sto.in >/n/g/sto.out >[2]/n/g/sto.err &
+	storagesvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
 }
 
 fn startcpusvc{
 	mount /n/sto/gridsvc /n/g
-	cpusvc </n/g/cpu.in >/n/g/cpu.out >[2]/n/g/cpu.err &
+	cpusvc </n/g/cpu.in >>/n/g/cpu.out >>[2]/n/g/cpu.err &
 }

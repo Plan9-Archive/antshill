@@ -1,6 +1,6 @@
 #!/bin/rc
 
-hostkey=$1
+echo 20000 >/tmp/nextport
 
 rfork
 while(usercmd=`{read}){
@@ -8,7 +8,11 @@ while(usercmd=`{read}){
 	case spawn*
 		echo spawn not supported on cpu node
 	case fetch*
-		fetchroot -d $usercmd(2) -p $usercmd(3) &
+		cpuport=`{cat /tmp/nextport}
+		fetchroot -d $usercmd(2) -p $cpuport &
+		echo rcpu -h tcp!^$sysname^!^$cpuport
+		cpuport=`{echo $cpuport '+ 1' |hoc}
+		echo $cpuport >/tmp/nextport
 	case save*
 		echo save
 	case clean*
