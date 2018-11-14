@@ -12,12 +12,18 @@ rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
-		stoport=`{cat /tmp/nextport}
-		echo spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
-		spawnroot -l $stoport $usercmd(2) &
-		echo 'echo fetch tcp!'^$ip^'!'^$stoport^' >>/n/g/cpu.in'
-		stoport=`{echo $stoport '+ 2' |hoc}
-		echo $stoport >/tmp/nextport
+		if(test -e /srv/^$usercmd(2)){
+			echo that root is already being served from this storage node >[2=1]
+			echo use save to clone it to a new name if desired >[2=1]
+		}
+		if not {
+			stoport=`{cat /tmp/nextport}
+			echo spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
+			spawnroot -l $stoport $usercmd(2) &
+			echo 'echo fetch tcp!'^$ip^'!'^$stoport^' >>/n/g/cpu.in'
+			stoport=`{echo $stoport '+ 2' |hoc}
+			echo $stoport >/tmp/nextport
+		}
 	case fetch*
 		echo fetch not supported on storage node >[2=1]
 	case save*
