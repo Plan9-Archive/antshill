@@ -1,0 +1,34 @@
+#!/bin/rc
+# user facing grid orchestration helper
+
+if(! test -e /n/g/sto.in){
+	echo no grid service found at /n/g >[2=1]
+	exit
+}
+rfork
+
+cat /n/g/sto.out &
+cat /n/g/sto.err &
+cat /n/g/cpu.out &
+cat /n/g/cpu.err &
+
+while(usercmd=`{read}){
+	switch($usercmd){
+	case scores
+		echo scores >>/n/g/sto.in
+	case spawn*
+		echo $usercmd >>/n/g/sto.in
+	case save*
+		echo $usercmd >>/n/g/sto.in
+	case fetch*
+		echo $usercmd >>/n/g/cpu.in
+	case stolog
+		echo log >>/n/g/sto.in
+	case cpulog
+		echo log >>/n/g/cpu.in
+	case exit
+		exit
+	case *
+		echo unknown command >[2=1]
+	}
+}

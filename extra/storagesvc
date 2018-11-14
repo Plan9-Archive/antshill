@@ -21,7 +21,7 @@ while(usercmd=`{read}){
 			stoport=`{cat /tmp/nextport}
 			echo spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
 			spawnroot -l $stoport $usercmd(2) &
-			echo 'echo fetch tcp!'^$ip^'!'^$stoport^' >>/n/g/cpu.in'
+			echo 'fetch tcp!'^$ip^'!'^$stoport
 			stoport=`{echo $stoport '+ 2' |hoc}
 			echo $stoport >/tmp/nextport
 		}
