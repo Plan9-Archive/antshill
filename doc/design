@@ -33,7 +33,7 @@ set ndb to point to first node as auth server
 fshalt -r both nodes
 
 cp ants/extra/* to /rc/bin on both nodes
-. /rc/bin/scorefns && shrscores both nodes
+. /rc/bin/scorefns && srvscores both nodes
 create bkup.info in 9fat for both nodes with venti= string set to other node
 perform fs snap on storage and create initial scorenames file in 9fat with that score on both nodes
 
@@ -43,10 +43,11 @@ rimport storage /srv /n/sto && startcpusvc on cpu
 =====
 
 contest2% . /rc/bin/scorefns
-contest2% shrscores
+contest2% srvscores
 contest2% makectlhub
 contest2% startstosvc
-contest2% rimport contest3 / /n/remote
+contest2% rimport contest3 / /n/ct3
+contest2% mount /n/ct3/srv/fatsrv /n/remote9fat
 contest2% hub scosynchub
 creating hubfs /srv/scosynchub
 io% updatescores
@@ -59,7 +60,7 @@ io% bind -b '#S' /dev
 io% while(sleep 120)ventiprog
 
 contest3% . /rc/bin/scorefns
-contest3% shrscores
+contest3% srvscores
 contest3% rimport contest2 /srv /n/sto
 contest3% startcpusvc
 
@@ -70,10 +71,10 @@ term% mount /n/ct2/srv/gridsvc /n/g
 term% lc /n/g
 cpu.err	cpu.in	cpu.out	sto.err	sto.in	sto.out
 term% echo spawn 20000 cleanroot >>/n/g/sto.in
-term% echo fetch tcp!contest2!20000 20000 auth.key >>/n/g/cpu.in
+term% echo fetch tcp!contest2!20000 20000 >>/n/g/cpu.in
 term% cpu -h tcp!contest3!20000
 ...
 term% echo save cleanroot addrsatoys >>/n/g/sto.in
 term% echo spawn 20100 addrsatoys >>/n/g/sto.in
-term% echo fetch tcp!contest2!20100 20100 auth.key >>/n/g/cpu.in
+term% echo fetch tcp!contest2!20100 20100 >>/n/g/cpu.in
 term% cpu -h tcp!contest3!20100
