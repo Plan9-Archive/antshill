@@ -42,6 +42,8 @@ rimport storage /srv /n/sto && startcpusvc on cpu
 
 =====
 
+(not in needed sequence between machines)
+
 contest2% . /rc/bin/scorefns
 contest2% srvscores
 contest2% makectlhub
@@ -53,11 +55,12 @@ contest2% hub scosynchub
 creating hubfs /srv/scosynchub
 io% updatescores
 
-contest2% cd /shr/9fat
+contest2% webfs
+contest2% bind -b '#S' /dev
+contest2% 9fs 9fat
+contest2% cd /n/9fat
 contest2% hub proghub
 creating hubfs /srv/proghub
-io% webfs
-io% bind -b '#S' /dev
 io% while(sleep 120)ventiprog
 
 contest3% . /rc/bin/scorefns

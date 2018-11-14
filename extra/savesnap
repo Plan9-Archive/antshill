@@ -3,7 +3,7 @@
 ramsrv=/srv/ramdisk
 fscons=/srv/ramfscons
 fosfile=/n/ram/fossil
-scorefile=/shr/9fat/scorenames
+scorefile=/n/9fat/scorenames
 
 while (~ $1 -*){
 	switch($1){
@@ -45,6 +45,9 @@ if(! ~ $newscore vac*){
 	echo 'no score received' >[2=1]
 	exit no.score
 }
+
+if(! test -e $scorefile)
+	mount -c /srv/fatsrv /n/9fat
 
 echo $savename '=' $newscore
 echo $savename '=' $newscore >>$scorefile
