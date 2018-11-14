@@ -1,6 +1,6 @@
 #!/bin/rc
 
-echo 20000 >/tmp/nextport
+echo 20001 >/tmp/nextport
 rfork
 while(usercmd=`{read}){
 	switch($usercmd){
@@ -8,12 +8,16 @@ while(usercmd=`{read}){
 		stoport=`{cat /tmp/nextport}
 		spawnroot -l $stoport $usercmd(2) &
 		echo fetch tcp!^$sysname^!^$stoport
-		stoport=`{echo $stoport '+ 1' |hoc}
+		stoport=`{echo $stoport '+ 2' |hoc}
 		echo $stoport >/tmp/nextport
 	case fetch*
 		echo fetch not supported on storage node
 	case save*
 		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3) &
+	case scores
+		if(! test -e /n/9fat/scorenames)
+			mount /srv/fatsrv /n/9fat
+		cat /n/9fat/scorenames |uniq
 	case clean*
 		echo clean
 	case exit

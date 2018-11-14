@@ -11,7 +11,7 @@ while(usercmd=`{read}){
 		cpuport=`{cat /tmp/nextport}
 		fetchroot -d $usercmd(2) -p $cpuport &
 		echo rcpu -h tcp!^$sysname^!^$cpuport
-		cpuport=`{echo $cpuport '+ 1' |hoc}
+		cpuport=`{echo $cpuport '+ 2' |hoc}
 		echo $cpuport >/tmp/nextport
 	case save*
 		echo save
