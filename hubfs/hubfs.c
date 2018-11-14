@@ -73,6 +73,7 @@ int numhubs;					/* Total number of hubs in existence */
 int paranoia;					/* Paranoid mode maintains loose reader/writer sync */
 int freeze;						/* In frozen mode the hubs operate simply as a ramfs */
 int trunc;						/* In trunc mode only new data is sent, not buffered */
+int allowzap;					/* Determine whether a buffer can be emptied forcibly */
 int endoffile;					/* Send zero length end of file read to all clients */
 int applylimits;				/* Whether time/rate limits are applied */
 vlong bytespersecond;			/* Bytes per second allowed by rate limiting */
@@ -460,9 +461,11 @@ fsopen(Req *r)
 	q->nxt = h->bucket;
 	q->bufuse = 0;
 	if(r->ifcall.mode&OTRUNC){
-		h->inbuckp = h->bucket;
-		h->buckfull = 0;
-		r->fid->file->length = 0;
+		if(allowzap){
+			h->inbuckp = h->bucket;
+			h->buckfull = 0;
+			r->fid->file->length = 0;
+		}
 	}
 	if (trunc == UP){
 		q->nxt = h->inbuckp;
@@ -723,6 +726,7 @@ main(int argc, char **argv)
 	paranoia = DOWN;
 	freeze = DOWN;
 	trunc = DOWN;
+	allowzap = DOWN;
 	endoffile = DOWN;
 	applylimits = DOWN;
 	numhubs = 0;
@@ -783,6 +787,9 @@ main(int argc, char **argv)
 		break;
 	case 't':
 		trunc = UP;
+		break;
+	case 'z':
+		allowzap = UP;
 		break;
 	default:
 		usage();
