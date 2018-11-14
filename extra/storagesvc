@@ -30,7 +30,7 @@ while(usercmd=`{read}){
 			mount /srv/fatsrv /n/9fat
 		cat /n/9fat/scorenames |uniq
 	case log
-		cat /tmp/scolog.$pid
+		cat /tmp/stolog.$pid
 	case clean*
 		echo clean
 	case exit
