@@ -1,6 +1,7 @@
 #!/bin/rc
 
-echo 20001 >/tmp/nextport
+if(! test -e /tmp/nextport)
+	echo 20000 >/tmp/nextport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
 

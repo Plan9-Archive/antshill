@@ -21,10 +21,11 @@ setup log:
 install from ants4.3beta64 iso, venti - chose cpu+auth
 sysupdate
 update /sys/src/ants, remove ants/frontmods/include/libc.rebuild.complete
-build 9front && build fronthost && install in 9fat
+build 9front && build fronthost
 set venti listener parameter to public in plan9.ini
 add bind -c '#z' /zrv to /lib/namespace
 cd /sys/src && mk install && mk clean
+redo build 9front && build fronthost and install in 9fat
 
 repeat process for second node but setup as terminal at first
 then change to service=cpu after install
@@ -37,48 +38,43 @@ cp ants/extra/* to /rc/bin on both nodes
 create bkup.info in 9fat for both nodes with venti= string set to other node
 perform fs snap on storage and create initial scorenames file in 9fat with that score on both nodes
 
-makectlhub && startstosvc on storage
-rimport storage /srv /n/sto && startcpusvc on cpu
-
-=====
-
-(not in needed sequence between machines)
-
-contest2% . /rc/bin/scorefns
-contest2% srvscores
-contest2% makectlhub
-contest2% chmod 666 /srv/gridsvc
-contest2% startstosvc
-contest2% rimport contest3 / /n/ct3
-contest2% mount /n/ct3/srv/fatsrv /n/remote9fat
-contest2% hub scosynchub
+====
+contest4% . /rc/bin/scorefns
+contest4% storageinit
+contest4% syncventis
+creating hubfs /srv/proghub
+ # break to setup cpu
+contest5% . /rc/bin/scorefns
+contest5% srvscores
+contest5% rimport contest4 /srv /n/sto
+contest5% startcpusvc
+ # back to storage
+contest4% rimport contest5 / /n/ct5
+contest4% mount /n/ct5/srv/fatsrv /n/remote9fat
+contest4% hub scosynchub
 creating hubfs /srv/scosynchub
 io% updatescores
-
-contest2% webfs
-contest2% bind -b '#S' /dev
-contest2% 9fs 9fat
-contest2% cd /n/9fat
-contest2% hub proghub
-creating hubfs /srv/proghub
-io% while(sleep 120)ventiprog
-
-contest3% . /rc/bin/scorefns
-contest3% srvscores
-contest3% rimport contest2 /srv /n/sto
-contest3% startcpusvc
-
 =====
-
-term% rimport -c contest2 / /n/ct2
-term% mount /n/ct2/srv/gridsvc /n/g
 term% lc /n/g
 cpu.err	cpu.in	cpu.out	sto.err	sto.in	sto.out
-term% echo spawn 20000 cleanroot >>/n/g/sto.in
-term% echo fetch tcp!contest2!20000 20000 >>/n/g/cpu.in
-term% cpu -h tcp!contest3!20000
-...
-term% echo save cleanroot addrsatoys >>/n/g/sto.in
-term% echo spawn 20100 addrsatoys >>/n/g/sto.in
-term% echo fetch tcp!contest2!20100 20100 >>/n/g/cpu.in
-term% cpu -h tcp!contest3!20100
+term% cat /n/g/sto.err &
+term% cat /n/g/sto.out &
+term% cd /n/g
+term% cat cpu.out &
+term% cat cpu.err &
+term% echo scores >>sto.in
+firstroot = vac:4a9c17829d1d4ffaea0ac
+fixroot = vac:24f27ac7c7a18cee0fe5d419
+extrarabbit = vac:3da8595fc6855e0b6fc3cead86317ea6f7904407
+term% echo spawn extrarabbit >>sto.in
+echo fetch tcp!66.42.114.253!20000 >>/n/g/cpu.in
+term% 200000+0 records in
+200000+0 records out
+05f5fb52c54f87168b29108
+b64619ce848930d512692033d
+d492ad05300588cde21f7875
+fsys: dialing venti at tcp!127.1!17034
+echo fetch tcp!66.42.114.253!20000 >>/n/g/cpu.in
+rcpu -h tcp!149.28.123.59!20001
+post...
+term% creating hubfs /srv/inithub.762

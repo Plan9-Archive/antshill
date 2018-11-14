@@ -1,6 +1,10 @@
 #!/bin/rc
 
-echo 20000 >/tmp/nextport
+if(! test -e /tmp/stononce)
+	echo 1009 >tmp/stononce
+nonce = `{cat /tmp/stononce}
+if(! test -e /tmp/nextport)
+	echo 20000 >/tmp/nextport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
 
@@ -17,8 +21,10 @@ while(usercmd=`{read}){
 	case fetch*
 		echo fetch not supported on storage node >[2=1]
 	case save*
-		echo savesnap $usercmd(2) $usercmd(3) >>/tmp/stolog.$pid
-		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3) &
+		echo savesnap $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
+		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
+		nonce=`{echo $nonce ' + 100 ' |hoc}
+		echo $nonce >/tmp/stononce
 	case scores
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
