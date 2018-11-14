@@ -3,6 +3,10 @@
 # hub [srvname] [shellname]
 
 rfork enf
+usezrv=no
+background=no
+trunc=no
+
 while (~ $1 -*){
 	switch($1){
 	case -b
