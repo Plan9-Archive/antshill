@@ -45,6 +45,7 @@ rimport storage /srv /n/sto && startcpusvc on cpu
 contest2% . /rc/bin/scorefns
 contest2% srvscores
 contest2% makectlhub
+contest2% chmod 666 /srv/gridsvc
 contest2% startstosvc
 contest2% rimport contest3 / /n/ct3
 contest2% mount /n/ct3/srv/fatsrv /n/remote9fat
