@@ -1,23 +1,30 @@
 #!/bin/rc
 
-echo 20001 >/tmp/nextport
+echo 20000 >/tmp/nextport
+ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
+. /tmp/myip
+
 rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
 		stoport=`{cat /tmp/nextport}
+		echo spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
 		spawnroot -l $stoport $usercmd(2) &
-		echo fetch tcp!^$sysname^!^$stoport
+		echo 'echo fetch tcp!'^$ip^'!'^$stoport^' >>/n/g/cpu.in'
 		stoport=`{echo $stoport '+ 2' |hoc}
 		echo $stoport >/tmp/nextport
 	case fetch*
-		echo fetch not supported on storage node
+		echo fetch not supported on storage node >[2=1]
 	case save*
+		echo savesnap $usercmd(2) $usercmd(3) >>/tmp/stolog.$pid
 		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3) &
 	case scores
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
 		cat /n/9fat/scorenames |uniq
+	case log
+		cat /tmp/scolog.$pid
 	case clean*
 		echo clean
 	case exit

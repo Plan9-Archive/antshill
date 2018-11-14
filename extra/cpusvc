@@ -1,18 +1,23 @@
 #!/bin/rc
 
-echo 20000 >/tmp/nextport
+echo 20001 >/tmp/nextport
+ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
+. /tmp/myip
 
 rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
-		echo spawn not supported on cpu node
+		echo spawn not supported on cpu node >[2=1]
 	case fetch*
 		cpuport=`{cat /tmp/nextport}
+		echo fetchroot -d $usercmd(2) -p $cpuport >>/tmp/cpusvclog.$pid
 		fetchroot -d $usercmd(2) -p $cpuport &
-		echo rcpu -h tcp!^$sysname^!^$cpuport
+		echo rcpu -h tcp!^$ip^!^$cpuport
 		cpuport=`{echo $cpuport '+ 2' |hoc}
 		echo $cpuport >/tmp/nextport
+	case log
+		cat /tmp/cpusvclog.$pid
 	case save*
 		echo save
 	case clean*
@@ -23,4 +28,3 @@ while(usercmd=`{read}){
 		echo unknown
 	}
 }
-
