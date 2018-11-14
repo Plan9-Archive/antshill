@@ -1,3 +1,5 @@
+# fns used to set up the replicating root spawning grid
+
 fn srvscores{
 	bind -b '#S' /dev
 	9fs 9fat

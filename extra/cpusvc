@@ -1,11 +1,12 @@
 #!/bin/rc
+# attaches to hubfs from storage server and runs on cpu provider node
 
+rfork
 if(! test -e /tmp/nextport)
 	echo 20000 >/tmp/nextport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
 
-rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*

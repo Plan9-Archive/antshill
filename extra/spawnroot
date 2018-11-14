@@ -1,4 +1,5 @@
 #!/bin/rc
+# spawns a ramrooted fossil on a storage server from a given rootscore
 
 rfork
 scorefile=/n/9fat/scorenames

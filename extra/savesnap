@@ -1,4 +1,5 @@
 #!/bin/rc
+# requests a fossil snapshot and saves the rootscore to scorenames file
 
 ramsrv=/srv/ramdisk
 fscons=/srv/ramfscons

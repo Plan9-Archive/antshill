@@ -1,5 +1,7 @@
 #!/bin/rc
+# attaches to hubfs and runs on storage node
 
+rfork
 if(! test -e /tmp/stononce)
 	echo 1009 >tmp/stononce
 nonce = `{cat /tmp/stononce}
@@ -8,7 +10,6 @@ if(! test -e /tmp/nextport)
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
 
-rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*

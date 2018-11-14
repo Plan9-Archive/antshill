@@ -1,4 +1,5 @@
 #!/bin/rc
+# dials a storage server to acquire a root and begins services within it
 
 rfork
 scorefile=/shr/9fat/scorenames
