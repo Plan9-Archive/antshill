@@ -39,11 +39,8 @@ while(usercmd=`{read}){
 	case log
 		cat /tmp/stolog.$pid
 	case clean*
-		echo clean
-	case exit
-		exit
+		echo clean not yet implemented >[2=1]
 	case *
-		echo unknown
+		echo unknown command >[2=1]
 	}
 }
-

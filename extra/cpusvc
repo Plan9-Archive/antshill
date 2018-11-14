@@ -20,13 +20,13 @@ while(usercmd=`{read}){
 		echo $cpuport >/tmp/nextport
 	case log
 		cat /tmp/cpusvclog.$pid
+	case scores
+		echo scores must be retrieved from storage node >[2=1]
 	case save*
-		echo save
+		echo save must be performed on storage node >[2=1]
 	case clean*
-		echo clean
-	case exit
-		exit
+		echo clean not yet implemented >[2=1]
 	case *
-		echo unknown
+		echo unknown command >[2=1]
 	}
 }
