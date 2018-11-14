@@ -33,7 +33,7 @@ set ndb to point to first node as auth server
 fshalt -r both nodes
 
 cp ants/extra/* to /rc/bin on both nodes
-. /rc/bin/scorefns both nodes
+. /rc/bin/scorefns && shrscores both nodes
 create bkup.info in 9fat for both nodes with venti= string set to other node
 perform fs snap on storage and create initial scorenames file in 9fat with that score on both nodes
 
@@ -42,6 +42,15 @@ rimport storage /srv /n/sto && startcpusvc on cpu
 
 =====
 
+contest2% . /rc/bin/scorefns
+contest2% shrscores
+contest2% makectlhub
+contest2% startstosvc
+contest2% rimport contest3 / /n/remote
+contest2% hub scosynchub
+creating hubfs /srv/scosynchub
+io% updatescores
+
 contest2% cd /shr/9fat
 contest2% hub proghub
 creating hubfs /srv/proghub
@@ -49,13 +58,12 @@ io% webfs
 io% bind -b '#S' /dev
 io% while(sleep 120)ventiprog
 
-contest2% hub scosynchub
-creating hubfs /srv/scosynchub
-io% . /rc/bin/scorefns
-io% rimport contest3 / /n/remote
-io% updatescores
+contest3% . /rc/bin/scorefns
+contest3% shrscores
+contest3% rimport contest2 /srv /n/sto
+contest3% startcpusvc
 
-===
+=====
 
 term% rimport -c contest2 / /n/ct2
 term% mount /n/ct2/srv/gridsvc /n/g

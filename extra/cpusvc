@@ -1,12 +1,14 @@
 #!/bin/rc
 
+hostkey=$1
+
 rfork
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
 		echo spawn not supported on cpu node
 	case fetch*
-		fetchroot -d $usercmd(2) -p $usercmd(3) -k $usercmd(4) &
+		fetchroot -d $usercmd(2) -p $usercmd(3) &
 	case save*
 		echo save
 	case clean*

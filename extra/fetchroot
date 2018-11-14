@@ -42,5 +42,5 @@ sleep 1
 echo 'startsrvs' >>/n/h/io0
 sleep 1
 mount -b /srv/factotum /mnt
-echo 'key proto=dp9ik user='^$user^' dom='^$domauth^' !password='^$key >/mnt/factotum/ctl
+# echo 'key proto=dp9ik user='^$user^' dom='^$domauth^' !password='^$key >/mnt/factotum/ctl
 echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019 &' >>/n/h/io0
