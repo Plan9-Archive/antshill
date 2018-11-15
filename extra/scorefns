@@ -8,13 +8,18 @@ fn srvscores{
 
 fn updatescores{
 	while(sleep 120){
-		newname=`{cat /n/remote9fat/scorenames /n/9fat/scorenames |sort |uniq -u}
+		sort /n/remote9fat/scorenames | uniq >/tmp/scores.$pid
+		sort /n/9fat/scorenames | uniq >>/tmp/scores.$pid
+		newname=`{cat /tmp/scores.$pid |sort |uniq -u}
 		if(! ~ $#newname 0){
 			for(i in $newname){
 				echo $i
 				echo $i >>/n/9fat/scorenames
 				echo $i >>/n/remote9fat/scorenames
 			}
+			sort /n/9fat/scorenames | uniq >/tmp/scores.$pid
+			cp /tmp/scores.$pid /n/9fat/scorenames
+			cp /tmp/scores.$pid /n/remote9fat/scorenames
 		}
 	}
 }
