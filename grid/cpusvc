@@ -20,13 +20,17 @@ while(usercmd=`{read}){
 		cpuport=`{echo $cpuport '+ 2' |hoc}
 		echo $cpuport >/tmp/nextport
 		if(! ~ $usercmd(3) ''){
-			hubfs -s /zrv/nuke.$usercmd(3)
-			mount -c /zrv/nuke.$usercmd(3) /n/boom
-			touch /n/boom/boom
-			nuker $roothost $usercmd(3) </n/boom/boom &
-			if(! ~ $usercmd(4) ''){
-				chmod 660 /zrv/nuke.$usercmd(3)
-				chgrp -o $usercmd(4) /zrv/nuke.$usercmd(3)
+			if(test -e /zrv/nuke.$usercmd(3))
+				echo /zrv/nuke.$usercmd(3)) already exists >[2=1]
+			if not{
+				hubfs -s /zrv/nuke.$usercmd(3)
+				mount -c /zrv/nuke.$usercmd(3) /n/boom
+				touch /n/boom/boom
+				nuker $roothost $usercmd(3) </n/boom/boom &
+				if(! ~ $usercmd(4) ''){
+					chmod 660 /zrv/nuke.$usercmd(3)
+					chgrp -o $usercmd(4) /zrv/nuke.$usercmd(3)
+				}
 			}
 		}
 	case log
