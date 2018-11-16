@@ -21,8 +21,8 @@ while(usercmd=`{read}){
 		echo $cpuport >/tmp/nextport
 		if(! ~ $usercmd(3) ''){
 			if(test -e /zrv/nuke.$usercmd(3))
-				echo /zrv/nuke.$usercmd(3)) already exists >[2=1]
-			if not{
+				echo /zrv/nuke.$usercmd(3) already exists >[2=1]
+			if(! test -e /zrv/nuke.$usercmd(3)){
 				hubfs -s /zrv/nuke.$usercmd(3)
 				mount -c /zrv/nuke.$usercmd(3) /n/boom
 				touch /n/boom/boom
