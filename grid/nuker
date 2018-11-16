@@ -1,0 +1,6 @@
+#!/bin/rc
+
+while(boom=`{read}){
+	if(~ boom $boom)
+		rcpu -h $1 -c . /tmp/kill.$2
+}

@@ -25,4 +25,7 @@ if(! test -e $scorefile)
 . $scorefile
 
 namefossil -l $listenport $$rootname $rootname $rootname
+echo 'spawncount=`{cat /tmp/spawncount}' >>/tmp/killscript
+echo 'spawncount=`{echo $spawncount - 1 |hoc}' >>/tmp/killscript
+echo 'echo $spawncount >/tmp/spawncount' >>/tmp/killscript
 mv /tmp/killscript /tmp/kill.$rootname
