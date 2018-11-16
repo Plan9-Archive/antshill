@@ -28,7 +28,7 @@ sleep 1
 mount /zrv/$hubname.$pid /n/h
 echo 'auth/newns' >>/n/h/io0
 sleep 1
-echo 'startsrvs' >>/n/h/io0
+cat /bin/startsrvs >>/n/h/io0
 sleep 1
 mount -b /srv/factotum /mnt
 echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019 &' >>/n/h/io0

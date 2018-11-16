@@ -1,0 +1,14 @@
+diff -r 4136602b93e9 sys/src/9/port/devether.c
+--- a/sys/src/9/port/devether.c	Wed Nov 14 11:33:52 2018 -0800
++++ b/sys/src/9/port/devether.c	Fri Nov 16 16:28:20 2018 -0600
+@@ -26,6 +26,10 @@
+ 	ctlrno = 0;
+ 	if(*spec){
+ 		ctlrno = strtoul(spec, &conf, 10);
++		if(ctlrno == 1){
++			if(strcmp(up->user, "glenda") != 0)
++				error(Ebadspec);
++		}
+ 		if(ctlrno >= MaxEther)
+ 			error(Enodev);
+ 		if(conf == spec)
