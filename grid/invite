@@ -1,0 +1,21 @@
+#!/bin/rc
+
+echo $1 $2 >>/tmp/invitelog
+if(~ $#1 0){
+	echo need a username to invite >[2=1]
+	exit
+}
+
+if(~ $#2 0){
+	echo need a target filesystem >[2=1]
+	exit
+}
+
+if(~ test -e /srv/$2^fscons){
+	echo /srv/$2^fscons does not exist >[2=1]
+	exit
+}
+
+echo uname $1 $1 >>/srv/$2^fscons
+
+echo $1 added to $2 remember to save a snapshot
