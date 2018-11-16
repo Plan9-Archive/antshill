@@ -1,6 +1,9 @@
 #!/bin/rc
 
 while(boom=`{read}){
-	if(~ boom $boom)
+	if(~ boom $boom){
 		rcpu -h $1 -c . /tmp/kill.$2
+		echo quit >/n/boom/ctl
+		exit
+	}
 }

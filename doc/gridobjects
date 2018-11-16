@@ -1,0 +1,20 @@
+temporary state files
+
+/tmp/killscript.$name on storage made by namefossil+spawnroot, invoked from cpu side boom service
+/tmp/stononce on storage server for unique names for scores. used by storagesvc save
+/tmp/spawncount on storage server for limiting number of spawned roots, storagesvc
+/tmp/nextport on storage server for next port number to serve on, storagesvc
+/tmp/nextport on cpu server for next port number to serve on, cpusvc
+
+srvs
+
+/srv/gridsvc on storage, main control hubfs, storagesvc on sto and cpusvc on cpu attach to it, client mounts it at /n/g for gridorc to talk to
+/srv/rootname, /srv/rootnamefossil, /srv/rootnamefscons  on storage, spawmed for each root
+/zrv/inithub.pid or /zrv/user.pid control hub for fetching a root, create by cpusvc and the interior rc is rfork V and newns in the new /srv/boot
+/srv/boot etc in private /srv ns - spawned on cpu by fetchroot, this ns is cpud in by clients
+/zrv/nuke.rootname boom service to trigger cleanup of resources, used by clients from inside their environments
+
+permanent state files
+
+9fat/scorenames - rootscores available across the replicated ventis
+9fat/sto1.info sto2.info etc - info files for ventiprog tracking block duplication progress. seeded with an initial line setting venti env var to target.
