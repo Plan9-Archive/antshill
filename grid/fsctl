@@ -1,0 +1,18 @@
+#!/bin/rc
+
+while(boom=`{read}){
+	if(~ $boom boom){
+		echo rcpu -h $1 -c . /tmp/kill.$2 >>/tmp/boomlog
+		rcpu -h $1 -c . /tmp/kill.$2
+		echo quit >/n/boom/ctl
+		exit
+	}
+	if(~ $boom invite*){
+		echo rcpu -h $1 -c invite $boom(2) $2 >>/tmp/boomlog
+		rcpu -h $1 -c invite $boom(2) $2
+	}
+	if(~ $boom sysadd*){
+		echo rcpu -h $1 -c sysadd $boom(2) $2 >>/tmp/boomlog
+		rcpu -h $1 -c sysadd $boom(2) $2
+	}	
+}
