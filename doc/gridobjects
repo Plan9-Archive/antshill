@@ -18,3 +18,11 @@ permanent state files
 
 9fat/scorenames - rootscores available across the replicated ventis
 9fat/sto1.info sto2.info etc - info files for ventiprog tracking block duplication progress. seeded with an initial line setting venti env var to target.
+
+logs
+
+/tmp/stolog on storage
+/tmp/sysaddlog on storage
+/tmp/invitelog on storage
+/tmp/cpusvclog on cpu
+/tmp/boomlog on cpu
