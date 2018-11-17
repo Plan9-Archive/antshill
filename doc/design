@@ -1,3 +1,14 @@
+Grid client interface 17 11 2018
+
+receive account and password information
+add grid server information to /lib/ndb/local
+dial a grid spawn server and mount the gridsvc at /n/g
+gridorc -u gridusername # interactive grid manager
+scores # to see a list of all roots
+spawn scorename # spawn that root on the storage server, the next command will be printed for you
+fetch commandstring # paste the command constructed by the spawn command
+# now your namespace should be accessible, paste the rcpu command supplied into a different window
+
 services needed:
 
 spawnroot(scorename, listenport)

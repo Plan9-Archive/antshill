@@ -5,6 +5,7 @@ if(! test -e /n/g/sto.in){
 	echo no grid service found at /n/g >[2=1]
 	exit
 }
+echo 'Commands: scores [searchstring] | spawn scorename | fetch [parameters provided by spawn]'
 rfork
 griduser=''
 while (~ $1 -*){
@@ -23,8 +24,8 @@ cat /n/g/cpu.err &
 
 while(usercmd=`{read}){
 	switch($usercmd){
-	case scores
-		echo scores >>/n/g/sto.in
+	case scores*
+		echo $usercmd >>/n/g/sto.in
 	case spawn*
 		echo $usercmd $griduser>>/n/g/sto.in
 	case save*

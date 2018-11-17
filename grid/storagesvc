@@ -37,10 +37,13 @@ while(usercmd=`{read}){
 		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/tmp/stononce
-	case scores
+	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
-		cat /n/9fat/scorenames |sed 's/=vac.*//g'
+		if(~ $#usercmd 2)
+			cat /n/9fat/scorenames |sed 's/=vac.*//g' |grep $usercmd(2)
+		if not
+			cat /n/9fat/scorenames |sed 's/=vac.*//g'
 	case log
 		cat /tmp/stolog.$pid
 	case clean*
