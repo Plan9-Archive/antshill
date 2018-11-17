@@ -11,4 +11,8 @@ while(boom=`{read}){
 		echo rcpu -h $1 -c invite $boom(2) $2 >>/tmp/boomlog
 		rcpu -h $1 -c invite $boom(2) $2
 	}
+	if(~ $boom sysadd*){
+		echo rcpu -h $1 -c sysadd $boom(2) $2 >>/tmp/boomlog
+		rcpu -h $1 -c sysadd $boom(2) $2
+	}	
 }
