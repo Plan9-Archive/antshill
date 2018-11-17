@@ -40,7 +40,7 @@ while(usercmd=`{read}){
 	case scores
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
-		cat /n/9fat/scorenames |uniq
+		cat /n/9fat/scorenames |sed 's/=vac.*//g'
 	case log
 		cat /tmp/stolog.$pid
 	case clean*
