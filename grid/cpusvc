@@ -25,8 +25,8 @@ while(usercmd=`{read}){
 			if(! test -e /zrv/ctl.$usercmd(3)){
 				hubfs -s /zrv/ctl.$usercmd(3)
 				mount -c /zrv/ctl.$usercmd(3) /n/boom
-				touch /n/boom/boom
-				fsctl $roothost $usercmd(3) </n/boom/boom &
+				touch /n/boom/fs
+				fsctl $roothost $usercmd(3) </n/boom/fs &
 				chmod 660 /zrv/ctl.$usercmd(3)
 				chgrp -o $usercmd(4) /zrv/ctl.$usercmd(3)
 			}
