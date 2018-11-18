@@ -34,6 +34,8 @@ if(! ~ $#listenport 0)
 
 echo 'kill fossil.'^$pid^' |rc' >/tmp/killscript
 echo 'kill ramfs.'^$pid^' |rc' >>/tmp/killscript
+echo 'rm /tmp/fossil.'^$pid >>/tmp/killscript
+echo 'rm /tmp/ramfs.'^$pid >>/tmp/killscript
 
 cp /bin/ramfs /tmp/ramfs.$pid
 /tmp/ramfs.$pid -S $ramsrv

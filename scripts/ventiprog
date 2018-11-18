@@ -60,3 +60,4 @@ while(! ~ $count $numarenas(1)){
 }
 
 cat /tmp/offsets.$mypid |rc
+rm /tmp/offsets.$mypid
