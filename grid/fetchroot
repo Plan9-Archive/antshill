@@ -5,6 +5,7 @@ rfork
 port=20019
 dialstring=tcp!containertest!10564
 hubname=inithub
+username=$user
 
 while(~ $1 -*){
 	switch($1){
@@ -14,12 +15,15 @@ while(~ $1 -*){
 	case -d
 		dialstring=$2
 		shift
+	case -h
+		hubname=$2
+		shift
+	case -u
+		username=$2
+		shift
 	}
 	shift
 }
-
-if(! ~ $#1 0)
-	hubname=$1
 
 rfork V
 srv $dialstring boot
@@ -32,7 +36,6 @@ cat /bin/startsrvs >>/n/h/io0
 sleep 1
 mount -b /srv/factotum /mnt
 echo 'aux/listen1 -tv tcp!*!'^$port^' /rc/bin/service/tcp17019 &' >>/n/h/io0
-if(! ~ $#1 0){
-	chmod 660 /srv/boot
-	chgrp -o $1 /srv/boot
-}
+chmod 660 /srv/boot
+chgrp -o $username /srv/boot
+

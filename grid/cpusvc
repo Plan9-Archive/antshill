@@ -15,8 +15,8 @@ while(usercmd=`{read}){
 		if(~ $#usercmd 4){
 			cpuport=`{cat /tmp/nextport}
 			roothost=`{echo $usercmd(2) | awk -F ! '{print $2}'}
-			echo fetchroot -d $usercmd(2) -p $cpuport $usercmd(3) >>/tmp/cpusvclog.$pid
-			fetchroot -d $usercmd(2) -p $cpuport $usercmd(3) &
+			echo fetchroot -d $usercmd(2) -p $cpuport -h $usercmd(3) -u $usercmd(4) >>/tmp/cpusvclog.$pid
+			fetchroot -d $usercmd(2) -p $cpuport -h $usercmd(3) -u $usercmd(4) &
 			if(test -e /zrv/ctl.$usercmd(3))
 				echo /zrv/ctl.$usercmd(3) already exists >[2=1]
 			if(! test -e /zrv/ctl.$usercmd(3)){
