@@ -28,7 +28,9 @@ cat /n/g/cpu.err &
 while(usercmd=`{read}){
 	switch($usercmd){
 	case scores*
-		echo $usercmd >>/n/g/sto.in
+#		echo $usercmd >>/n/g/sto.in
+		tlsclient -a $reqdial /bin/echo $usercmd
+		echo $griduser req >>/n/g/sto.in
 	case spawn*
 #		echo $usercmd $griduser>>/n/g/sto.in
 		echo tlsclient -a $reqdial /bin/echo $usercmd $griduser
@@ -36,11 +38,15 @@ while(usercmd=`{read}){
 		sleep 1
 		echo $griduser req >>/n/g/sto.in
 	case save*
-		echo $usercmd >>/n/g/sto.in
+#		echo $usercmd >>/n/g/sto.in
+		tlsclient -a $reqdial /bin/echo $usercmd
+		echo $griduser req >>/n/g/sto.in
 	case fetch*
 		echo $usercmd >>/n/g/cpu.in
 	case stolog
-		echo log >>/n/g/sto.in
+#		echo log >>/n/g/sto.in
+		tlsclient -a $reqdial /bin/echo $usercmd
+		echo $griduser req >>/n/g/sto.in
 	case cpulog
 		echo log >>/n/g/cpu.in
 	case exit

@@ -11,6 +11,7 @@ ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
 
 while(usercmd=`{read}){
+	reqcmd=''
 	username=$usercmd(1)
 	echo $username $usercmd >>/tmp/stolog.$pid
 	if(test -e /usr/grid/$username/req){
@@ -20,7 +21,7 @@ while(usercmd=`{read}){
 		rm /usr/grid/$username/req
 	}
 	if(! ~ $username $reqcmd(1))
-		usercmd=(fail fail)
+		reqcmd=(fail fail)
 	usercmd=$reqcmd(2-)
 	switch($usercmd){
 	case spawn*
@@ -35,11 +36,13 @@ while(usercmd=`{read}){
 			stoport=`{cat /tmp/nextport}
 			echo $username spawnroot -l $stoport $usercmd(2-) >>/tmp/stolog.$pid
 			spawnroot -v /usr/grid/$username/scores -l $stoport $usercmd(2) &
-			echo '	fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
-			stoport=`{echo $stoport '+ 2' |hoc}
-			echo $stoport >/tmp/nextport
 			spawncount=`{echo $spawncount '+ 1' |hoc}
 			echo $spawncount >/tmp/spawncount
+			sleep 10
+			echo '	fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
+			echo '	fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
+			stoport=`{echo $stoport '+ 2' |hoc}
+			echo $stoport >/tmp/nextport
 		}
 		if not
 			echo spawn limit reached
