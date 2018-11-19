@@ -17,9 +17,6 @@ while(usercmd=`{read}){
 			roothost=`{echo $usercmd(2) | awk -F ! '{print $2}'}
 			echo fetchroot -d $usercmd(2) -p $cpuport $usercmd(3) >>/tmp/cpusvclog.$pid
 			fetchroot -d $usercmd(2) -p $cpuport $usercmd(3) &
-			echo '	rcpu -h tcp!'^$ip^!^$cpuport -u $usercmd(4)
-			cpuport=`{echo $cpuport '+ 2' |hoc}
-			echo $cpuport >/tmp/nextport
 			if(test -e /zrv/ctl.$usercmd(3))
 				echo /zrv/ctl.$usercmd(3) already exists >[2=1]
 			if(! test -e /zrv/ctl.$usercmd(3)){
@@ -30,6 +27,10 @@ while(usercmd=`{read}){
 				chmod 660 /zrv/ctl.$usercmd(3)
 				chgrp -o $usercmd(4) /zrv/ctl.$usercmd(3)
 			}
+			sleep 4
+			echo '	rcpu -h tcp!'^$ip^!^$cpuport -u $usercmd(4)
+			cpuport=`{echo $cpuport '+ 2' |hoc}
+			echo $cpuport >/tmp/nextport
 		}
 		if not
 			echo fetch dialstring scorename user >[2=1]

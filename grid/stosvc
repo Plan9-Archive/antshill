@@ -39,8 +39,8 @@ while(usercmd=`{read}){
 			spawncount=`{echo $spawncount '+ 1' |hoc}
 			echo $spawncount >/tmp/spawncount
 			sleep 10
-			echo '	fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
-			echo '	fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
+			echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
+			echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
 			stoport=`{echo $stoport '+ 2' |hoc}
 			echo $stoport >/tmp/nextport
 		}

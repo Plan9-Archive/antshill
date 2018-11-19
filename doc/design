@@ -128,6 +128,7 @@ contains the scores rabbit is allowed to spawn
 when a user is invited to an fs, the score is copied to their /usr/grid directory
 also track the state of their spawned resources there?
 and chal-resp if needed but its prolly not
+actually not chal-resp - request-verify is the protocol
 
 a special service listener script is all that is allowed to write into the control fs
 all requests are dp9ik authed and user tagged
