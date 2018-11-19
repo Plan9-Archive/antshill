@@ -3,8 +3,11 @@
 while(boom=`{read}){
 	if(~ $boom boom){
 		echo rcpu -h $1 -c . /tmp/kill.$2 >>/tmp/boomlog
+		mount -c /zrv/init.$2 /n/init
+		echo exit >>/n/init/io0
+		echo quit >>/n/init/ctl
 		rcpu -h $1 -c . /tmp/kill.$2
-		echo quit >/n/boom/ctl
+		echo quit >>/n/boom/ctl
 		exit
 	}
 	if(~ $boom invite*){

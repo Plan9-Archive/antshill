@@ -23,9 +23,9 @@ if(! ~ $#1 0)
 
 rfork V
 srv $dialstring boot
-hub -b -z $hubname.$pid
+hub -b -z init.$hubname
 sleep 1
-mount /zrv/$hubname.$pid /n/h
+mount /zrv/init.$hubname /n/h
 echo 'auth/newns' >>/n/h/io0
 sleep 1
 cat /bin/startsrvs >>/n/h/io0
