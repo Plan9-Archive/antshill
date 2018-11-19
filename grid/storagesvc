@@ -13,6 +13,8 @@ ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 while(usercmd=`{read}){
 	switch($usercmd){
 	case spawn*
+		if(! test -e /tmp/spawncount)
+			echo 0 >/tmp/spawncount
 		spawncount=`{cat /tmp/spawncount}
 		if(test -e /srv/^$usercmd(2)){
 			echo that root is already being served from this storage node >[2=1]

@@ -50,5 +50,5 @@ if(! ~ $newscore vac*){
 if(! test -e $scorefile)
 	mount -c /srv/fatsrv /n/9fat
 
-echo $savename '=' $newscore
+echo $savename saved
 echo $savename^'='^$newscore >>$scorefile
