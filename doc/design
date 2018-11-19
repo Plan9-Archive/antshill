@@ -96,3 +96,27 @@ hub vs nonhub
 1.30u 1.22s 48.42r 	 mk clean
 41.52u 24.02s 370.27r 	 mk install
 41.54u 26.74s 657.54r 	 mk install
+
+===
+dp9ik+tls protected venti tunneling:
+
+on venti server with venti listening on net-alt:
+
+aux/listen1 -tv tcp!*!17034 tlssrv -A /bin/aux/trampoline /net.alt/tcp!127.1!17034
+
+on client:
+
+aux/listen1 -tv tcp!127.1!27034 /bin/tlsclient -a tcp!remoteserver!17034 &
+venti=tcp!127.1!27034
+
+vac -f foo.vac targetdir #works!
+
+==
+secure user ids
+
+aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userid
+
+#!/bin/rc
+echo $user >>$home/chalresp
+resp=`{read}
+echo $resp >>$home/chalresp

@@ -1,0 +1,4 @@
+#!/bin/rc
+
+req=`{read}
+echo $user $req >/usr/grid/$user/req
