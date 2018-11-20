@@ -9,16 +9,19 @@ if(! test -e /tmp/nextport)
 	echo 20000 >/tmp/nextport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 . /tmp/myip
+scorefile=/n/9fat/scorenames
+if(! test -e $scorefile)
+	mount /srv/fatsrv /n/9fat
 
 while(usercmd=`{read}){
 	reqcmd=''
 	username=$usercmd(1)
 	echo $username $usercmd >>/tmp/stolog.$pid
-	if(test -e /usr/grid/$username/req){
-		echo reqcmd equals cat /usr/grid/$username/req >>/tmp/stolog.$pid
-		reqcmd=`{cat /usr/grid/$username/req}
-		echo $reqcmd >>/usr/grid/$username/reqlog
-		rm /usr/grid/$username/req
+	if(test -e /usr/grid/$username.req){
+		echo reqcmd equals cat /usr/grid/$username.req >>/tmp/stolog.$pid
+		reqcmd=`{cat /usr/grid/$username.req}
+		echo $reqcmd >>/usr/grid/$username.reqlog
+		rm /usr/grid/$username.req
 	}
 	if(! ~ $username $reqcmd(1))
 		reqcmd=(fail fail)
@@ -33,33 +36,40 @@ while(usercmd=`{read}){
 			echo use save to clone it to a new name if desired >[1=2]
 		}
 		if not if(! ~ $spawncount 6){
-			stoport=`{cat /tmp/nextport}
-			echo $username spawnroot -l $stoport $usercmd(2-) >>/tmp/stolog.$pid
-			spawnroot -v /usr/grid/$username/scores -l $stoport $usercmd(2) &
-			spawncount=`{echo $spawncount '+ 1' |hoc}
-			echo $spawncount >/tmp/spawncount
-			sleep 10
-			echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
-			echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
-			stoport=`{echo $stoport '+ 2' |hoc}
-			echo $stoport >/tmp/nextport
+			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $usercmd(2) user |grep $username}
+			if(~ $usercheck $username){
+				stoport=`{cat /tmp/nextport}
+				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
+				ndbspawnroot -l $stoport $usercmd(2) &
+				spawncount=`{echo $spawncount '+ 1' |hoc}
+				echo $spawncount >/tmp/spawncount
+				sleep 10
+				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
+				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
+				stoport=`{echo $stoport '+ 2' |hoc}
+				echo $stoport >/tmp/nextport
+			}
+			if not
+				echo $usercmd(2) not found for $username
 		}
 		if not
-			echo spawn limit reached
+			echo spawn limit reached >[1=2]
 	case fetch*
-		echo fetch not supported on storage node >[2=1]
+		echo fetch not supported on storage node >[1=2]
 	case save*
-		echo savesnap $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
-		savesnap -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
+		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
+		ndbsavesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/tmp/stononce
 	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
 		if(~ $#usercmd 2)
-			cat /n/9fat/scorenames |sed 's/=vac.*//g' |grep $usercmd(2)
+#			cat /n/9fat/scorenames |sed 's/=vac.*//g' |grep $usercmd(2)
+			ndb/query -a -f /n/9fat/scorenames user $username scorename
 		if not
-			cat /n/9fat/scorenames |sed 's/=vac.*//g'
+			echo please supply your username
+#			cat /n/9fat/scorenames |sed 's/=vac.*//g'
 	case log
 		cat /tmp/stolog.$pid
 	case clean*

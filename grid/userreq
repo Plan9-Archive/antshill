@@ -1,4 +1,5 @@
 #!/bin/rc
+# aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userreq
 
 req=`{read}
-echo $user $req >/usr/grid/$user/req
+echo $user $req >/usr/grid/$user.req
