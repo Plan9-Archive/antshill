@@ -1,15 +1,15 @@
 #!/bin/rc
+# synchronizes rootscore files mounted at /n/9fat/scorenames and /n/remote9fat/scorenames
 
 sort /n/remote9fat/scorenames | uniq >/tmp/scores.$pid
 sort /n/9fat/scorenames | uniq >>/tmp/scores.$pid
-newname=`{cat /tmp/scores.$pid |sort |uniq -u}
+newname=`{cat /tmp/scores.$pid |sort |uniq -u |sed 's/ /⊞/g'}
 if(! ~ $#newname 0){
 	for(i in $newname){
 		echo $i
 		echo $i >>/n/9fat/scorenames
-		echo $i >>/n/remote9fat/scorenames
 	}
-	sort /n/9fat/scorenames | uniq |sed 's/^/\n/g' >/tmp/scores.$pid
+	sort /n/9fat/scorenames | uniq |sed 's/⊞/ /g' >/tmp/scores.$pid
 	cp /tmp/scores.$pid /n/9fat/scorenames
 	cp /tmp/scores.$pid /n/remote9fat/scorenames
 }
