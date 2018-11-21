@@ -41,8 +41,11 @@ while(usercmd=`{read}){
 #		echo $usercmd >>/n/g/sto.in
 		tlsclient -a $reqdial /bin/echo $usercmd
 		echo $griduser req >>/n/g/sto.in
-	case fetch*
-		echo $usercmd >>/n/g/cpu.in
+#	case fetch*
+#		echo $usercmd >>/n/g/cpu.in
+	case invite*
+		tlsclient -a $reqdial /bin/echo $usercmd
+		echo $griduser req >>/n/g/sto.in
 	case stolog
 #		echo log >>/n/g/sto.in
 		tlsclient -a $reqdial /bin/echo $usercmd

@@ -2,6 +2,7 @@
 # attaches to hubfs and runs on storage node
 
 rfork
+spawnmax=6
 if(! test -e /tmp/stononce)
 	echo 1009 >tmp/stononce
 nonce = `{cat /tmp/stononce}
@@ -41,11 +42,12 @@ while(usercmd=`{read}){
 			echo that root is already being served from this storage node >[1=2]
 			echo use save to clone it to a new name if desired >[1=2]
 		}
-		if not if(! ~ $spawncount 6){
+		if not if(! ~ $spawncount $spawnmax){
 			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $usercmd(2) user |grep $username}
 			if(~ $usercheck $username){
 				stoport=`{cat /tmp/nextport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
+				echo $username >/usr/grid/$usercmd(2)
 				ndbspawnroot -l $stoport $usercmd(2) &
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/tmp/spawncount
@@ -67,6 +69,22 @@ while(usercmd=`{read}){
 		ndbsavesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/tmp/stononce
+	case invite*
+		inviteduser=$usercmd(2)
+		targetfs=$usercmd(3)
+		fsowner=`{cat /usr/grid/$targetfs}
+		if(~ $username $fsowner){
+			echo uname $inviteduser $inviteduser >>/srv/$targetfs^fscons
+			echo 'uname sys +'^$inviteduser >>/srv/$targetfs^fscons
+			echo 'uname upas +'^$inviteduser >>/srv/$targetfs^fscons
+			sleep 1
+			echo savesnap -u $username $targetfs $targetfs^$inviteduser $nonce >>/tmp/stolog.$pid
+			ndbsavesnap -u $username -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
+			nonce=`{echo $nonce ' + 100 ' |hoc}
+			echo $nonce >/tmp/stononce
+		}
+		if not
+			echo $targetfs not owned by $username >[1=2]
 	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
