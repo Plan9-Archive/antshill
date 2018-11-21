@@ -5,7 +5,7 @@ if(! test -e /n/g/sto.in){
 	echo no grid service found at /n/g >[2=1]
 	exit
 }
-echo 'Commands: scores [searchstring] | spawn scorename | fetch [parameters provided by spawn]'
+echo 'scores | spawn scorename | save oldname newname | invite user scorename | boom scorename | status'
 rfork
 griduser=''
 while (~ $1 -*){

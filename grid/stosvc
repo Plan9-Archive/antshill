@@ -81,8 +81,8 @@ while(usercmd=`{read}){
 			echo 'uname sys +'^$inviteduser >>/srv/$targetfs^fscons
 			echo 'uname upas +'^$inviteduser >>/srv/$targetfs^fscons
 			sleep 1
-			echo savesnap -u $username $targetfs $targetfs^$inviteduser $nonce >>/tmp/stolog.$pid
-			ndbsavesnap -u $username -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
+			echo savesnap -u $inviteduser $targetfs $targetfs^$inviteduser $nonce >>/tmp/stolog.$pid
+			ndbsavesnap -u $inviteduser -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
 			nonce=`{echo $nonce ' + 100 ' |hoc}
 			echo $nonce >/tmp/stononce
 		}
