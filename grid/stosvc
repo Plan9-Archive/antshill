@@ -48,6 +48,9 @@ while(usercmd=`{read}){
 				stoport=`{cat /tmp/nextport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
 				echo $username >/usr/grid/$usercmd(2)
+				if(! test -d /usr/grid/$username)
+					mkdir /usr/grid/$username
+				touch /usr/grid/$username/$usercmd(2)
 				ndbspawnroot -l $stoport $usercmd(2) &
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/tmp/spawncount
@@ -93,10 +96,13 @@ while(usercmd=`{read}){
 			sleep 1
 			. /tmp/kill.$targetfs
 			rm /usr/grid/$targetfs
+			rm /usr/grid/$username/$targetfs
 			echo $targetfs BOOMed
 		}
 		if not
 			echo $targetfs not owned by $username >[1=2]
+	case status
+		ls /usr/grid/$username
 	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat

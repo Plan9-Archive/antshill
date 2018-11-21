@@ -58,6 +58,8 @@ while(usercmd=`{read}){
 	case exit
 		exit
 	case *
-		echo unknown command >[2=1]
+		tlsclient -a $reqdial /bin/echo $usercmd
+		sleep 1
+		echo $griduser req >>/n/g/sto.in
 	}
 }
