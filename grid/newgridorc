@@ -21,41 +21,33 @@ while (~ $1 -*){
 }
 
 cat /n/g/sto.out &
+catkill1=$apid
 cat /n/g/sto.err &
+catkill2=$apid
 cat /n/g/cpu.out &
+catkill3=$apid
 cat /n/g/cpu.err &
+catkill4=$apid
+
+fn killcats{
+	@{echo kill>/proc/$catkill1/ctl}
+	@{echo kill>/proc/$catkill2/ctl}
+	@{echo kill>/proc/$catkill3/ctl}
+	@{echo kill>/proc/$catkill4/ctl}
+}
 
 while(usercmd=`{read}){
 	switch($usercmd){
-	case scores*
-#		echo $usercmd >>/n/g/sto.in
-		tlsclient -a $reqdial /bin/echo $usercmd
-		echo $griduser req >>/n/g/sto.in
 	case spawn*
 #		echo $usercmd $griduser>>/n/g/sto.in
 		echo tlsclient -a $reqdial /bin/echo $usercmd $griduser
 		tlsclient -a $reqdial /bin/echo $usercmd $griduser
 		sleep 1
 		echo $griduser req >>/n/g/sto.in
-	case save*
-#		echo $usercmd >>/n/g/sto.in
-		tlsclient -a $reqdial /bin/echo $usercmd
-		echo $griduser req >>/n/g/sto.in
-#	case fetch*
-#		echo $usercmd >>/n/g/cpu.in
-	case invite*
-		tlsclient -a $reqdial /bin/echo $usercmd
-		echo $griduser req >>/n/g/sto.in
-	case boom*
-		tlsclient -a $reqdial /bin/echo $usercmd
-		echo $griduser req >>/n/g/sto.in
-	case stolog
-#		echo log >>/n/g/sto.in
-		tlsclient -a $reqdial /bin/echo $usercmd
-		echo $griduser req >>/n/g/sto.in
 	case cpulog
 		echo log >>/n/g/cpu.in
 	case exit
+		killcats
 		exit
 	case *
 		tlsclient -a $reqdial /bin/echo $usercmd
