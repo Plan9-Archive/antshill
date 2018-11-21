@@ -85,6 +85,16 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo $targetfs not owned by $username >[1=2]
+	case boom*
+		targetfs=$usercmd(2)
+		fsowner=`{cat /usr/grid/$targetfs}
+		if(~ $username $fsowner){
+			. /tmp/kill.$targetfs
+			rm /usr/grid/$targetfs
+			echo $targetfs BOOMed
+		}
+		if not
+			echo $targetfs not owned by $username >[1=2]
 	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
