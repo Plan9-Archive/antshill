@@ -89,6 +89,8 @@ while(usercmd=`{read}){
 		targetfs=$usercmd(2)
 		fsowner=`{cat /usr/grid/$targetfs}
 		if(~ $username $fsowner){
+			echo boom $targetfs >>/n/g/cpu.in
+			sleep 1
 			. /tmp/kill.$targetfs
 			rm /usr/grid/$targetfs
 			echo $targetfs BOOMed

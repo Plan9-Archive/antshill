@@ -24,6 +24,12 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo fetch dialstring scorename user >[2=1]
+	case boom*
+		targetfs=$usercmd(2)
+		mount -c /zrv/$targetfs /n/init
+		echo exit >>/n/init/io0
+		sleep 1
+		echo quit >>/n/init/ctl
 	case log
 		cat /tmp/cpusvclog.$pid
 	case scores
