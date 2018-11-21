@@ -101,11 +101,9 @@ while(usercmd=`{read}){
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
 		if(~ $#usercmd 2)
-#			cat /n/9fat/scorenames |sed 's/=vac.*//g' |grep $usercmd(2)
-			ndb/query -a -f /n/9fat/scorenames user $username scorename
+			ndb/query -a -f /n/9fat/scorenames user $username scorename |grep $usercmd(2)
 		if not
-			echo please supply your username
-#			cat /n/9fat/scorenames |sed 's/=vac.*//g'
+			ndb/query -a -f /n/9fat/scorenames user $username scorename
 	case log
 		cat /tmp/stolog.$pid
 	case clean*
