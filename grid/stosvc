@@ -15,12 +15,18 @@ if(! test -e $scorefile)
 
 while(usercmd=`{read}){
 	reqcmd=''
+	srvowner=''
 	username=$usercmd(1)
 	echo $username $usercmd >>/tmp/stolog.$pid
 	if(test -e /srv/$username.req){
-		echo reqcmd equals cat /srv/$username.req >>/tmp/stolog.$pid
-		reqcmd=`{cat /srv/$username.req}
-		echo $reqcmd >>/usr/grid/$username.reqlog
+		srvowner=`{ls -l /srv/$username.req |awk '{print $4}'}
+		if(~ $srvowner $username){
+			echo reqcmd equals cat /srv/$username.req >>/tmp/stolog.$pid
+			reqcmd=`{cat /srv/$username.req}
+			echo $reqcmd >>/usr/grid/$username.reqlog
+		}
+		if not
+			echo user id error >[1=2]
 		rm /srv/$username.req
 	}
 	if(! ~ $username $reqcmd(1))
