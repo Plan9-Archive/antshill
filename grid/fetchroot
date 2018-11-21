@@ -31,9 +31,9 @@ if(! test -e /srv/boot){
 	echo unable to srv $dialstring to boot >[1=2]
 	exit no.boot
 }
-hub -b -z init.$hubname
+hub -b -z $hubname.$pid
 sleep 1
-mount /zrv/init.$hubname /n/h
+mount /zrv/$hubname.$pid /n/h
 echo 'auth/newns' >>/n/h/io0
 sleep 1
 cat /bin/startsrvs >>/n/h/io0
