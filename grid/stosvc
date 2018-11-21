@@ -17,11 +17,11 @@ while(usercmd=`{read}){
 	reqcmd=''
 	username=$usercmd(1)
 	echo $username $usercmd >>/tmp/stolog.$pid
-	if(test -e /usr/grid/$username.req){
-		echo reqcmd equals cat /usr/grid/$username.req >>/tmp/stolog.$pid
-		reqcmd=`{cat /usr/grid/$username.req}
+	if(test -e /srv/$username.req){
+		echo reqcmd equals cat /srv/$username.req >>/tmp/stolog.$pid
+		reqcmd=`{cat /srv/$username.req}
 		echo $reqcmd >>/usr/grid/$username.reqlog
-		rm /usr/grid/$username.req
+		rm /srv/$username.req
 	}
 	if(! ~ $username $reqcmd(1))
 		reqcmd=(fail fail)

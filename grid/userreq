@@ -2,4 +2,5 @@
 # aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userreq
 
 req=`{read}
-echo $user $req >/usr/grid/$user.req
+srv -e 'echo $user $req' $user.req
+chmod 660 /srv/$user.req
