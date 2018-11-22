@@ -9,8 +9,6 @@ ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
 
 while(usercmd=`{read}){
 	switch($usercmd){
-	case spawn*
-		echo spawn not supported on cpu node >[2=1]
 	case fetch*
 		if(~ $#usercmd 4){
 			cpuport=`{cat /tmp/nextport}
@@ -23,22 +21,14 @@ while(usercmd=`{read}){
 			echo $cpuport >/tmp/nextport
 		}
 		if not
-			echo fetch dialstring scorename user >[2=1]
+			echo fetch dialstring scorename user >[1=2]
 	case boom*
 		targetfs=$usercmd(2)
 		mount -c /zrv/$targetfs /n/init
 		echo exit >>/n/init/io0
 		sleep 1
 		echo quit >>/n/init/ctl
-	case log
-		cat /tmp/cpusvclog.$pid
-	case scores
-		echo scores must be retrieved from storage node >[2=1]
-	case save*
-		echo save must be performed on storage node >[2=1]
-	case clean*
-		echo clean not yet implemented >[2=1]
 	case *
-		echo unknown command >[2=1]
+		echo unknown command >[1=2]
 	}
 }

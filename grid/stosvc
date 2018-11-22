@@ -47,15 +47,15 @@ while(usercmd=`{read}){
 			if(~ $usercheck $username){
 				stoport=`{cat /tmp/nextport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
-				echo $username >/usr/grid/$usercmd(2)
-				if(! test -d /usr/grid/$username)
-					mkdir /usr/grid/$username
-				touch /usr/grid/$username/$usercmd(2)
 				spawnroot -l $stoport $usercmd(2) &
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/tmp/spawncount
+				echo $username >/usr/grid/$usercmd(2)
+				if(! test -d /usr/grid/$username)
+					mkdir /usr/grid/$username
 				sleep 10
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-)
+				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >/usr/grid/$username/$usercmd(2)
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
 				stoport=`{echo $stoport '+ 2' |hoc}
 				echo $stoport >/tmp/nextport
@@ -102,7 +102,11 @@ while(usercmd=`{read}){
 		if not
 			echo $targetfs not owned by $username >[1=2]
 	case status
-		ls /usr/grid/$username
+		echo active grid namespaces for $username
+		for(i in `{ls /usr/grid/$username}){
+			basename $i
+			echo serving on cpu port `{cat $i |sed 's/.*!.*!//g' |sed 's/ .*//g'}
+		}
 	case scores*
 		if(! test -e /n/9fat/scorenames)
 			mount /srv/fatsrv /n/9fat
@@ -110,10 +114,6 @@ while(usercmd=`{read}){
 			ndb/query -a -f /n/9fat/scorenames user $username scorename |grep $usercmd(2)
 		if not
 			ndb/query -a -f /n/9fat/scorenames user $username scorename
-	case log
-		cat /tmp/stolog.$pid
-	case clean*
-		echo clean not yet implemented >[1=2]
 	case fail*
 		echo command authorization failed
 	case *
