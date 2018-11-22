@@ -31,7 +31,7 @@ if(~ $rootscore ''){
 	exit
 }
 
-namefossil -l $listenport $rootscore $rootname $rootname >>/usr/grid/fossilogs
+namefossil -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
 echo 'spawncount=`{cat /tmp/spawncount}' >>/tmp/killscript
 echo 'spawncount=`{echo $spawncount - 1 |hoc}' >>/tmp/killscript
 echo 'echo $spawncount >/tmp/spawncount' >>/tmp/killscript

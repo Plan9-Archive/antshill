@@ -45,6 +45,7 @@ while(usercmd=`{read}){
 		if not if(! ~ $spawncount $spawnmax){
 			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $usercmd(2) user |grep $username}
 			if(~ $usercheck $username){
+				echo init ramdisk fossil...sleeping for 10...
 				stoport=`{cat /tmp/nextport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
 				spawnroot -l $stoport $usercmd(2) &
@@ -65,8 +66,6 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo spawn limit reached >[1=2]
-	case fetch*
-		echo fetch not supported on storage node >[1=2]
 	case save*
 		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
 		savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
