@@ -24,10 +24,14 @@ while(usercmd=`{read}){
 			echo fetch dialstring scorename user >[1=2]
 	case boom*
 		targetfs=$usercmd(2)
-		mount -c /zrv/$targetfs /n/init
-		echo exit >>/n/init/io0
-		sleep 1
-		echo quit >>/n/init/ctl
+		if(test -e /zrv/$targetfs){
+			mount -c /zrv/$targetfs /n/init
+			echo exit >>/n/init/io0
+			sleep 1
+			echo quit >>/n/init/ctl
+		}
+		if not
+			echo cpu $sysname says $targetfs not in service >[1=2]
 	case *
 		echo unknown command >[1=2]
 	}

@@ -2,6 +2,7 @@
 # ramfossil score/vacfile [ramsrv name] [fossil fsname]
 # creates a small fossil in ram and initializes it with the provided score
 
+diskfile=()
 disksize=200000
 while (~ $1 -*){
 	switch($1){
@@ -10,6 +11,9 @@ while (~ $1 -*){
 		shift
 	case -s
 		disksize=$2
+		shift
+	case -f
+		diskfile=$2
 		shift
 	}
 	shift
@@ -27,9 +31,11 @@ if(~ $#ramsrv 0)
 	ramsrv=ramdisk
 if(~ $#fos 0)
 	fos=ram
+if(~ $#diskfile 0)
+	diskfile=/n/$ramsrv/fossil
 score=`{echo $score |sed 's/vac://'}
 
-echo fsys main config /n/$ramsrv/fossil >/tmp/ramfosconf
+echo fsys main config $diskfile >/tmp/ramfosconf
 echo fsys main open -c 256 >>/tmp/ramfosconf
 echo srv -p $fos^fscons >>/tmp/ramfosconf
 echo srv -A $fos^fossil >>/tmp/ramfosconf
@@ -41,19 +47,21 @@ echo 'kill ramfs.'^$pid^' |rc' >>/tmp/killscript
 echo 'rm /tmp/fossil.'^$pid >>/tmp/killscript
 echo 'rm /tmp/ramfs.'^$pid >>/tmp/killscript
 
-cp /bin/ramfs /tmp/ramfs.$pid
-/tmp/ramfs.$pid -S $ramsrv
-mount -c /srv/$ramsrv /n/$ramsrv
-touch /n/$ramsrv/fossil
-dd -if /dev/zero -of /n/$ramsrv/fossil -count $disksize
+if(~ $diskfile /n/$ramsrv/fossil){
+	cp /bin/ramfs /tmp/ramfs.$pid
+	/tmp/ramfs.$pid -S $ramsrv
+	mount -c /srv/$ramsrv /n/$ramsrv
+	touch $diskfile
+	dd -if /dev/zero -of $diskfile -count $disksize
+}
 if(test -d /bin/fossil){
 	cp /bin/fossil/fossil /tmp/fossil.$pid
-	fossil/conf -w /n/$ramsrv/fossil /tmp/ramfosconf
-	fossil/flfmt -y -v $score /n/$ramsrv/fossil
-	/tmp/fossil.$pid -f /n/$ramsrv/fossil
+	fossil/conf -w $diskfile /tmp/ramfosconf
+	fossil/flfmt -y -v $score $diskfile
+	/tmp/fossil.$pid -f $diskfile
 	exit
 }
 cp /bin/fossil /tmp/fossil.$pid
-fossilconf -w /n/$ramsrv/fossil /tmp/ramfosconf
-flfmt -y -v $1 /n/$ramsrv/fossil
-/tmp/fossil.$pid -f /n/$ramsrv/fossil
+fossilconf -w $diskfile /tmp/ramfosconf
+flfmt -y -v $1 $diskfile
+/tmp/fossil.$pid -f $diskfile
