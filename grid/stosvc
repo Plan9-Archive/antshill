@@ -51,7 +51,7 @@ while(usercmd=`{read}){
 				if(! test -d /usr/grid/$username)
 					mkdir /usr/grid/$username
 				touch /usr/grid/$username/$usercmd(2)
-				ndbspawnroot -l $stoport $usercmd(2) &
+				spawnroot -l $stoport $usercmd(2) &
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/tmp/spawncount
 				sleep 10
@@ -69,7 +69,7 @@ while(usercmd=`{read}){
 		echo fetch not supported on storage node >[1=2]
 	case save*
 		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
-		ndbsavesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
+		savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/tmp/stononce
 	case invite*
@@ -82,7 +82,7 @@ while(usercmd=`{read}){
 			echo 'uname upas +'^$inviteduser >>/srv/$targetfs^fscons
 			sleep 1
 			echo savesnap -u $inviteduser $targetfs $targetfs^$inviteduser $nonce >>/tmp/stolog.$pid
-			ndbsavesnap -u $inviteduser -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
+			savesnap -u $inviteduser -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
 			nonce=`{echo $nonce ' + 100 ' |hoc}
 			echo $nonce >/tmp/stononce
 		}

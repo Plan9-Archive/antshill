@@ -37,7 +37,7 @@ fn makectlhub{
 
 fn startstosvc{
 	mount /srv/gridsvc /n/g
-	storagesvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
+	stosvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
 }
 
 fn startcpusvc{

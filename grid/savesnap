@@ -20,6 +20,9 @@ while (~ $1 -*){
 	case -v
 		scorefile=$2
 		shift
+	case -u
+		username=$2
+		shift
 	}
 	shift
 }
@@ -51,4 +54,6 @@ if(! test -e $scorefile)
 	mount -c /srv/fatsrv /n/9fat
 
 echo $savename saved
-echo $savename^'='^$newscore >>$scorefile
+echo 'scorename='^$savename^' rootscore='^$newscore^' user='^$username >>$scorefile
+echo >>$scorefile
+

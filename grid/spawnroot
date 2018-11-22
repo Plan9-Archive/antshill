@@ -23,14 +23,15 @@ rootname=$1
 if(! test -e $scorefile)
 	mount /srv/fatsrv /n/9fat
 #. $scorefile
-grep $rootname $scorefile >/tmp/targetroot
-. /tmp/targetroot
-if(~ $$rootname ''){
+#grep $rootname $scorefile >/tmp/targetroot
+#. /tmp/targetroot
+rootscore=`{ndb/query -f $scorefile scorename $rootname rootscore}
+if(~ $rootscore ''){
 	echo root $rootname not found >[2=1]
 	exit
 }
 
-namefossil -l $listenport $$rootname $rootname $rootname
+namefossil -l $listenport $rootscore $rootname $rootname
 echo 'spawncount=`{cat /tmp/spawncount}' >>/tmp/killscript
 echo 'spawncount=`{echo $spawncount - 1 |hoc}' >>/tmp/killscript
 echo 'echo $spawncount >/tmp/spawncount' >>/tmp/killscript
