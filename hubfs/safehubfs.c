@@ -22,7 +22,7 @@ enum buffersizes{
 	MAGIC = 77777,				/* In paranoid mode let readers lag this many bytes */
 	MAXQ = 777,					/* Maximum number of 9p requests to queue */
 	SMBUF = 777,				/* Buffer for names and other small strings */
-	MAXHUBS = 77,				/* Total number of hubs that can be created */
+	MAXHUBS = 5,				/* Total number of hubs that can be created */
 };
 
 typedef struct Hub	Hub;		/* A Hub file is a multiplexed pipe-like data buffer */
@@ -109,6 +109,7 @@ Srv fs = {
 	.read = fsread,
 	.write = fswrite,
 	.create = fscreate,
+	.remove = fsremove,
 	.flush = fsflush,
 };
 
