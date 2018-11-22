@@ -7,7 +7,7 @@ if(! test -e /n/g/sto.in){
 }
 echo 'scores | spawn scorename | save oldname newname | invite user scorename | boom scorename | status'
 rfork
-griduser=''
+griduser=()
 while (~ $1 -*){
 	switch($1){
 	case -u

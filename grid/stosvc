@@ -15,8 +15,8 @@ if(! test -e $scorefile)
 	mount /srv/fatsrv /n/9fat
 
 while(usercmd=`{read}){
-	reqcmd=''
-	srvowner=''
+	reqcmd=()
+	srvowner=()
 	username=$usercmd(1)
 	echo $username $usercmd >>/tmp/stolog.$pid
 	if(test -e /srv/$username.req){
