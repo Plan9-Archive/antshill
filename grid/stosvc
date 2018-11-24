@@ -3,13 +3,13 @@
 
 rfork
 spawnmax=6
-if(! test -e /tmp/stononce)
-	echo 1009 >tmp/stononce
-nonce = `{cat /tmp/stononce}
-if(! test -e /tmp/nextport)
-	echo 20000 >/tmp/nextport
-ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/tmp/myip
-. /tmp/myip
+if(! test -e /usr/grid/stononce)
+	echo 1009 >usr/grid/stononce
+nonce = `{cat /usr/grid/stononce}
+if(! test -e /usr/grid/nextport)
+	echo 20000 >/usr/grid/nextport
+ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/usr/grid/myip
+. /usr/grid/myip
 scorefile=/n/9fat/scorenames
 if(! test -e $scorefile)
 	mount /srv/fatsrv /n/9fat
@@ -18,11 +18,11 @@ while(usercmd=`{read}){
 	reqcmd=()
 	srvowner=()
 	username=$usercmd(1)
-	echo $username $usercmd >>/tmp/stolog.$pid
+	echo $username $usercmd >>/usr/grid/stolog.$pid
 	if(test -e /srv/$username.req){
 		srvowner=`{ls -l /srv/$username.req |awk '{print $4}'}
 		if(~ $srvowner $username){
-			echo reqcmd equals cat /srv/$username.req >>/tmp/stolog.$pid
+			echo reqcmd equals cat /srv/$username.req >>/usr/grid/stolog.$pid
 			reqcmd=`{cat /srv/$username.req}
 			echo $reqcmd >>/usr/grid/$username.reqlog
 		}
@@ -35,9 +35,9 @@ while(usercmd=`{read}){
 	usercmd=$reqcmd(2-)
 	switch($usercmd){
 	case spawn*
-		if(! test -e /tmp/spawncount)
-			echo 0 >/tmp/spawncount
-		spawncount=`{cat /tmp/spawncount}
+		if(! test -e /usr/grid/spawncount)
+			echo 0 >/usr/grid/spawncount
+		spawncount=`{cat /usr/grid/spawncount}
 		if(test -e /srv/^$usercmd(2)){
 			echo that root is already being served from this storage node >[1=2]
 			echo use save to clone it to a new name if desired >[1=2]
@@ -46,8 +46,8 @@ while(usercmd=`{read}){
 			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $usercmd(2) user |grep $username}
 			if(~ $usercheck $username){
 				echo init ramdisk fossil...sleeping for 10...
-				stoport=`{cat /tmp/nextport}
-				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
+				stoport=`{cat /usr/grid/nextport}
+				echo $username spawnroot -l $stoport $usercmd(2) >>/usr/grid/stolog.$pid
 				if(~ $usercmd spawndisk*){
 					echo 
 					spawnroot -d -l $stoport $usercmd(2) &
@@ -56,7 +56,7 @@ while(usercmd=`{read}){
 					spawnroot -l $stoport $usercmd(2) &
 				}
 				spawncount=`{echo $spawncount '+ 1' |hoc}
-				echo $spawncount >/tmp/spawncount
+				echo $spawncount >/usr/grid/spawncount
 				echo $username >/usr/grid/$usercmd(2)
 				if(! test -d /usr/grid/$username)
 					mkdir /usr/grid/$username
@@ -65,7 +65,7 @@ while(usercmd=`{read}){
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >/usr/grid/$username/$usercmd(2)
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
 				stoport=`{echo $stoport '+ 2' |hoc}
-				echo $stoport >/tmp/nextport
+				echo $stoport >/usr/grid/nextport
 			}
 			if not
 				echo $usercmd(2) not found for $username
@@ -73,10 +73,10 @@ while(usercmd=`{read}){
 		if not
 			echo spawn limit reached >[1=2]
 	case save*
-		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/tmp/stolog.$pid
+		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/usr/grid/stolog.$pid
 		savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
-		echo $nonce >/tmp/stononce
+		echo $nonce >/usr/grid/stononce
 	case invite*
 		inviteduser=$usercmd(2)
 		targetfs=$usercmd(3)
@@ -86,10 +86,10 @@ while(usercmd=`{read}){
 			echo 'uname sys +'^$inviteduser >>/srv/$targetfs^fscons
 			echo 'uname upas +'^$inviteduser >>/srv/$targetfs^fscons
 			sleep 1
-			echo savesnap -u $inviteduser $targetfs $targetfs^$inviteduser $nonce >>/tmp/stolog.$pid
+			echo savesnap -u $inviteduser $targetfs $targetfs^$inviteduser $nonce >>/usr/grid/stolog.$pid
 			savesnap -u $inviteduser -r /srv/$targetfs -s /srv/$targetfs^fscons $targetfs^$inviteduser^.^$nonce &
 			nonce=`{echo $nonce ' + 100 ' |hoc}
-			echo $nonce >/tmp/stononce
+			echo $nonce >/usr/grid/stononce
 		}
 		if not
 			echo $targetfs not owned by $username >[1=2]
@@ -99,7 +99,7 @@ while(usercmd=`{read}){
 		if(~ $username $fsowner){
 			echo boom $targetfs >>/n/g/cpu.in
 			sleep 1
-			. /tmp/kill.$targetfs
+			. /usr/grid/kill.$targetfs
 			rm /usr/grid/$targetfs
 			rm /usr/grid/$username/$targetfs
 			echo $targetfs BOOMed

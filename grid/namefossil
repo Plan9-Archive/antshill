@@ -42,10 +42,10 @@ echo srv -A $fos^fossil >>/tmp/ramfosconf
 if(! ~ $#listenport 0)
 	echo 'listen tcp!*!'^$listenport >>/tmp/ramfosconf
 
-echo 'kill fossil.'^$pid^' |rc' >/tmp/killscript
-echo 'kill ramfs.'^$pid^' |rc' >>/tmp/killscript
-echo 'rm /tmp/fossil.'^$pid >>/tmp/killscript
-echo 'rm /tmp/ramfs.'^$pid >>/tmp/killscript
+echo 'kill fossil.'^$pid^' |rc' >/usr/grid/killscript
+echo 'kill ramfs.'^$pid^' |rc' >>/usr/grid/killscript
+echo 'rm /usr/grid/fossil.'^$pid >>/usr/grid/killscript
+echo 'rm /usr/grid/ramfs.'^$pid >>/usr/grid/killscript
 
 if(~ $diskfile /n/$ramsrv/fossil){
 	cp /bin/ramfs /tmp/ramfs.$pid
