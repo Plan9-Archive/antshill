@@ -13,3 +13,4 @@ if(! ~ $#newname 0){
 	cp /tmp/scores.$pid /n/9fat/scorenames
 	cp /tmp/scores.$pid /n/remote9fat/scorenames
 }
+rm /tmp/score.$pid
