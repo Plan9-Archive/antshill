@@ -1,6 +1,14 @@
 #!/bin/rc
 # synchronizes rootscore files mounted at /n/9fat/scorenames and /n/remote9fat/scorenames
 
+if(~ test -e /n/9fat/scorenames){
+	echo didnt find /n/9fat/scorenames >[2=1]
+	exit
+}
+if(~ test -e /n/remote9fat/scorenames){
+	echo didnt find /n/remote9fat/scorenames >[2=1]
+	exit
+}
 sort /n/remote9fat/scorenames | uniq >/tmp/scores.$pid
 sort /n/9fat/scorenames | uniq >>/tmp/scores.$pid
 newname=`{cat /tmp/scores.$pid |sort |uniq -u |sed 's/ /⊞/g'}
@@ -13,4 +21,4 @@ if(! ~ $#newname 0){
 	cp /tmp/scores.$pid /n/9fat/scorenames
 	cp /tmp/scores.$pid /n/remote9fat/scorenames
 }
-rm /tmp/score.$pid
+rm /tmp/scores.$pid
