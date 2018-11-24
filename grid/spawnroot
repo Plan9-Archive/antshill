@@ -1,10 +1,11 @@
 #!/bin/rc
-# spawns a ramrooted fossil on a storage server from a given rootscore
+# spawns a fossil on a storage server from a given rootscore
 
 rfork
 scorefile=/n/9fat/scorenames
 listenport=10564
 rootname=foo
+usedisk=no
 
 while(~ $1 -*){
 	switch($1){
@@ -14,6 +15,8 @@ while(~ $1 -*){
 	case -v
 		scorefile=$2
 		shift
+	case -d
+		usedisk=yes
 	}
 	shift
 }
@@ -22,16 +25,27 @@ rootname=$1
 
 if(! test -e $scorefile)
 	mount /srv/fatsrv /n/9fat
-#. $scorefile
-#grep $rootname $scorefile >/tmp/targetroot
-#. /tmp/targetroot
 rootscore=`{ndb/query -f $scorefile scorename $rootname rootscore}
 if(~ $rootscore ''){
 	echo root $rootname not found >[2=1]
 	exit
 }
 
-namefossil -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
+if(~ $usedisk yes){
+	disknum=`{cat /usr/grid/nextdisk}
+	if(~ $disknum `{cat /usr/grid/diskmax}){
+		echo 'no available disk slots' >[2=1]
+		exit
+	}
+	usedisk=`{cat /usr/grid/disk^$disknum}
+	disknum=`{echo $disknum + 1 |hoc}
+	echo $disknum >/usr/grid/nextdisk
+}
+
+if(~ $usedisk no)
+	namefossil -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
+if not
+	namefossil -f $usedisk -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
 echo 'spawncount=`{cat /tmp/spawncount}' >>/tmp/killscript
 echo 'spawncount=`{echo $spawncount - 1 |hoc}' >>/tmp/killscript
 echo 'echo $spawncount >/tmp/spawncount' >>/tmp/killscript

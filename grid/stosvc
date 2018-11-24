@@ -48,7 +48,13 @@ while(usercmd=`{read}){
 				echo init ramdisk fossil...sleeping for 10...
 				stoport=`{cat /tmp/nextport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/tmp/stolog.$pid
-				spawnroot -l $stoport $usercmd(2) &
+				if(~ $usercmd spawndisk*){
+					echo 
+					spawnroot -d -l $stoport $usercmd(2) &
+				}
+				if(! ~ $usercmd spawndisk*){
+					spawnroot -l $stoport $usercmd(2) &
+				}
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/tmp/spawncount
 				echo $username >/usr/grid/$usercmd(2)
