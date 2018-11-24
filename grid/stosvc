@@ -2,7 +2,9 @@
 # attaches to hubfs and runs on storage node
 
 rfork
-spawnmax=6
+spawnmax=`{cat /usr/grid/spawnmax}
+if(~ $#spawnmax 0)
+	spawnmax=5
 if(! test -e /usr/grid/stononce)
 	echo 1009 >usr/grid/stononce
 nonce = `{cat /usr/grid/stononce}

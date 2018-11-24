@@ -1,10 +1,15 @@
 temporary state files
 
-/tmp/killscript.$name on storage made by namefossil+spawnroot, invoked from cpu side boom service
-/tmp/stononce on storage server for unique names for scores. used by storagesvc save
-/tmp/spawncount on storage server for limiting number of spawned roots, storagesvc
-/tmp/nextport on storage server for next port number to serve on, storagesvc
-/tmp/nextport on cpu server for next port number to serve on, cpusvc
+/usr/grid/killscript.$name on storage made by namefossil+spawnroot, invoked from cpu side boom service
+/usr/grid/stononce on storage server for unique names for scores. used by storagesvc save
+/usr/grid/spawncount on storage server for limiting number of spawned roots, storagesvc
+/usr/grid/spawnmax on storage server maximum allowed value of spawncount
+/usr/grid/nextport on storage server for next port number to serve on, storagesvc
+/usr/grid/nextport on cpu server for next port number to serve on, cpusvc
+/usr/grid/nextdisk on sto server for next disk file to use
+/usr/grid/disk# on sto server file locations mapped to disk file numbers
+/usr/grid/diskmax cap for disk slots
+/usr/grid/username subdir with active environment names
 
 srvs
 
@@ -29,7 +34,7 @@ permanent state files
 
 logs
 
-/tmp/stolog on storage
-/tmp/sysaddlog on storage
-/tmp/invitelog on storage
+/usr/grid/stolog.$pid on storage
+/usr/grid/fossilogs output of namefossil commands
+/usr/grid/username.reqlog log of commands from user
 /tmp/cpusvclog on cpu
