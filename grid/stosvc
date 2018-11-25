@@ -112,7 +112,7 @@ while(usercmd=`{read}){
 		echo active grid namespaces for $username
 		for(i in `{ls /usr/grid/$username}){
 			basename $i
-			echo serving on cpu port `{cat $i |sed 's/.*!.*!//g' |sed 's/ .*/ \+1/g' |hoc'}
+			echo serving on cpu port `{cat $i |sed 's/.*!.*!//g' |sed 's/ .*/ \+1/g' |hoc}
 		}
 	case scores*
 		if(! test -e /n/9fat/scorenames)
