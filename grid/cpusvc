@@ -2,8 +2,8 @@
 # attaches to hubfs from storage server and runs on cpu provider node
 
 rfork
-if(! test -e /usr/grid/nextport)
-	echo 20000 >/usr/grid/nextport
+if(! test -e /usr/grid/nextcpuport)
+	echo 20001 >/usr/grid/nextcpuport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/usr/grid/myip
 . /usr/grid/myip
 
@@ -11,14 +11,14 @@ while(usercmd=`{read}){
 	switch($usercmd){
 	case fetch*
 		if(~ $#usercmd 4){
-			cpuport=`{cat /usr/grid/nextport}
+			cpuport=`{cat /usr/grid/nextcpuport}
 			roothost=`{echo $usercmd(2) | awk -F ! '{print $2}'}
 			echo fetchroot -d $usercmd(2) -p $cpuport -h $usercmd(3) -u $usercmd(4) >>/usr/grid/cpusvclog.$pid
 			fetchroot -d $usercmd(2) -p $cpuport -h $usercmd(3) -u $usercmd(4) &
 			sleep 4
 			echo '	rcpu -h tcp!'^$ip^!^$cpuport -u $usercmd(4)
 			cpuport=`{echo $cpuport '+ 2' |hoc}
-			echo $cpuport >/usr/grid/nextport
+			echo $cpuport >/usr/grid/nextcpuport
 		}
 		if not
 			echo fetch dialstring scorename user >[1=2]

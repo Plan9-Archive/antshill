@@ -8,8 +8,8 @@ if(~ $#spawnmax 0)
 if(! test -e /usr/grid/stononce)
 	echo 1009 >usr/grid/stononce
 nonce = `{cat /usr/grid/stononce}
-if(! test -e /usr/grid/nextport)
-	echo 20000 >/usr/grid/nextport
+if(! test -e /usr/grid/nextstoport)
+	echo 20000 >/usr/grid/nextstoport
 ndb/ipquery sys $sysname ip |sed 's/ip=127.0.0.1//' >/usr/grid/myip
 . /usr/grid/myip
 scorefile=/n/9fat/scorenames
@@ -48,7 +48,7 @@ while(usercmd=`{read}){
 			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $usercmd(2) user |grep $username}
 			if(~ $usercheck $username){
 				echo init ramdisk fossil...sleeping for 10...
-				stoport=`{cat /usr/grid/nextport}
+				stoport=`{cat /usr/grid/nextstoport}
 				echo $username spawnroot -l $stoport $usercmd(2) >>/usr/grid/stolog.$pid
 				if(~ $usercmd spawndisk*){
 					echo 
@@ -67,7 +67,7 @@ while(usercmd=`{read}){
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >/usr/grid/$username/$usercmd(2)
 				echo 'fetch tcp!'^$ip^'!'^$stoport $usercmd(2-) >>/n/g/cpu.in
 				stoport=`{echo $stoport '+ 2' |hoc}
-				echo $stoport >/usr/grid/nextport
+				echo $stoport >/usr/grid/nextstoport
 			}
 			if not
 				echo $usercmd(2) not found for $username
@@ -112,7 +112,7 @@ while(usercmd=`{read}){
 		echo active grid namespaces for $username
 		for(i in `{ls /usr/grid/$username}){
 			basename $i
-			echo serving on cpu port `{cat $i |sed 's/.*!.*!//g' |sed 's/ .*//g'}
+			echo serving on cpu port `{cat $i |sed 's/.*!.*!//g' |sed 's/ .*/ \+1/g' |hoc'}
 		}
 	case scores*
 		if(! test -e /n/9fat/scorenames)
