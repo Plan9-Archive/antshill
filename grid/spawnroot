@@ -42,10 +42,13 @@ if(~ $usedisk yes){
 	echo $disknum >/usr/grid/nextdisk
 }
 
-if(~ $usedisk no)
+if(~ $usedisk no){
 	namefossil -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
+	echo /srv/$rootname >/usr/grid/$rootname
+}
 if not {
 	namefossil -f $usedisk -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
+	echo $usedisk >/usr/grid/$rootname
 	echo 'disknum=`{cat /usr/grid/nextdisk}' >>/usr/grid/killscript
 	echo 'disknum=`{echo $disknum - 1 |hoc}' >>/usr/grid/killscript
 	echo 'echo $disknum >/usr/grid/nextdisk' >>/usr/grid/killscript

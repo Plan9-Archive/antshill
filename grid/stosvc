@@ -59,7 +59,7 @@ while(usercmd=`{read}){
 				}
 				spawncount=`{echo $spawncount '+ 1' |hoc}
 				echo $spawncount >/usr/grid/spawncount
-				echo $username >/usr/grid/$usercmd(2)
+#				echo $username >/usr/grid/$usercmd(2)
 				if(! test -d /usr/grid/$username)
 					mkdir /usr/grid/$username
 				sleep 10
@@ -76,7 +76,10 @@ while(usercmd=`{read}){
 			echo spawn limit reached >[1=2]
 	case save*
 		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/usr/grid/stolog.$pid
-		savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
+		if(! ~ $usercmd savedisk*)
+			savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
+		if(~ $usercmd savedisk*)
+			savesnap -u $username -f `{cat /usr/grid/^$usercmd(2)} -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/usr/grid/stononce
 	case invite*
