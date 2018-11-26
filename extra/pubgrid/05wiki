@@ -1,0 +1,15 @@
+#!/bin/rc
+
+myip=$wikip
+rimport -a $regip /srv
+mount -c /srv/registry /mnt/registry
+auth/factotum
+echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
+wikifs -p 666 -s gridwiki /sys/lib/wiki
+ip/httpd/httpd
+hub -b listenwiki
+mount /srv/listenwiki /n/listenwiki
+echo 'gridlisten1 -tv -d gridwiki -m /mnt/wiki tcp!*!17035 /bin/exportfs -S /srv/gridwiki' >>/n/listenwiki/io0
+hub -b listenwikitls
+mount /srv/listenwikitls /n/listenwikitls
+echo 'gridlisten1 -tv -d gridwiki -m /mnt/wiki tcp!*!27035 tlssrv -A /bin/aux/trampoline tcp!127.1!17035' >>/n/listenwikitls/io0

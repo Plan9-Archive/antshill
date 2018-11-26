@@ -1,0 +1,9 @@
+#!/bin/rc
+
+myip=$ftpip
+rimport -a $regip /srv
+mount -c /srv/registry /mnt/registry
+hub -b listenftp
+mount /srv/listenftp /n/listenftp
+echo 'gridlisten1 -tv -d gridftp -m /n/gridftp tcp!*!10021 /bin/ip/lftpd -Ae' >>/n/listenftp/io0
+

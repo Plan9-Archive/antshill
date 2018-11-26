@@ -1,0 +1,12 @@
+#!/bin/rc
+
+mount -c /srv/regemu /n/reghub
+echo 'bind -c ''#₪'' /srv
+mount -A -c {ndb/registry} /mnt/registry
+9srvfs registry /mnt/registry &
+mount -A -c {ndb/registry} /n/registry
+9srvfs pubregistry /n/registry &
+' >>/n/reghub/regemu0
+sleep 2
+chmod 666 /srv/registry
+chmod 666 /srv/pubregistry

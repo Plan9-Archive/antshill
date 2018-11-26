@@ -1,0 +1,15 @@
+#!/bin/rc
+
+myip=$ramip
+rimport -a $regip /srv
+mount -c /srv/registry /mnt/registry
+auth/factotum
+echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
+ramfs -S gridram
+chmod 666 /srv/gridram
+hub -b listengridram
+mount /srv/listengridram /n/listengridram
+echo 'gridlisten1 -tv -d gridram -m /n/gridram tcp!*!9996 /bin/exportfs -S /srv/gridram' >>/n/listengridram/io0
+hub -b listengridramtls
+mount /srv/listengridramtls /n/listengridramtls
+echo 'gridlisten1 -tv -d gridram -m /n/gridram tcp!*!19996 tlssrv -A /bin/aux/trampoline tcp!127.1!9996' >>/n/listengridramtls/io0

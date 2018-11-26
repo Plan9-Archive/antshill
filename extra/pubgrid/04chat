@@ -1,0 +1,19 @@
+#!/bin/rc
+
+myip=$regip
+auth/factotum
+echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
+mount -c /srv/registry /mnt/registry
+cd $home/gridmods
+8.safehubfs -s gridchat
+chmod 666 /srv/gridchat
+mount -c /srv/gridchat /n/gridchat
+cd /n/gridchat
+touch chat gridhelp plan9 chanstuff
+cd
+hub -b listenchat
+mount /srv/listenchat /n/listenchat
+echo 'gridlisten1 -v -d gridchat -m /n/chat tcp!*!9997 /bin/exportfs -S /srv/gridchat' >>/n/listenchat/io0
+hub -b listenchattls
+mount /srv/listenchattls /n/listenchattls
+echo 'gridlisten1 -tv -d gridchat -m /n/chat tcp!*!19997 tlssrv -A /bin/aux/trampoline tcp!127.1!9997' >>/n/listenchattls/io0

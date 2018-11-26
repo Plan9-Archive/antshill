@@ -1,0 +1,14 @@
+#!/bin/rc
+
+myip=$rootip
+rimport -a $regip /srv /n/regsrv
+mount -c /n/regsrv/registry /mnt/registry
+srvfs -p 666 registry /mnt/registry
+auth/factotum
+echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
+hub -b listenroot
+mount /srv/listenroot /n/listenroot
+echo 'gridlisten1 -v -d gridroot -m /n/gridroot tcp!*!564 /bin/exportfs -R -S /srv/boot' >>/n/listenroot/io0
+hub -b listenroottls
+mount /srv/listenroottls /n/listenroottls
+echo 'gridlisten1 -tv -d gridroot -m /n/gridroot tcp!*!10564 tlssrv -A /bin/aux/trampoline tcp!127.1!564' >>/n/listenroottls/io0

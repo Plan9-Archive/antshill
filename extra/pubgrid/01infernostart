@@ -1,0 +1,8 @@
+#!/bin/rc
+
+cd $home/inferno-os/Plan9/386/bin
+hubfs -s regemu
+mount -c /srv/regemu /n/hubfs
+touch /n/hubfs/regemu0 /n/hubfs/regemu1 /n/hubfs/regemu2
+emu </n/hubfs/regemu0 >>/n/hubfs/regemu1 >>[2]/n/hubfs/regemu2 &
+cd

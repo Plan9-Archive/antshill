@@ -1,0 +1,8 @@
+auth/as none
+mount -c /srv/gridshell /n/gridshell
+cd /n/gridshell
+touch io0 io1 io2
+rc -i <io0 >io1 >[2]io2 &
+touch foo0 foo1 foo2
+rc -i <foo0 >foo1 >[2]foo2 &
+exit

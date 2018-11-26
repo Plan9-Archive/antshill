@@ -1,0 +1,18 @@
+#!/bin/rc
+
+myip=$regip
+auth/factotum
+echo 'key proto=dp9ik user=glenda dom=grid !password=9gridchan' >/mnt/factotum/ctl
+mount -c /srv/registry /mnt/registry
+hub -b listenreg
+mount /srv/listenreg /n/listenreg
+echo 'gridlisten1 -v -d gridregistry -m /mnt/registry tcp!*!6675 /bin/exportfs -R -S /srv/registry' >>/n/listenreg/io0
+hub -b listenpubreg
+mount /srv/listenpubreg /n/listenpubreg
+echo 'gridlisten1 -v -d pubregistry -m /n/pubregistry tcp!*!7675 /bin/exportfs -S /srv/pubregistry' >>/n/listenpubreg/io0
+hub -b listenregtls
+mount /srv/listenregtls /n/listenregtls
+echo 'gridlisten1 -tv -d gridregistry -m /mnt/registry tcp!*!16675 tlssrv -A /bin/aux/trampoline tcp!127.1!6675' >>/n/listenregtls/io0
+hub -b listenpubregtls
+mount /srv/listenpubregtls /n/listenpubregtls
+echo 'gridlisten1 -tv -d pubregistry -m /n/pubregistry tcp!*!17675 tlssrv -A /bin/aux/trampoline tcp!127.1!7675' >> /n/listenpubregtls/io0
