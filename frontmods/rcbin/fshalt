@@ -62,6 +62,7 @@ cp /bin/rc /tmp
 cp /bin/sed /tmp
 cp /bin/sleep /tmp
 cp /bin/scram /tmp
+cp /bin/test /tmp
 bind /tmp /rc
 bind /tmp /bin
 
@@ -70,15 +71,12 @@ bind /tmp /bin
 fn x {
 	echo
 	echo -n halting...
-	for (i in $c){
+	for (i in $c $h)
+		echo halt >>$i
+	for (i in $c $h){
 		echo -n $i...
-		echo halt >>$i
-		sleep 2
-	}
-	for(i in $h){
-		echo -n $i
-		echo halt >>$i
-		sleep 2
+		while(test -e $i)
+			sleep 1
 	}
 	for(i in $f){
 		echo fsys all halt >>$i
