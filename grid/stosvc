@@ -100,13 +100,13 @@ while(usercmd=`{read}){
 			echo $targetfs not owned by $username >[1=2]
 	case boom*
 		targetfs=$usercmd(2)
-		fsowner=`{cat /usr/grid/$targetfs}
-		if(~ $username $fsowner){
+		if(test -e /usr/grid/$username/$targetfs){
 			echo boom $targetfs >>/n/g/cpu.in
 			sleep 1
 			. /usr/grid/kill.$targetfs
 			rm /usr/grid/$targetfs
 			rm /usr/grid/$username/$targetfs
+			rm /usr/grid/kill.$targetfs
 			echo $targetfs BOOMed
 		}
 		if not
