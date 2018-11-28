@@ -8,8 +8,6 @@ case checkdone
 		configfs=done
 	if not
 		configfs=ready
-	if(~ $fstype ants)
-		configfs=done
 	export configfs
 
 case go
@@ -23,5 +21,10 @@ case go
 	echo
 	prompt -d venti 'File system' venti cwfs64x hjfs fossil ants
 	fstype=$rd
+	if(~ $fstype ants){
+		fstype=venti
+		multifossil=yes
+	}
 	export fstype
+	export multifossil
 }
