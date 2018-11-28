@@ -17,8 +17,9 @@ case go
 	echo '	cwfs64x	the cached-worm file server (20gb minimum)'
 	echo '	hjfs	the new 9front file server (experimental!)'
 	echo '	fossil	fossil alone (should be used with remote venti)'
+	echo '	ants	venti+fossil ants colony partitioning'
 	echo
-	prompt -d venti 'File system' venti cwfs64x hjfs fossil
+	prompt -d venti 'File system' venti cwfs64x hjfs fossil ants
 	fstype=$rd
 	export fstype
 }

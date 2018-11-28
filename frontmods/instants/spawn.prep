@@ -1,0 +1,10 @@
+a 9fat 0 204800
+a nvram 204800 204801
+. 204801
+a fossil . .+10%
+a fossil2 . .+5%
+a fossil3 . .+5%
+a isect . .+4%
+a arenas . $
+w
+q

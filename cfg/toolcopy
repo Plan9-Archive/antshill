@@ -78,6 +78,7 @@ cp /$objtype/bin/webfs .
 #cp /$objtype/bin/unvac . #unneeded with vacfs
 
 ## shell tools
+cp /$objtype/bin/chgrp .
 cp /$objtype/bin/date .
 cp /$objtype/bin/diff .
 cp /$objtype/bin/hoc .
@@ -93,7 +94,6 @@ cp /$objtype/bin/uniq .
 #cp /$objtype/bin/unmount .
 #cp /$objtype/bin/xd .
 #cp /$objtype/bin/awk .
-#cp /$objtype/bin/chgrp .
 #cp /$objtype/bin/du .
 #cp /$objtype/bin/tail .
 #cp /$objtype/bin/tee .
