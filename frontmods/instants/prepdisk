@@ -43,8 +43,10 @@ case go
 	echo 'If it is not yet subdivided, a sensible layout will be suggested;'
 	echo 'you can probably just type ''w'' and then ''q''.'
 	echo
-	if(~ $fstype ants)
+	if(~ $fstype ants){
 		cat spawn.prep | disk/prep $disk
+		fstype=venti
+	}
 	if not
 		disk/prep `{autotype} $disk
 	disk/prep -p $disk >`{basename -d $disk}^/ctl >[2]/dev/null
