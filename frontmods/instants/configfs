@@ -8,6 +8,8 @@ case checkdone
 		configfs=done
 	if not
 		configfs=ready
+	if(~ $fstype ants)
+		configfs=done
 	export configfs
 
 case go
