@@ -58,20 +58,27 @@ while(usercmd=`{read}){
 				if(! ~ $usercmd spawndisk*){
 					spawnroot -l $stoport $targetfs &
 				}
-				spawncount=`{echo $spawncount '+ 1' |hoc}
-				echo $spawncount >/usr/grid/spawncount
-#				echo $username >/usr/grid/$targetfs
-				if(! test -d /usr/grid/$username)
-					mkdir /usr/grid/$username
-				sleep 10
-				echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username
-				echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username >/usr/grid/$username/$targetfs
-				echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username >>/n/g/cpu.in
-				stoport=`{echo $stoport '+ 2' |hoc}
-				echo $stoport >/usr/grid/nextstoport
+				sleep 5
+				if(! test -e /srv/$targetfs^fossil)
+					sleep 5
+				if(! test -e /srv/$targetfs^fossil)
+					sleep 5
+				if(test -e /srv/$targetfs^fossil){
+					spawncount=`{echo $spawncount '+ 1' |hoc}
+					echo $spawncount >/usr/grid/spawncount
+					if(! test -d /usr/grid/$username)
+						mkdir /usr/grid/$username
+					echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username
+					echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username >/usr/grid/$username/$targetfs
+					echo 'fetch tcp!'^$ip^'!'^$stoport $targetfs $username >>/n/g/cpu.in
+					stoport=`{echo $stoport '+ 2' |hoc}
+					echo $stoport >/usr/grid/nextstoport
+				}
+				if not
+					echo $targetfs spawn failed on storage server >[1=2]
 			}
 			if not
-				echo $targetfs not found for $username
+				echo $targetfs not found for $username >[1=2]
 		}
 		if not
 			echo spawn limit reached >[1=2]
