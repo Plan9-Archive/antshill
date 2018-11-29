@@ -6,6 +6,7 @@ cp ../grid/service/* /rc/bin/service
 mkdir /usr/grid
 echo /dev/sdF0/fossil2 >/usr/grid/disk1
 echo /dev/sdF0/fossil3 >/usr/grid/disk2
+echo 1 >/usr/grid/nextdisk
 echo 3 >/usr/grid/diskmax
 echo 5 >/usr/grid/spawnmax
 echo 99 >/usr/grid/stononce
