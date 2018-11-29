@@ -144,9 +144,10 @@ if(~ $1 clean){
 }
 
 if(! test -e /sys/include/libc.h.orig){
-	echo 'backing up libc and lib9p'
+	echo 'backing up libc and lib9p and /lib/namespace'
 	cp /sys/include/libc.h /sys/include/libc.h.orig
 	cp /sys/src/lib9p/srv.c /sys/src/lib9p/srv.c.orig
+	cp /lib/namespace /lib/namespace.orig
 }
 if(! test -e /$objtype/bin/rc.orig){
 	echo 'backing up rc at rc.orig'
@@ -155,6 +156,7 @@ if(! test -e /$objtype/bin/rc.orig){
 if(! test -e frontmods/include/libc.rebuild.complete){
 	echo 'rebuilding libs with modified libc and lib9p'
 	sleep 5
+	cp frontmods/lib/namespace /lib/namespace
 	cp frontmods/include/libc.h /sys/include/libc.h
 	cp frontmods/lib9p/srv.c /sys/src/lib9p/srv.c
 	cd /sys/src

@@ -1,16 +1,17 @@
 #!/bin/rc
 # sets up minimal files for spawngrid
 
+cp ../grid/* /rc/bin
 cp ../grid/service/* /rc/bin/service
 mkdir /usr/grid
 echo /dev/sdF0/fossil2 >/usr/grid/disk1
-echp /dev/sdF0/fossil3 >/usr/grid/disk2
+echo /dev/sdF0/fossil3 >/usr/grid/disk2
 echo 3 >/usr/grid/diskmax
 echo 5 >/usr/grid/spawnmax
 echo 99 >/usr/grid/stononce
 9fs 9fat
 seedscore=`{fossil/last /dev/sdF0/fossil}
 echo 'scorename=clean rootscore='^$seedscore^' user=glenda' >>/n/9fat/scorenames
-echo '. /rc/bin/scorenfs' >>/rc/bin/cpurc
+echo '. /rc/bin/scorefns' >>/rc/bin/cpurc
 echo 'allsvc' >>/rc/bin/cpurc
 echo 'change /usr/grid/stononce to a numeric id between 100-198 for this server'
