@@ -1,3 +1,5 @@
+aux/listen1 -v tcp!127.1!16997 /bin/exportfs -S /srv/gridsvc
+
 Grid client interface 17 11 2018
 
 receive account and password information

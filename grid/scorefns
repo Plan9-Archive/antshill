@@ -46,3 +46,14 @@ fn syncventis{
 	mount /srv/proghub /n/p
 	echo 'while(sleep 120)ventiprog' >>/n/p/io0
 }
+
+fn allsvc{
+	srvscores
+	makectlhub
+	chmod 666 /srv/gridsvc
+	stosvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
+	cpusvc </n/g/cpu.in >>/n/g/cpu.out >>[2]/n/g/cpu.err &
+	aux/listen1 -v tcp!127.1!16997 /bin/exportfs -S /srv/gridsvc &
+	aux/listen1 -v tcp!*!16998 tlssrv -A /bin/aux/trampoline tcp!127.1!16997 &
+	aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userreq &
+}

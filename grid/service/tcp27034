@@ -1,0 +1,3 @@
+#!/bin/rc
+
+exec tlssrv -A /bin/aux/trampoline tcp!127.1!17034
