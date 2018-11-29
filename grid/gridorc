@@ -1,11 +1,6 @@
 #!/bin/rc
 # user facing grid orchestration helper
 
-if(! test -e /n/g/sto.in){
-	echo no grid service found at /n/g >[2=1]
-	exit
-}
-echo 'scores | spawn scorename | save oldname newname | invite user scorename | boom scorename | status'
 rfork
 griduser=()
 while (~ $1 -*){
@@ -16,10 +11,25 @@ while (~ $1 -*){
 	case -d
 		reqdial=$2
 		shift
+	case -h
+		targhost=$2
+		shift
 	}
 	shift
 }
-
+if(~ $targhost tcp!*)
+	hostdial=$targhost
+if not
+	hostdial=tcp!^$targhost^!16998
+if(~ $#reqdial 0)
+	reqdial=tcp!^$targhost^!16999
+if(! test -e /n/g/sto.in)
+	srvtls $hostdial $targhost.gridsvc /n/g
+if(! test -e /n/g/sto.in){
+	echo no grid service found at /n/g >[2=1]
+	exit
+}
+echo 'scores | spawn scorename | save oldname newname | invite user scorename | boom scorename | status'
 cat /n/g/sto.out &
 catkill1=$apid
 cat /n/g/sto.err &

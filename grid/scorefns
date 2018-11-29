@@ -32,6 +32,9 @@ fn storageinit{
 	makectlhub
 	chmod 666 /srv/gridsvc
 	startstosvc
+	aux/listen1 -v tcp!127.1!16997 /bin/exportfs -S /srv/gridsvc &
+	aux/listen1 -v tcp!*!16998 tlssrv -A /bin/aux/trampoline tcp!127.1!16997 &
+	aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userreq &
 }
 
 fn syncventis{
