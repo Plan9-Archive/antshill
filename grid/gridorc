@@ -24,7 +24,7 @@ if not
 if(~ $#reqdial 0)
 	reqdial=tcp!^$targhost^!16999
 if(! test -e /n/g/sto.in)
-	srvtls $hostdial $targhost.gridsvc /n/g
+	srvtls $hostdial $targhost.gridsvc.$pid /n/g
 if(! test -e /n/g/sto.in){
 	echo no grid service found at /n/g >[2=1]
 	exit
