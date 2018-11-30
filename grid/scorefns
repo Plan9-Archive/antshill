@@ -37,16 +37,6 @@ fn storageinit{
 	aux/listen1 -v tcp!*!16999 /bin/tlssrv -a /bin/userreq &
 }
 
-fn syncventis{
-	webfs
-	bind -b '#S' /dev
-	9fs 9fat
-	cd /n/9fat
-	hub -b proghub
-	mount /srv/proghub /n/p
-	echo 'while(sleep 120)ventiprog' >>/n/p/io0
-}
-
 fn allsvc{
 	9fs 9fat
 	srvfs fatsrv /n/9fat

@@ -37,6 +37,7 @@ while(usercmd=`{read}){
 	usercmd=$reqcmd(2-)
 	switch($usercmd){
 	case spawn*
+		if(~ $#usercmd 2){
 		targetfs=$usercmd(2)
 		if(! test -e /usr/grid/spawncount)
 			echo 0 >/usr/grid/spawncount
@@ -82,7 +83,11 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo spawn limit reached >[1=2]
+		}
+		if not
+			echo spawn SCORENAME >[1=2]
 	case save*
+		if(~ $#usercmd 3){
 		echo savesnap -u $username $usercmd(2) $usercmd(3) $nonce >>/usr/grid/stolog.$pid
 		if(! ~ $usercmd savedisk*)
 			savesnap -u $username -r /srv/^$usercmd(2) -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
@@ -90,7 +95,11 @@ while(usercmd=`{read}){
 			savesnap -u $username -f `{cat /usr/grid/^$usercmd(2)} -s /srv/^$usercmd(2)^fscons $usercmd(3)^.^$nonce &
 		nonce=`{echo $nonce ' + 100 ' |hoc}
 		echo $nonce >/usr/grid/stononce
+		}
+		if not
+			echo save OLDNAME NEWNAME >[1=2]
 	case invite*
+		if(~ $#usercmd 3){
 		inviteduser=$usercmd(2)
 		targetfs=$usercmd(3)
 		if(test -e /usr/grid/$username/$targetfs){
@@ -105,7 +114,11 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo $targetfs not owned by $username >[1=2]
+		}
+		if not
+			echo invite USER FSNAME >[1=2]
 	case boom*
+		if(~ $#usercmd 2){
 		targetfs=$usercmd(2)
 		if(test -e /usr/grid/$username/$targetfs){
 			echo boom $targetfs >>/n/g/cpu.in
@@ -118,6 +131,9 @@ while(usercmd=`{read}){
 		}
 		if not
 			echo $targetfs not owned by $username >[1=2]
+		}
+		if not
+			echo boom FSNAME >[1=2]
 	case status
 		echo active grid namespaces for $username
 		for(i in `{ls /usr/grid/$username}){
