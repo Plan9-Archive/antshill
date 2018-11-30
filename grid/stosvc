@@ -49,7 +49,7 @@ while(usercmd=`{read}){
 		if not if(! ~ $spawncount $spawnmax){
 			usercheck=`{ndb/query -f /n/9fat/scorenames -a scorename $targetfs user |grep $username}
 			if(~ $usercheck $username){
-				echo init ramdisk fossil...sleeping for 10...
+				echo init fossil...waiting for 10...
 				stoport=`{cat /usr/grid/nextstoport}
 				echo $username spawnroot -l $stoport $targetfs >>/usr/grid/stolog.$pid
 				if(~ $usercmd spawndisk*){
@@ -59,11 +59,11 @@ while(usercmd=`{read}){
 				if(! ~ $usercmd spawndisk*){
 					spawnroot -l $stoport $targetfs &
 				}
-				sleep 5
+				sleep 3
 				if(! test -e /srv/$targetfs^fossil)
-					sleep 5
+					sleep 3
 				if(! test -e /srv/$targetfs^fossil)
-					sleep 5
+					sleep 4
 				if(test -e /srv/$targetfs^fossil){
 					spawncount=`{echo $spawncount '+ 1' |hoc}
 					echo $spawncount >/usr/grid/spawncount
