@@ -36,7 +36,7 @@ if(~ $#diskfile 0)
 score=`{echo $score |sed 's/vac://'}
 
 echo fsys main config $diskfile >/tmp/ramfosconf
-echo fsys main open -c 256 >>/tmp/ramfosconf
+echo fsys main open -c 1024 >>/tmp/ramfosconf
 echo srv -p $fos^fscons >>/tmp/ramfosconf
 echo srv -A $fos^fossil >>/tmp/ramfosconf
 if(! ~ $#listenport 0)

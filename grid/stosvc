@@ -53,7 +53,6 @@ while(usercmd=`{read}){
 				stoport=`{cat /usr/grid/nextstoport}
 				echo $username spawnroot -l $stoport $targetfs >>/usr/grid/stolog.$pid
 				if(~ $usercmd spawndisk*){
-					echo 
 					spawnroot -d -l $stoport $targetfs &
 				}
 				if(! ~ $usercmd spawndisk*){
