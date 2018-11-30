@@ -38,8 +38,6 @@ if(~ $usedisk yes){
 		exit
 	}
 	usedisk=`{cat /usr/grid/disk^$disknum}
-	disknum=`{echo $disknum + 1 |hoc}
-	echo $disknum >/usr/grid/nextdisk
 }
 
 if(~ $usedisk no){
@@ -48,11 +46,17 @@ if(~ $usedisk no){
 }
 if not {
 	namefossil -f $usedisk -l $listenport $rootscore $rootname $rootname >>[2]/usr/grid/fossilogs
-	echo $usedisk >/usr/grid/$rootname
-	echo 'disknum=`{cat /usr/grid/nextdisk}' >>/usr/grid/killscript
-	echo 'disknum=`{echo $disknum - 1 |hoc}' >>/usr/grid/killscript
-	echo 'echo $disknum >/usr/grid/nextdisk' >>/usr/grid/killscript
-	echo 'echo ' $usedisk ' >/usr/grid/disk^$disknum' >>/usr/grid/killscript
+	if(test -e /srv/$rootname^fossil){
+		disknum=`{echo $disknum + 1 |hoc}
+		echo $disknum >/usr/grid/nextdisk
+		echo $usedisk >/usr/grid/$rootname
+		echo 'disknum=`{cat /usr/grid/nextdisk}' >>/usr/grid/killscript
+		echo 'disknum=`{echo $disknum - 1 |hoc}' >>/usr/grid/killscript
+		echo 'echo $disknum >/usr/grid/nextdisk' >>/usr/grid/killscript
+		echo 'echo ' $usedisk ' >/usr/grid/disk^$disknum' >>/usr/grid/killscript
+	}
+	if not
+		echo namefossil $rootname failed >[1=2]
 }
 echo 'spawncount=`{cat /usr/grid/spawncount}' >>/usr/grid/killscript
 echo 'spawncount=`{echo $spawncount - 1 |hoc}' >>/usr/grid/killscript
