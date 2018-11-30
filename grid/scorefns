@@ -17,6 +17,17 @@ fn makectlhub{
 	touch /n/g/cpu.err
 }
 
+fn safemakectlhub{
+	safehubfs -t -s /srv/gridsvc
+	mount -c /srv/gridsvc /n/g
+	touch /n/g/sto.in
+	touch644 /n/g/sto.out
+	touch644 /n/g/sto.err
+	touch644 /n/g/cpu.in
+	touch644 /n/g/cpu.out
+	touch644 /n/g/cpu.err
+}
+
 fn startstosvc{
 	mount /srv/gridsvc /n/g
 	stosvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
@@ -41,6 +52,16 @@ fn allsvc{
 	9fs 9fat
 	srvfs fatsrv /n/9fat
 	makectlhub
+	chmod 666 /srv/gridsvc
+	stosvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
+	cpusvc </n/g/cpu.in >>/n/g/cpu.out >>[2]/n/g/cpu.err &
+	aux/listen1 -v tcp!127.1!16997 /bin/exportfs -S /srv/gridsvc &
+}
+
+fn safeallsvc{
+	9fs 9fat
+	srvfs fatsrv /n/9fat
+	safemakectlhub
 	chmod 666 /srv/gridsvc
 	stosvc </n/g/sto.in >>/n/g/sto.out >>[2]/n/g/sto.err &
 	cpusvc </n/g/cpu.in >>/n/g/cpu.out >>[2]/n/g/cpu.err &
