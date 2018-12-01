@@ -8,14 +8,14 @@ if(~ $cputype 386){
 	8l -o /386/bin/safehubfs safehubfs.8 ratelimit.8
 	cd ../extra
 	8c -FTVw touch644.c
-	8l -o /386/touch644 touch644.8
+	8l -o /386/bin/touch644 touch644.8
 }
 if(~ $cputype amd64){
 	6c -FTVw safehubfs.c
 	6l -o /amd64/bin/safehubfs safehubfs.6 ratelimit.6
 	cd ../extra
 	6c -FTVw touch644.c
-	6l -o /amd64/touch644 touch644.6
+	6l -o /amd64/bin/touch644 touch644.6
 }
 cd ../cfg
 cp ../grid/* /rc/bin
