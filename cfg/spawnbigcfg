@@ -32,7 +32,7 @@ echo 99 >/usr/grid/stononce
 bind -b '#S' /dev
 9fs 9fat
 seedscore=`{fossil/last /dev/sdF0/fossil}
-echo 'scorename=clean rootscore='^$seedscore^' user=glenda' >>/n/9fat/scorenames
+echo 'scorename=clean.'^$sysname^' rootscore='^$seedscore^' user=glenda' >>/n/9fat/scorenames
 echo '. /rc/bin/scorefns' >>/rc/bin/cpurc
 echo 'safeallsvc' >>/rc/bin/cpurc
 echo 'change /usr/grid/stononce to a numeric id between 100-198 for this server'
