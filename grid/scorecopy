@@ -17,7 +17,7 @@ if(! ~ $#newname 0){
 		echo $i
 		echo $i >>/n/9fat/scorenames
 	}
-	sort /n/9fat/scorenames |sed 's/⊞/ /g' | uniq>/tmp/scores.$pid
+	cat /n/9fat/scorenames |sed 's/⊞/ /g' | sort |uniq >/tmp/scores.$pid
 	cp /tmp/scores.$pid /n/9fat/scorenames
 	cp /tmp/scores.$pid /n/remote9fat/scorenames
 }
