@@ -1,9 +1,18 @@
 #!/bin/rc
 # synchronizes rootscore files mounted at /n/9fat/scorenames and /n/remote9fat/scorenames
 
+remote=none
+if(~ $#1 1)
+	remote=$1
+
 if(! test -e /n/9fat/scorenames){
 	echo didnt find /n/9fat/scorenames >[2=1]
 	exit
+}
+if(! test -e /n/remote9fat/scorenames){
+	if(! test -e /n/$remote/fatsrv)
+		rimport -p $remote /srv /n/$remote
+	mount /n/$remote/fatsrv /n/remote9fat
 }
 if(! test -e /n/remote9fat/scorenames){
 	echo didnt find /n/remote9fat/scorenames >[2=1]
