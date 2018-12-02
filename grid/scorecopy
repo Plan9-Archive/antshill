@@ -1,11 +1,11 @@
 #!/bin/rc
 # synchronizes rootscore files mounted at /n/9fat/scorenames and /n/remote9fat/scorenames
 
-if(~ test -e /n/9fat/scorenames){
+if(! test -e /n/9fat/scorenames){
 	echo didnt find /n/9fat/scorenames >[2=1]
 	exit
 }
-if(~ test -e /n/remote9fat/scorenames){
+if(! test -e /n/remote9fat/scorenames){
 	echo didnt find /n/remote9fat/scorenames >[2=1]
 	exit
 }

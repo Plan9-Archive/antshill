@@ -1,5 +1,18 @@
+webfs
+. /rc/bin/scorefns
+safeallsvc
+aux/listen1 -t tcp!127.1!27035 /bin/tlsclient -a tcp!chispasto!27034 &
+hub -b chiproghub
+mount /srv/chiproghub /n/p
+echo 'while(sleep 300){ventiprog -f /n/9fat/chispasto.info &}' >>/n/p/io0
+hub -b chiscohub
+mount /srv/chiscohub /n/s
+echo 'rimport -p chispasto /srv /n/chisrv' >>/n/s/io0
+echo 'mount /n/chisrv/fatsrv /n/remote9fat' >>/n/s/io0
+echo 'while(sleep 601){scorecopy &}' >>/n/s/io0
+---
 aux/listen1 -v tcp!127.1!16997 /bin/exportfs -S /srv/gridsvc
-
+---
 Grid client interface 17 11 2018
 
 receive account and password information

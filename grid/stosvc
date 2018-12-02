@@ -42,7 +42,7 @@ while(usercmd=`{read}){
 		if(! test -e /usr/grid/spawncount)
 			echo 0 >/usr/grid/spawncount
 		spawncount=`{cat /usr/grid/spawncount}
-		if(test -e /srv/$targetfs){
+		if(test -e /srv/$targetfs^fossil){
 			echo that root is already being served from this storage node >[1=2]
 			echo use save to clone it to a new name if desired >[1=2]
 		}
