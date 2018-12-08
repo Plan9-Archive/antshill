@@ -1,5 +1,5 @@
---- /sys/src/9/port/sysproc.c	Sun Jul  8 10:17:56 2018
-+++ ../frontmods/port/sysproc.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/port/sysproc.c	Mon Nov  5 07:29:45 2018
++++ ../frontmods/port/sysproc.c	Fri Dec  7 23:24:25 2018
 @@ -36,6 +36,7 @@
  	Pgrp *opg;
  	Rgrp *org;

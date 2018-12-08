@@ -1,5 +1,5 @@
---- /sys/src/9/pc/main.c	Sat Sep  1 16:36:51 2018
-+++ ../frontmods/pc/main.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/pc/main.c	Mon Dec  3 11:04:31 2018
++++ ../frontmods/pc/main.c	Fri Dec  7 23:24:23 2018
 @@ -157,6 +157,8 @@
  	p->pgrp = newpgrp();
  	p->egrp = smalloc(sizeof(Egrp));

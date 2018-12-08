@@ -1,5 +1,5 @@
---- /sys/src/cmd/aux/listen1.c	Sun Jul  8 10:17:59 2018
-+++ ../patched/gridlisten1.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/aux/listen1.c	Thu Oct 15 06:22:02 2015
++++ ../patched/gridlisten1.c	Fri Dec  7 23:24:27 2018
 @@ -6,11 +6,13 @@
  int verbose;
  int trusted;

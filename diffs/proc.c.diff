@@ -1,5 +1,5 @@
---- /sys/src/9/port/proc.c	Wed Oct 31 21:39:42 2018
-+++ ../frontmods/port/proc.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/port/proc.c	Mon Nov  5 07:29:45 2018
++++ ../frontmods/port/proc.c	Fri Dec  7 23:24:25 2018
 @@ -619,6 +619,7 @@
  	p->egrp = nil;
  	p->fgrp = nil;

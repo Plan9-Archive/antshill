@@ -1,5 +1,5 @@
---- /sys/src/9/boot/bootrc	Sat Sep  1 16:36:51 2018
-+++ ../frontmods/boot/bootrc	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/boot/bootrc	Fri Dec  7 22:53:55 2018
++++ ../frontmods/boot/bootrc	Fri Dec  7 23:24:23 2018
 @@ -1,5 +1,9 @@
  #!/bin/rc
  
@@ -140,7 +140,7 @@
  mt=()
  
  fn main{
-@@ -98,6 +225,9 @@
+@@ -95,6 +222,9 @@
  			x=($x -p)
  		must $x
  	}

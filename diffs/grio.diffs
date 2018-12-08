@@ -1,6 +1,6 @@
 diff -Nurp /sys/src/cmd/rio/README ../grio/README
---- /sys/src/cmd/rio/README	Wed Dec 31 19:00:00 1969
-+++ ../grio/README	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/README	Wed Dec 31 18:00:00 1969
++++ ../grio/README	Fri Dec  7 23:24:27 2018
 @@ -0,0 +1,12 @@
 +grio is a modified rio that adds hubfs integration, an extra user
 +selectable command in the menu, and appearance options.  grio expects
@@ -15,8 +15,8 @@ diff -Nurp /sys/src/cmd/rio/README ../grio/README
 +
 +Example: grio -x /bin/stats -a -elm -c 0xaabbccff -y 0x11111111 -w 2
 diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
---- /sys/src/cmd/rio/dat.h	Sun Jul  8 10:18:10 2018
-+++ ../grio/dat.h	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/dat.h	Fri Dec  7 22:53:55 2018
++++ ../grio/dat.h	Fri Dec  7 23:24:27 2018
 @@ -43,7 +43,7 @@ typedef	struct	Xfid Xfid;
  
  enum
@@ -48,7 +48,7 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
  Cursor	whitearrow;
  Cursor	query;
  Cursor	*corners[9];
-@@ -349,6 +357,7 @@ char		srvpipe[];
+@@ -348,6 +356,7 @@ char		srvpipe[];
  char		srvwctl[];
  int		errorshouldabort;
  int		menuing;		/* menu action is pending; waiting for window to be indicated */
@@ -57,8 +57,8 @@ diff -Nurp /sys/src/cmd/rio/dat.h ../grio/dat.h
  int		messagesize;		/* negotiated in 9P version setup */
  int		shiftdown;
 diff -Nurp /sys/src/cmd/rio/data.c ../grio/data.c
---- /sys/src/cmd/rio/data.c	Sun Jul  8 10:18:10 2018
-+++ ../grio/data.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/data.c	Sat Nov 23 15:21:19 2013
++++ ../grio/data.c	Fri Dec  7 23:24:27 2018
 @@ -46,6 +46,18 @@ Cursor sightcursor = {
  	 0x21, 0x84, 0x31, 0x8C, 0x0F, 0xF0, 0x00, 0x00, }
  };
@@ -127,8 +127,8 @@ diff -Nurp /sys/src/cmd/rio/data.c ../grio/data.c
  	dholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DMedblue);
  	lightholdcol = allocimage(display, Rect(0,0,1,1), CMAP8, 1, DGreyblue);
 diff -Nurp /sys/src/cmd/rio/fns.h ../grio/fns.h
---- /sys/src/cmd/rio/fns.h	Sun Jul  8 10:18:10 2018
-+++ ../grio/fns.h	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/fns.h	Thu May 19 11:48:54 2016
++++ ../grio/fns.h	Fri Dec  7 23:24:27 2018
 @@ -15,7 +15,7 @@ Timer*	timerstart(int);
  void	error(char*);
  void	killprocs(void);
@@ -139,8 +139,8 @@ diff -Nurp /sys/src/cmd/rio/fns.h ../grio/fns.h
  void *emalloc(uint);
  char *estrdup(char*);
 diff -Nurp /sys/src/cmd/rio/grio.man ../grio/grio.man
---- /sys/src/cmd/rio/grio.man	Wed Dec 31 19:00:00 1969
-+++ ../grio/grio.man	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/grio.man	Wed Dec 31 18:00:00 1969
++++ ../grio/grio.man	Fri Dec  7 23:24:27 2018
 @@ -0,0 +1,157 @@
 +.TH GRIO 1
 +.SH NAME
@@ -300,8 +300,8 @@ diff -Nurp /sys/src/cmd/rio/grio.man ../grio/grio.man
 +.B -a
 +argument option could parse and separate multipart arguments.
 diff -Nurp /sys/src/cmd/rio/mkfile ../grio/mkfile
---- /sys/src/cmd/rio/mkfile	Sun Jul  8 10:18:10 2018
-+++ ../grio/mkfile	Wed Oct 31 22:08:50 2018
+--- /sys/src/cmd/rio/mkfile	Tue Jan 17 18:12:54 2012
++++ ../grio/mkfile	Fri Dec  7 23:24:27 2018
 @@ -1,7 +1,7 @@
  </$objtype/mkfile
  BIN=/$objtype/bin
@@ -312,9 +312,9 @@ diff -Nurp /sys/src/cmd/rio/mkfile ../grio/mkfile
  	rio.$O\
  	data.$O\
 diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
---- /sys/src/cmd/rio/rio.c	Sun Jul  8 10:18:10 2018
-+++ ../grio/rio.c	Wed Oct 31 22:08:50 2018
-@@ -44,10 +44,15 @@ void	initcmd(void*);
+--- /sys/src/cmd/rio/rio.c	Fri Dec  7 22:53:55 2018
++++ ../grio/rio.c	Fri Dec  7 23:24:29 2018
+@@ -43,10 +43,15 @@ void	initcmd(void*);
  Channel* initkbd(void);
  
  char		*fontname;
@@ -330,7 +330,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	Reshape,
  	Move,
  	Delete,
-@@ -86,6 +91,8 @@ int	Hidden = Exit+1;
+@@ -85,6 +90,8 @@ int	Hidden = Exit+1;
  
  char		*menu3str[100] = {
   [New]		"New",
@@ -339,7 +339,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
   [Reshape]	"Resize",
   [Move]		"Move",
   [Delete]		"Delete",
-@@ -101,6 +108,8 @@ Menu menu3 =
+@@ -100,6 +107,8 @@ Menu menu3 =
  
  char *rcargv[] = { "rc", "-i", nil };
  char *kbdargv[] = { "rc", "-c", nil, nil };
@@ -348,7 +348,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  
  int errorshouldabort = 0;
  
-@@ -113,28 +122,55 @@ derror(Display*, char *errorstr)
+@@ -112,28 +121,55 @@ derror(Display*, char *errorstr)
  void
  usage(void)
  {
@@ -410,7 +410,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  		break;
  	case 'f':
  		fontname = EARGF(usage());
-@@ -153,6 +189,65 @@ threadmain(int argc, char *argv[])
+@@ -152,6 +188,65 @@ threadmain(int argc, char *argv[])
  	case 'D':
  		debug++;
  		break;
@@ -476,7 +476,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	default:
  		usage();
  	}ARGEND
-@@ -186,7 +281,7 @@ threadmain(int argc, char *argv[])
+@@ -185,7 +280,7 @@ threadmain(int argc, char *argv[])
  		fprint(2, "rio: can't open display: %r\n");
  		exits("display open");
  	}
@@ -485,7 +485,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  
  	exitchan = chancreate(sizeof(int), 0);
  	winclosechan = chancreate(sizeof(Window*), 0);
-@@ -204,7 +299,8 @@ threadmain(int argc, char *argv[])
+@@ -202,7 +297,8 @@ threadmain(int argc, char *argv[])
  	wscreen = allocscreen(screen, background, 0);
  	if(wscreen == nil)
  		error("can't allocate screen");
@@ -495,7 +495,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	flushimage(display, 1);
  
  	timerinit();
-@@ -628,7 +724,8 @@ resized(void)
+@@ -594,7 +690,8 @@ resized(void)
  	wscreen = allocscreen(screen, background, 0);
  	if(wscreen == nil)
  		error("can't re-allocate screen");
@@ -505,7 +505,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	o = subpt(viewr.max, viewr.min);
  	n = subpt(view->clipr.max, view->clipr.min);
  	qsort(window, nwindow, sizeof(window[0]), wtopcmp);
-@@ -744,6 +841,7 @@ button3menu(void)
+@@ -710,6 +807,7 @@ button3menu(void)
  		free(menu3str[i]);
  		menu3str[i] = nil;
  	}
@@ -513,7 +513,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	sweeping = TRUE;
  	switch(i = menuhit(3, mousectl, &menu3, wscreen)){
  	case -1:
-@@ -751,6 +849,12 @@ button3menu(void)
+@@ -717,6 +815,12 @@ button3menu(void)
  	case New:
  		new(sweep(), FALSE, scrolling, 0, nil, "/bin/rc", nil);
  		break;
@@ -526,7 +526,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	case Reshape:
  		resize();
  		break;
-@@ -1015,7 +1119,11 @@ pointto(int wait)
+@@ -981,7 +1085,11 @@ pointto(int wait)
  	Window *w;
  
  	menuing = TRUE;
@@ -539,7 +539,7 @@ diff -Nurp /sys/src/cmd/rio/rio.c ../grio/rio.c
  	while(mouse->buttons == 0)
  		readmouse(mousectl);
  	if(mouse->buttons == 4)
-@@ -1043,6 +1151,7 @@ delete(void)
+@@ -1009,6 +1117,7 @@ delete(void)
  {
  	Window *w;
  

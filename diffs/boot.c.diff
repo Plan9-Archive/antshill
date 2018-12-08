@@ -1,5 +1,5 @@
---- /sys/src/9/boot/boot.c	Sun Jul  8 10:17:56 2018
-+++ ../frontmods/boot/boot.c	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/boot/boot.c	Sat Mar 28 08:11:48 2015
++++ ../frontmods/boot/boot.c	Fri Dec  7 23:24:22 2018
 @@ -9,6 +9,7 @@
  {
  	char cputype[64];

@@ -1,5 +1,5 @@
---- /sys/src/9/port/portdat.h	Sun Jul  8 10:17:56 2018
-+++ ../frontmods/port/portdat.h	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/port/portdat.h	Mon Nov  5 07:29:45 2018
++++ ../frontmods/port/portdat.h	Fri Dec  7 23:24:25 2018
 @@ -44,6 +44,8 @@
  typedef struct Segment	Segment;
  typedef struct Segio	Segio;

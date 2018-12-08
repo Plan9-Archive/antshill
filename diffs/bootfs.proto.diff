@@ -1,5 +1,5 @@
---- /sys/src/9/boot/bootfs.proto	Wed Oct 31 21:39:35 2018
-+++ ../frontmods/boot/bootfs.proto	Wed Oct 31 22:08:50 2018
+--- /sys/src/9/boot/bootfs.proto	Mon Nov  5 07:29:45 2018
++++ ../frontmods/boot/bootfs.proto	Fri Dec  7 23:24:22 2018
 @@ -1,16 +1,22 @@
  $objtype
  	bin
