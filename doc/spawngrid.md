@@ -28,7 +28,7 @@ This command saves a new snapshot of your filesystem. Unless the 'save' command 
 
 	invite USERNAME FSNAME
 
-This command adds a user to fs, places them in the sys group, saves a snapshot of the fs, and adds that scorename to that users' available rootscores. Note that the invite-saved snapshot won't be available to the user who created it - an additional 'save' command would need to be issued.
+This command adds a user to fs, places them in the sys group, saves a snapshot of the fs, and adds that scorename to that users' available rootscores. Note that the invite-saved snapshot won't be available to the user who created it - an additional 'save' command would need to be issued. Also, the invite command must be used with fses created with 'spawn' and not with 'spawndisk' at the moment.
 
 	boom FSNAME
 

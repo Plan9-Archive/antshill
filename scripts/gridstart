@@ -4,7 +4,7 @@
 # awk '/exportfs/{print "srv -c", $1, $3, $5}' /mnt/registry/index
 
 fn cpl{
-	cp $1 /n/gridftp
+	cp $1 /n/griddisk
 	ptarg=`{basename $1}
 	plumb http://wiki.9gridchan.org/incoming/$ptarg
 }
@@ -94,7 +94,7 @@ echo '/usr/glenda
 /lib/font/bit/vga/unicode.font
           0          66
 f          1           1          36          36           3 
-          1          33          36           1           0 /n/gridftp/ Del Snarf Get | Look 
+          1          33          36           1           0 /n/griddisk/ Del Snarf Get | Look 
 F          1           1          15          15          28          15 
           2          23          15           0           1  Del Snarf Undo | Look 
 Wiki /mnt/wiki' >/tmp/gridacme
