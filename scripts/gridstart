@@ -4,9 +4,9 @@
 # awk '/exportfs/{print "srv -c", $1, $3, $5}' /mnt/registry/index
 
 fn cpl{
-	cp $1 /n/griddisk
+	cp $1 /n/griddisk/cpl
 	ptarg=`{basename $1}
-	plumb http://wiki.9gridchan.org/incoming/$ptarg
+	plumb http://wiki.9gridchan.org/incoming/cpl/$ptarg
 }
 
 while (~ $1 -*){
