@@ -19,6 +19,7 @@ dev
 	cap
 	kprof
 	fs
+	dtracy
 
 	ether		netif
 	bridge		netif log
@@ -138,6 +139,9 @@ misc
 	vgatvp3026	=cur
 	vgavesa
 	vgavmware	+cur
+	
+	dtracysys
+	dtracytimer
 
 ip
 	tcp

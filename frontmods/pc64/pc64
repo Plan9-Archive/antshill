@@ -42,6 +42,7 @@ dev
 	
 	segment
 	vmx
+	dtracy
 
 link
 #	devpccard
@@ -136,6 +137,9 @@ misc
 #	vgatvp3026	=cur
 	vgavesa
 #	vgavmware	+cur
+
+	dtracysys
+	dtracytimer
 
 ip
 	tcp
