@@ -282,7 +282,7 @@ fsread(Req *r)
 	Msgq *mq;
 	u32int count;
 	vlong offset;
-	char tmpstr[SMBUF];
+	char tmpstr[2*SMBUF];
 	int i;
 	int j;
 
@@ -296,7 +296,7 @@ fsread(Req *r)
 			respond(r, nil);
 			return;
 		}
-		sprint(tmpstr, "\tHubfs %s status (1 is active, 0 is inactive):\n \
+		snprint(tmpstr, 2*SMBUF-1, "\tHubfs %s status (1 is active, 0 is inactive):\n \
 Paranoia == %d  Freeze == %d  Trunc == %d  Applylimits == %d\n \
 Buffersize == %ulld \n", srvname, paranoia, freeze, trunc, applylimits, bucksize);
 		if(strlen(tmpstr) <= count)
