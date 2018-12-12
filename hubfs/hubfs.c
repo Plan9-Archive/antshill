@@ -433,7 +433,7 @@ fscreate(Req *r)
 		h = (Hub*)emalloc9p(sizeof(Hub));
 		setuphub(h);
 		addhub(h);
-		strcat(h->name, r->ifcall.name);
+		strncat(h->name,r->ifcall.name,SMBUF-1);
 		f->aux = h;
 		r->fid->file = f;
 		r->ofcall.qid = f->qid;
