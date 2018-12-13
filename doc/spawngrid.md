@@ -63,7 +63,7 @@ terminates the gridorc. Spawned environments will continue exist and be availabl
 	# user facing grid orchestration helper
 	
 	rfork
-	griduser=()
+	griduser=$user
 	while (~ $1 -*){
 		switch($1){
 		case -u

@@ -98,7 +98,7 @@ fn dochecksys{
 	switch($sysname){
 	case ?*
 		if(~ $#systest 0){
-			echo setting /dev/sysname to $sysname
+#			echo setting /dev/sysname to $sysname
 			echo -n $sysname >/dev/sysname
 			systest=`{cat /dev/sysname}
 		}
@@ -171,7 +171,7 @@ fn doramsetup{
 		echo no ramsetup
 	case ?*
 		hostcheck
-		echo 'ramsetup '^$ramsetup^'...'
+#		echo 'ramsetup '^$ramsetup^'...'
 		rc -c $ramsetup
 		if (test -e /srv/ramboot) {
 			mount -c /srv/ramboot /mnt/rboot
@@ -189,10 +189,10 @@ fn dofactotum{
 	case ''
 		echo no factotum
 	case cpu
-		echo $spc cpu factotum...
+#		echo $spc cpu factotum...
 		/boot/factotum $factotumopts -S -s factotum
 	case terminal
-		echo $spc terminal factotum...
+#		echo $spc terminal factotum...
 		/boot/factotum $factotumopts -u -s factotum
 	case debug
 		hostcheck
@@ -252,7 +252,7 @@ fn doafterfact{
 fn dostartventi{
 	switch($startventi){
 	case yes
-		echo starting venti
+#		echo starting venti
 		if(! ~ $ipdone yes)
 			ipsetup
 		if(~ $#ventilisten 0)
@@ -466,7 +466,7 @@ fn dorootstart{
 		}
 	case cpu
 		service=cpu
-		echo mounting $bootsrv to /root and starting cpurc
+#		echo mounting $bootsrv to /root and starting cpurc
 		mount $bootsrv /root
 		cat /root/adm/timezone/local >/env/timezone
 		if(test -e /root/rc/bin/cpurc)
@@ -475,7 +475,7 @@ fn dorootstart{
 			echo ERROR no cpurc found
 	case terminal
 		service=terminal
-		echo mounting $bootsrv to /root and starting termrc
+#		echo mounting $bootsrv to /root and starting termrc
 		mount $bootsrv /root
 		cat /root/adm/timezone/local >/env/timezone
 		if(~ $#user 0){
@@ -730,7 +730,7 @@ fn starttrad{
 #	interactive=traditional
 	doafterroot
 	doinitscript
-	echo 'storing startup configuration to ramdisk in /usr/'$user'/tmp/p9cfg'
+#	echo 'storing startup configuration to ramdisk in /usr/'$user'/tmp/p9cfg'
 	save9cfg
 	cleanenv >[2] /dev/null
 	dorootstart
