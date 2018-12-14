@@ -236,7 +236,7 @@ fn doafterfact{
 		rc -c $afterfact
 	}
 	if(! ~ $#privpassword 0){
-		echo privpassword key to factotum
+		echo 'privpassword found - setting factotum key'
 		if(~ $passdom '')
 			passdom=9front
 		if(~ $keyowner '')
@@ -348,7 +348,7 @@ fn dogetrootfs{
 			if(! ~ $venti *tcp*)
 				venti=tcp!^$venti^!17034
 		}
-		echo starting fossil from $fossil...
+#		echo starting fossil from $fossil...
 		fossil/fossil -f $fossil -c 'srv -p fscons'
 		echo 'srv -A boot' >>/srv/fscons
 		bootsrv=/srv/boot
@@ -494,7 +494,7 @@ fn dorootstart{
 }
 
 ############# Begin script execution ###############
-echo 'Plan9front/Advanced Namespace Tools'
+echo '9front/Advanced Namespace Tools plan9rc'
 
 # mount points
 if (test -e /bin/mntgen){
