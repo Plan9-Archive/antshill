@@ -12,11 +12,11 @@ if(~ $usercheck '')
 	echo danger no user set
 
 cd /
-echo -n 'ramfs -S ramboot...'
+# echo -n 'ramfs -S ramboot...'
 ramfs -S ramboot
 mount -c /srv/ramboot /root
 bind -ac /root /
-echo -n 'tar xf /boot/skel.tar...'
+# echo -n 'tar xf /boot/skel.tar...'
 tar xf /lib/skel.tar
 if (test -d /root/mnt)
 	bind -ac /root/mnt /mnt
@@ -33,7 +33,7 @@ if(~ $tgzfs *.tgz){
 		mkdir /root/x
 	mount /srv/dos /x $fatpath
 	if(test -e /x/$tgzfs){
-		echo -n tar xzf $tgzfs^...
+#		echo -n tar xzf $tgzfs^...
 		tar xzf /x/$tgzfs
 	}
 	if not
@@ -43,7 +43,7 @@ if(~ $tgzfs *.tgz){
 ##	if we aren't bootes we need to have a $home
 
 if(! ~ $usercheck bootes){
-	echo 'copying bootes skeleton to '$usercheck
+#	echo 'copying bootes skeleton to '$usercheck
 	mkdir /root/usr/$usercheck
 	mkdir /root/usr/$usercheck/lib
 	mkdir /root/usr/$usercheck/tmp
@@ -54,6 +54,6 @@ if(! ~ $usercheck bootes){
 }
 
 bind -c /usr/$usercheck/tmp /tmp
-echo 'partial root built'
+# echo 'partial root built'
 
 exit ''

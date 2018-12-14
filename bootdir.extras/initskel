@@ -48,7 +48,7 @@ if (! ~ $usercheck $keyowner){
 	exit no.hostowner
 }
 
-echo 'INITSKEL minimal setup for rootless plan 9 environment'
+# echo 'INITSKEL minimal setup for rootless plan 9 environment'
 if(~ $interactive yes){
 	echo 'For configuration questions, answer no to disable default behaviors'
 	echo 'Press enter to accept the default'
@@ -85,12 +85,12 @@ if(~ $interactive yes){
 ## ACTIONS BEGIN HERE ##
 
 if(! ~ $binddevs no){
-	echo -n 'binddevs...'
+#	echo -n 'binddevs...'
 	for(i in f t m v L P u U '$' Σ κ)
 		bind -a '#'^$i /dev >/dev/null >[2=1]
 }
 
-echo -n 'mntgen...'
+# echo -n 'mntgen...'
 if(! test -e /srv/slashn)
 	mntgen -s slashn && chmod 666 /srv/slashn
 if not
@@ -135,14 +135,14 @@ if(~ $hostcsdns no){
 }
 
 if(! ~ $hubsvc no){
-	echo -n 'hubfs...'
+#	echo -n 'hubfs...'
 	hub -b hubfs
 }
 
 if(! ~ $cpusvc no){
 	if(~ $#cpuport 0)
 		cpuport=17060
-	echo 'aux/listen1 '$cpuport' rcpu rexexec...'
+#	echo 'aux/listen1 '$cpuport' rcpu rexexec...'
 	aux/listen1 -t tcp!*!$cpuport tlssrv -a /bin/rc -c server &
 #	aux/listen1 -t tcp!*!17027 /bin/exportfs -a &
 	aux/listen1 -t tcp!*!17009 /bin/ip/rexexec &
