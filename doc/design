@@ -1,3 +1,6 @@
+Hypercubic style routing extended to constructions based on Martin Escardo's techniques for working with infinite sets. We can "route into" the cantor set this way.
+
+
 webfs
 . /rc/bin/scorefns
 safeallsvc
