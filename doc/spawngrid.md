@@ -114,7 +114,7 @@ terminates the gridorc. Spawned environments will continue exist and be availabl
 			exit
 		case *
 			tlsclient -a $reqdial /bin/echo $usercmd
-	#		sleep 1
+			sleep 1
 			echo $griduser req >>/n/g/sto.in
 		}
 	}
