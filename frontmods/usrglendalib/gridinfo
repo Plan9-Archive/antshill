@@ -1,5 +1,5 @@
-- Advanced Namespace Tools Series 4 "Gridscape Navigator" -
-- Release 4.3 *prerelease testing* -
+- Advanced Namespace Tools Series 5 prototupe -
+- Release 4.99 "9spawn Transfer" -
 Connect to public 9p service grid:
 	gridstart
 Begin installation:
@@ -10,6 +10,8 @@ ANTS live/install CD intro:
 	mothra http://doc.9gridchan.org/guides/livecd
 ANTS FQA:
 	mothra http://doc.9gridchan.org/guides/fqa
+Spawngrid Info:
+	mothra http://doc.9gridchan.org/guides/spawngrid
 Manpages exist for most ANTS-specific tools, additional documentation
 and source code can be found in /sys/src/ants and on the 9gridchan.org
 website
