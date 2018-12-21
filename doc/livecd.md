@@ -1,14 +1,14 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTSv4.3 386 and 64-bit iso based on 9front r6863, beta released 5 Nov 2018
+### ANTSv4.99 386 and 64-bit iso based on 9front r6967, released 21 Dec 2018
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
-uncompressed md5sum: 23028bf13a871174b62249ec549d0f9c
+uncompressed md5sum: 5f3a3c8c01d7c86c86e34dccd24e6078
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
-uncompressed md5sum: c22f4403bb5206fcef4454aaa1ab8f6f
+uncompressed md5sum: ba11894bb65fc1a801a65b356fc3bab7
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -111,9 +111,9 @@ at which point you will still be in the namespace outside the root fileserver. Y
 
 The live cd uses an ANTS-customized bootrc, but the full install sets the ANTS plan9rc boot script This script is backward compatible with the standard boot process, but offers several new options and possibilities, including the ability to hook custom commands during the boot process, root to cpu servers with aan for reliability, or even connect to a remote hubfs to control the boot process and announce services to an inferno registry. See man plan9rc for some details, although not all possibilities are currently documented.
 
-### Games additions
+### Software additions
 
-Also included for entertainment are tools for playing interactive fiction text adventures, and a small library of games. Just start the
+Also included are tools for playing interactive fiction text adventures, and a small library of games. Just start the
 
 	fiction
 
@@ -123,11 +123,7 @@ Also installed is the shareware wad file for doom, so
 
 	games/doom
 
-will launch the standard Doom 1 game without needing to download, place, and rename any .wad files. The 64-bit livecd also includes a chess program by Umbraticus with some engine ports by QWX. Read
-
-	man chess
-
-for usage instructions. Byouki-onna contributed "ehget", a directory-downloader script for ehentai.org. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume.
+will launch the standard Doom 1 game without needing to download, place, and rename any .wad files. The 64-bit livecd also includes a chess program by Umbraticus with some engine ports by QWX. Read "man chess" for usage instructions. Byouki-onna contributed "ehget", a directory-downloader script for ehentai.org, and juku, timed flashcard repetition for learning. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume. Also included is Kvik's "clone" utility for fcp-style fast copies of full directories.
 
 ### Who is this for?
 
