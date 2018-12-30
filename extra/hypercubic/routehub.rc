@@ -1,0 +1,10 @@
+#!/bin/rc
+# starts routing hub
+
+if(~ $#1 1)
+	mynum=$1
+if(~ $#mynum 0)
+	mynum=00
+hubfs -t -s $mynum
+mount -c /srv/$mynum /n/$mynum
+touch /n/$mynum/in

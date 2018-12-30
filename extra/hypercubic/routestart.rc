@@ -1,0 +1,23 @@
+#!/bin/rc
+# binds cube neighbors and starts cube.rc
+
+fn findneigh {
+	neighs=`{hyper -a -f $mynum}
+	echo $neighs
+}
+
+if(~ $#1 1)
+	mynum=$1
+if(~ $#mynum 0)
+	mynum=00
+dimension=`{echo -n $mynum |wc -c}
+bind /tmp/cube /n/cube
+neighbors=`{findneigh $mynum}
+for(i in $neighbors)
+	mount /srv/$i /n/$i
+cd /n/cube
+for(i in `{ls}){
+	bindtarg = `{hyper -id $i -f $mynum}
+	bind /n/$bindtarg/in $i
+}
+cube.rc </n/$mynum/in
