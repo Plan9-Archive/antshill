@@ -9,8 +9,10 @@ if(~ $#dimension 0)
 	dimension=2
 while(msg=`{read}){
 	dest=$msg(1)
-	if(~ $dest $mynum)
-		echo $msg >>/tmp/cubelog
+	if(~ $dest $mynum){
+		echo $dest `{date} >>/tmp/cubelog
+		rc -c $msg(2-) >>/tmp/cubelog
+	}
 	if not{
 		route=`{hyper -pno -d $dimension -f $mynum -t $dest}
 		echo $msg >>/n/cube/$route
