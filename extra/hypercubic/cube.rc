@@ -11,7 +11,7 @@ while(msg=`{read}){
 	dest=$msg(1)
 	if(~ $dest $mynum){
 		echo $dest `{date} >>/tmp/cubelog
-		rc -c $msg(2-) >>/tmp/cubelog
+		echo $msg(2-) |rc >>/tmp/cubelog
 	}
 	if not{
 		route=`{hyper -pno -d $dimension -f $mynum -t $dest}
