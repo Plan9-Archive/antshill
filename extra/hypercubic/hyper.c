@@ -58,7 +58,7 @@ idquery(int port)
 }
 
 void
-adjacent()
+adjacent(void)
 {
 	int i;
 	for(i=0; i < dim; i++){
