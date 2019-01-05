@@ -1,5 +1,5 @@
---- /sys/src/9/pc/pc	Tue Dec 11 16:28:55 2018
-+++ ../frontmods/pc/pc	Tue Dec 11 16:33:26 2018
+--- /sys/src/9/pc/pc	Mon Dec 24 03:33:58 2018
++++ ../frontmods/pc/pc	Sat Jan  5 00:53:10 2019
 @@ -10,6 +10,7 @@
  	proc
  	mnt
@@ -8,7 +8,7 @@
  	shr
  	dup
  	rtc
-@@ -159,6 +160,7 @@
+@@ -160,6 +161,7 @@
  
  bootdir
  	/$objtype/bin/paqfs
