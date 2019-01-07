@@ -1,5 +1,5 @@
 #!/bin/rc
-# geneic hypercube operation template
+# geneic hypercube exchange template
 
 while(! ~ `{date -n} *0?)sleep 1
 echo $mynum `{date} >/tmp/cout.$mynum
