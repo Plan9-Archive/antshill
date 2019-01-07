@@ -1,12 +1,8 @@
 #!/bin/rc
-# geneic hypercube dimensional collapse template
-
-fn bi2dec{
-	echo 'obase=10; ibase=2; print '$1 | bc
-}
+# hypercubic sum of vectors ala Ncube 1986
 
 mydec=`{echo 'obase=10; ibase=2; print '$mynum | bc}
-while(! ~ `{date -n} *0?)sleep 1
+while(! ~ `{date -n} *0?)sleep .5
 echo $mynum `{date} >/tmp/cout.$mynum
 dim=`{echo $mynum |wc -c}
 dim=`{echo $dim - 1|hoc}
@@ -17,18 +13,22 @@ for(i in $input)
 	out=`{echo $out + ($i '*' $i) |hoc}
 i=0
 while(! ~ $i $dim){
-	echo $i
+	echo $i $out
 	theirid=`{hyper -id $i -f $mynum}
 	theirdec=`{echo 'obase=10; ibase=2; print '$theirid | bc}
 	if(test $theirdec -lt $mydec){
+		echo sending $out to $theirid on $i
 		echo $out >>/n/cube/$i
 		echo $out >>/tmp/cout.$mynum
 	}
 	if not{
+		echo waiting for msg...
 		msg=`{read}
 		out=`{echo $out + $msg |hoc}
+		echo sum is $out after adding $msg
 	}
 	i=`{echo $i + 1 |hoc}
-	sleep 5
+	sleep 1
+	while(! ~ `{date -n} *[05])sleep .1
 }
 echo $out >>/tmp/cout.$mynum
