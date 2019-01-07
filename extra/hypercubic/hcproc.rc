@@ -1,7 +1,7 @@
 #!/bin/rc
 # geneic hypercube exchange template
 
-while(! ~ `{date -n} *0?)sleep 1
+while(! ~ `{date -n} *0?)sleep .5
 echo $mynum `{date} >/tmp/cout.$mynum
 dim=`{echo $mynum |wc -c}
 dim=`{echo $dim - 1|hoc}
@@ -9,17 +9,14 @@ echo $dim
 input=`{cat /tmp/cin.$mynum}
 out=$input
 i=0
-echo $out >>/n/cube/$i
-sleep 5
-# i=`{echo $i + 1 |hoc}
-while(newin=`{read}){
+while(! ~ $i $dim){
 	echo $i
+	echo $out >>/n/cube/$i
+	newin=`{read}
 	out=($newin $out)
 	echo $out >>/tmp/cout.$mynum
 	i=`{echo $i + 1 |hoc}
-	if(~ $i $dim)
-		exit
-	echo $out >>/n/cube/$i
-	sleep 5
+	sleep 1
+	while(! ~ `{date -n} *[05])sleep .1
 }
 
