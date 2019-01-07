@@ -1,0 +1,32 @@
+#!/bin/rc
+# geneic hypercube dimensional collapse template
+
+fn bi2dec{
+	echo 'obase=10; ibase=2; print '$1 | bc
+}
+
+mydec=`{echo 'obase=10; ibase=2; print '$mynum | bc}
+while(! ~ `{date -n} *0?)sleep 1
+echo $mynum `{date} >/tmp/cout.$mynum
+dim=`{echo $mynum |wc -c}
+dim=`{echo $dim - 1|hoc}
+echo $dim
+input=`{cat /tmp/cin.$mynum}
+out=$input
+i=0
+while(! ~ $i $dim){
+	echo $i
+	theirid=`{hyper -id $i -f $mynum}
+	theirdec=`{echo 'obase=10; ibase=2; print '$theirid | bc}
+	if(test $theirdec -gt $mydec){
+		echo $out >>/n/cube/$i
+		echo $out >>/tmp/cout.$mynum
+	}
+	if not{
+		msg=`{read}
+		out=($msg)
+	}
+	i=`{echo $i + 1 |hoc}
+	sleep 5
+}
+echo $out >>/tmp/cout.$mynum
