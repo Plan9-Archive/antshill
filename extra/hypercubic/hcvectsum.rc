@@ -3,20 +3,25 @@
 
 # we need a decimal id for numeric comparisons
 mydec=`{echo 'obase=10; ibase=2; print '$mynum | bc}
+
 # we are using a very hacky clock-based step sync, we wait for a shared go moment
 while(! ~ `{date -n} *0?)sleep .5
+
 # initialize output file with id and timestamp
 echo $mynum `{date} >/tmp/cout.$mynum
+
 # set up dimension-1 as loop counter to include 0
 dim=`{echo $mynum |wc -c}
 dim=`{echo $dim - 1|hoc}
 echo $dim
+
 # get starting list of numbers aka our segment of the vector
 input=`{cat /tmp/cin.$mynum}
 # square the elements and sum them
 out=0
 for(i in $input)
 	out=`{echo $out + ($i '*' $i) |hoc}
+
 # we run this loop for every dimensional connection in sequence
 i=0
 while(! ~ $i $dim){
@@ -38,9 +43,10 @@ while(! ~ $i $dim){
 		echo sum is $out after adding $msg
 	}
 	i=`{echo $i + 1 |hoc}
-# we have using unix epoch second counts ending in 0 and 5 as our timing ticks
+# we are using unix epoch second counts ending in 0 and 5 as our timing ticks
 	sleep 1
 	while(! ~ `{date -n} *[05])sleep .1
 }
+
 # save final state as output after completing loop
 echo $out >>/tmp/cout.$mynum
