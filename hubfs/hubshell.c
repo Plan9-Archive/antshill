@@ -30,6 +30,7 @@ enum{
 	Notrunc,
 	List,
 	Status,
+	Quit,
 	NCmd,
 };
 
@@ -54,6 +55,7 @@ char *cmdstr[] = {
 	[Notrunc] = "notrunc",
 	[List] = "list",
 	[Status] = "status",
+	[Quit] = "quit",
 	[NCmd] = nil,
 };
 
@@ -386,6 +388,19 @@ parsebuf(Shell *s, char *buf, int outfd)
 		if(echoes)
 			print("\techo fd flush active\n");
 		break;
+	case Quit:
+		if((ctlfd = open(ctlname, OWRITE)) < 0){
+			fprint(2, "hubshell: can't open ctl file\n");
+			break;
+		}
+		sprint(ctlbuf, "%s %s\n", cmdstr[cmd], basehub);
+		n = strlen(ctlbuf);
+		if(write(ctlfd, ctlbuf, n) != n)
+			fprint(2, "hubshell: error writing to %s on fd %d\n", ctlname, ctlfd);
+		close(ctlfd);
+		s->shellctl = 'q';
+		closefds(s);
+		exits(nil);
 	default:	/* no matching command found, print list of commands as reminder */
 		fprint(2, "hubshell %% commands: \n\tdetach, remote NAME, local NAME, attach NAME \n\tstatus, list, err TIME, in TIME, out TIME\n\tfortun unfort echoes unecho trunc notrunc eof\n");
 		s->cmdresult = 'x';
