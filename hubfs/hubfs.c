@@ -301,8 +301,10 @@ Paranoia == %d  Freeze == %d  Trunc == %d  Applylimits == %d\n \
 Buffersize == %ulld \n", srvname, paranoia, freeze, trunc, applylimits, bucksize);
 		if(strlen(tmpstr) <= count)
 			count = strlen(tmpstr);
-		else
+		else{
 			respond(r, "read count too small to answer");
+			return;
+		}
 		memmove(r->ofcall.data, tmpstr, count);
 		r->ofcall.count = count;
 		respond(r, nil);
