@@ -1,0 +1,64 @@
+#!/bin/rc
+# prototype proof of concept timewarping rc script
+
+fn parsemsg{
+	vrt=$msg(1)
+	vst=$msg(2)
+	rcvr=$msg(3)
+	sndr=$msg(4)
+	sign=$msg(5)
+	gid=$msg(6)
+	body=$msg(7-)
+}
+
+fn cancelinq{
+	for(i in `{ls inq}){
+		chksign=`{cat $i}
+		if(~ $chksign(5) neg){
+			for(j in `{ls inq}){
+				chkmatch=`{cat $j}
+				if(~ $chkmatch(5) pos){
+					if(~ $chkmatch(6) $chksign(6)){
+						rm $i
+						rm $j
+					}
+				}
+			}
+		}
+	}
+}
+
+myname=$1
+cd /tmp/$myname
+cvt=0
+gid=100
+while(msg=`{read}){
+	cvt=`{echo $cvt + 1 |hoc}
+	echo cvt is $cvt
+	if(test $#msg -gt 6){
+		parsemsg
+		echo $msg >inq/$vrt
+		if(test $vrt -lt $cvt){
+			cvt=$vrt
+			echo rollback to $cvt
+		}
+		cancelinq
+	}
+	state=`{cat state.$cvt}
+	echo state is $state
+	if(test -e inq/$cvt){
+		msg=`{cat inq/$cvt}
+		parsemsg
+		state=`{echo $state + $body |hoc}
+		echo state updated to $state
+	}
+	outtime=`{echo $cvt + 1 |hoc}
+	outrcv=`{echo $outtime + 1|hoc}
+	outmsg=($outrcv $outtime $rcvr $myname pos $gid $state)
+	antimsg=($outrcv $outtime $rcvr $myname neg $gid $state)
+	echo $outmsg >outq/$cvt
+	echo $antimsg >antiq/$cvt
+	echo $state >state.$outtime
+	if(test $cvt -gt 9)
+		exit
+}
