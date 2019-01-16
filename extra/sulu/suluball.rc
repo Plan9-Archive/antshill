@@ -34,7 +34,8 @@ cd /tmp/$mynum
 rm state.*
 rm inq/*
 rm antiq/*
-accum=1
+thefort=`{fortune}
+accum=$thefort(1)
 echo init accum $accum
 cvt=0
 outtime=`{echo $cvt + 1 |hoc}
@@ -66,7 +67,7 @@ while(msg=`{read}){
 		msg=`{cat inq/$cvt}
 		parsemsg
 		echo updating accum $accum plus body $body
-		accum=`{echo $accum + $body |hoc}
+		accum=($accum $body)
 	}
 	outtime=`{echo $cvt + 1 |hoc}
 	outmsg=($outtime $outtime $cvt $mynum pos $mynum.$cvt $accum)
