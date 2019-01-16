@@ -45,6 +45,7 @@ echo $antimsg >antiq/$cvt
 echo $accum >state.$outtime
 while(msg=`{read}){
 	echo vt $cvt received msg $msg
+
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
@@ -65,18 +66,20 @@ while(msg=`{read}){
 		accum=`{echo $accum + $body |hoc}
 	}
 	outtime=`{echo $cvt + 1 |hoc}
-#	outrcv=`{echo $outtime + 1|hoc}
 	outmsg=($outtime $outtime $cvt $mynum pos $mynum.$cvt $accum)
 	antimsg=($outtime $cvt $cvt $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt}
+	port=$cvt
+	if(test $port -gt $dim)
+		port=$dim
 	if(test $#prevmsg -gt 5){
 		if(! ~ $antimsg $prevmsg){
-			echo sending $prevmsg to /n/cube/$cvt
-			echo $prevmsg >>/n/cube/$cvt
+			echo sending $prevmsg to /n/cube/$port
+			echo $prevmsg >>/n/cube/$port
 		}
 	}
-	echo sending $outmsg to /n/cube/$cvt
-	echo $outmsg >>/n/cube/$cvt
+	echo sending $outmsg to /n/cube/$port
+	echo $outmsg >>/n/cube/$port
 	echo $antimsg >antiq/$cvt
 	echo $accum >state.$outtime
 	cvt=`{echo $cvt + 1 |hoc}
