@@ -30,18 +30,17 @@ fn cancelinq{
 }
 
 dim=`{echo -n $mynum |wc -c}
-echo $dim
+echo ___INITIATE $dim dimensional similation
 cd /tmp/$mynum
 rm state.*
 rm inq/*
 rm antiq/*
+cvt=0
 thefort=`{fortune}
 #accum=$thefort(1)
 accum=$mynum
-echo init accum $accum
+echo begin accum $accum
 echo $accum >state.$cvt
-cvt=0
-
 sleep 30
 
 while(test $cvt -lt 99){
