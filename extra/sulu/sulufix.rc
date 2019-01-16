@@ -39,43 +39,41 @@ thefort=`{fortune}
 #accum=$thefort(1)
 accum=$mynum
 echo init accum $accum
+echo $accum >state.$cvt
 cvt=0
-#outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
-#antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
-#while(! ~ `{date -n} *0?)sleep .5
-sleep 15
-#echo sending $outmsg to /n/cube/$cvt
-#echo $outmsg >>/n/cube/$cvt
-#echo $antimsg >antiq/$cvt
-#echo $accum >state.$cvt
-while(test $cvt -lt 9){
+
+sleep 30
+
+while(test $cvt -lt 99){
+	cvt=`{echo $cvt + 1 |hoc}
+	echo $cvt _____ $cvt cvt
 	outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
 	antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt}
-	port=$cvt
+	port=`{echo $cvt - 1 |hoc}
 	if(test $port -gt $dim)
 		port=$dim
 	if(test $#prevmsg -gt 5){
 		if(! ~ $"antimsg $"prevmsg){
-			echo sending $prevmsg to /n/cube/$port
+			echo ANTI $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
 		}
 	}
-	echo sending $outmsg to /n/cube/$port
+	echo SEND $outmsg to /n/cube/$port
 	echo $outmsg >>/n/cube/$port
 	echo $antimsg >antiq/$cvt
 	echo $accum >state.$cvt
 	msg=`{read}
-	echo _____vt $cvt received msg $msg
+	echo RECV msg $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
-		echo msg vrt is $vrt checking if less than cvt $cvt
+#		echo msg vrt is $vrt checking if less than cvt $cvt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
-			echo rollback to $cvt
+			echo ROLLBACK to $cvt
 			if(test -e state.$cvt){
-				echo setting accum to previous state $cvt
+				echo setting accum to state at cvt $cvt
 				accum=`{cat state.$cvt}
 			}
 		}
@@ -85,8 +83,7 @@ while(test $cvt -lt 9){
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt}
 		parsemsg
-		echo updating accum $accum plus body $body
+		echo UPDATE $accum plus $body
 		accum=($accum $body)
 	}
-	cvt=`{echo $cvt + 1 |hoc}
 }
