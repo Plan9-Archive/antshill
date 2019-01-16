@@ -38,7 +38,7 @@ rm antiq/*
 cvt=0
 thefort=`{fortune}
 #accum=$thefort(1)
-accum=$mynum
+accum=1
 echo begin accum $accum
 echo $accum >state.$cvt
 sleep 30
@@ -82,7 +82,7 @@ while(test $cvt -lt 99){
 		msg=`{cat inq/$cvt}
 		parsemsg
 		echo UPDATE $accum plus $body
-		accum=($accum $body)
+		accum=`{echo $accum + $body |hoc}
 	}
 	echo accum is $accum
 }
