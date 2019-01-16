@@ -45,9 +45,10 @@ echo $antimsg >antiq/$cvt
 echo $accum >state.$outtime
 while(msg=`{read}){
 	echo vt $cvt received msg $msg
-	if(test $#msg -gt 6){
+	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
+		echo msg vrt is $vrt checking if less than cvt $cvt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
 			echo rollback to $cvt
@@ -65,12 +66,14 @@ while(msg=`{read}){
 	}
 	outtime=`{echo $cvt + 1 |hoc}
 #	outrcv=`{echo $outtime + 1|hoc}
-	outmsg=($outtime $outtime $cvt $myname pos $mynum.$cvt $accum)
-	antimsg=($outtime $cvt $cvt $myname neg $mynum.$cvt $accum)
+	outmsg=($outtime $outtime $cvt $mynum pos $mynum.$cvt $accum)
+	antimsg=($outtime $cvt $cvt $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt}
-	if(! ~ $antimsg $prevmsg){
-		echo sending $prevmsg to /n/cube/$cvt
-		echo $prevmsg >>/n/cube/$cvt
+	if(test $#prevmsg -gt 5){
+		if(! ~ $antimsg $prevmsg){
+			echo sending $prevmsg to /n/cube/$cvt
+			echo $prevmsg >>/n/cube/$cvt
+		}
 	}
 	echo sending $outmsg to /n/cube/$cvt
 	echo $outmsg >>/n/cube/$cvt
