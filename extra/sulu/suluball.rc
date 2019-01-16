@@ -36,7 +36,7 @@ rm state.*
 rm inq/*
 rm antiq/*
 thefort=`{fortune}
-accum=$mynum
+accum=$thefort(1)
 echo init accum $accum
 cvt=0
 outtime=`{echo $cvt + 1 |hoc}
