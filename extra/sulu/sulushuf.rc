@@ -1,0 +1,80 @@
+#!/bin/rc
+# prototype proof of concept timewarping rc script
+
+fn parsemsg{
+	vrt=$msg(1)
+	vst=$msg(2)
+	rcvr=$msg(3)
+	sndr=$msg(4)
+	sign=$msg(5)
+	gid=$msg(6)
+	body=$msg(7-)
+}
+
+fn cancelinq{
+	for(i in `{ls inq}){
+		chksign=`{cat $i}
+		if(~ $chksign(5) neg){
+			for(j in `{ls inq}){
+				chkmatch=`{cat $j}
+				if(~ $chkmatch(5) pos){
+					if(~ $chkmatch(6) $chksign(6)){
+						rm $i
+						rm $j
+					}
+				}
+			}
+		}
+	}
+}
+
+dim=`{echo -n $mynum |wc -c}
+echo $dim
+cd /tmp/$mynum
+rm inq/*
+rm antiq/*
+accum=`{cat state.0}
+echo init accum $accum
+cvt=0
+outtime=`{echo $cvt + 1 |hoc}
+outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
+outantimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
+echo sending $outmsg to /n/cube/$cvt
+echo $outmsg >>/n/cube/$cvt
+echo $antimsg >antiq/$cvt
+echo $accum >state.$outtime
+while(msg=`{read}){
+	echo vt $cvt received msg $msg
+	if(test $#msg -gt 6){
+		parsemsg
+		echo $msg >inq/$vrt
+		if(test $vrt -lt $cvt){
+			cvt=$vrt
+			echo rollback to $cvt
+		}
+		cancelinq
+	}
+	if(test -e state.$cvt)
+		accum=`{cat state.$cvt}
+	echo accum is $accum
+	if(test -e inq/$cvt){
+		msg=`{cat inq/$cvt}
+		parsemsg
+		echo updating accum $accum plus body $body
+		accum=`{echo $accum + $body |hoc}
+	}
+	outtime=`{echo $cvt + 1 |hoc}
+#	outrcv=`{echo $outtime + 1|hoc}
+	outmsg=($outtime $outtime $cvt $myname pos $mynum.$cvt $accum)
+	antimsg=($outtime $cvt $cvt $myname neg $mynum.$cvt $accum)
+	prevmsg=`{cat antiq/$cvt}
+	if(! ~ $antimsg $prevmsg){
+		echo sending $prevmsg to /n/cube/$cvt
+		echo $prevmsg >>/n/cube/$cvt
+	}
+	echo sending $outmsg to /n/cube/$cvt
+	echo $outmsg >>/n/cube/$cvt
+	echo $antimsg >antiq/$cvt
+	echo $accum >state.$outtime
+	cvt=`{echo $cvt + 1 |hoc}
+}
