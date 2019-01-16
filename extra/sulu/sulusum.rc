@@ -81,8 +81,10 @@ while(test $cvt -lt 99){
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt}
 		parsemsg
-		echo UPDATE $accum plus $body
-		accum=`{echo $accum + $body |hoc}
+		if(~ $sign pos){
+			echo UPDATE $accum plus $body
+			accum=`{echo $accum + $body |hoc}
+		}
 	}
 	echo accum is $accum
 }
