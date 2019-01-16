@@ -43,7 +43,7 @@ antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
 echo sending $outmsg to /n/cube/$cvt
 echo $outmsg >>/n/cube/$cvt
 echo $antimsg >antiq/$cvt
-echo $accum >state.$outtime
+echo $accum >state.$cvt
 while(msg=`{read}){
 	echo vt $cvt received msg $msg
 

@@ -19,6 +19,7 @@ fn cancelinq{
 				chkmatch=`{cat $j}
 				if(~ $chkmatch(5) pos){
 					if(~ $chkmatch(6) $chksign(6)){
+						echo removing $i $j
 						rm $i
 						rm $j
 					}
@@ -35,19 +36,19 @@ rm state.*
 rm inq/*
 rm antiq/*
 thefort=`{fortune}
-accum=$thefort(1)
+accum=$mynum
 echo init accum $accum
 cvt=0
 outtime=`{echo $cvt + 1 |hoc}
 outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
 antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
+while(! ~ `{date -n} *0?)sleep .5
 echo sending $outmsg to /n/cube/$cvt
 echo $outmsg >>/n/cube/$cvt
 echo $antimsg >antiq/$cvt
-echo $accum >state.$outtime
+echo $accum >state.$cvt
 while(msg=`{read}){
-	echo vt $cvt received msg $msg
-
+	echo _____vt $cvt received msg $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
