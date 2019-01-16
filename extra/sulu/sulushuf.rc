@@ -38,7 +38,6 @@ rm antiq/*
 accum=1
 echo init accum $accum
 cvt=0
-outtime=`{echo $cvt + 1 |hoc}
 outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
 antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
 while(! ~ `{date -n} *0?)sleep .5
@@ -70,14 +69,14 @@ while(msg=`{read}){
 		accum=`{echo $accum + $body |hoc}
 	}
 	outtime=`{echo $cvt + 1 |hoc}
-	outmsg=($outtime $outtime $cvt $mynum pos $mynum.$cvt $accum)
+	outmsg=($outtime $cvt $cvt $mynum pos $mynum.$cvt $accum)
 	antimsg=($outtime $cvt $cvt $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt}
 	port=$cvt
 	if(test $port -gt $dim)
 		port=$dim
 	if(test $#prevmsg -gt 5){
-		if(! ~ $antimsg $prevmsg){
+		if(! ~ $"antimsg $"prevmsg){
 			echo sending $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
 		}
