@@ -36,9 +36,9 @@ rm state.*
 rm inq/*
 rm antiq/*
 cvt=0
-thefort=`{fortune}
-#accum=$thefort(1)
-accum=1
+accum=meadow
+if(~ $mynum 0000)
+	accum=BUNNY
 echo begin accum $accum
 echo $accum >state.$cvt
 sleep 30
@@ -48,43 +48,46 @@ while(test $cvt -lt 99){
 	echo $cvt _____ $cvt cvt
 	outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
 	antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
-	prevmsg=`{cat antiq/$cvt}
+	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	port=`{echo $cvt - 1 |hoc}
 	if(test $port -gt $dim)
 		port=$dim
 	if(test $#prevmsg -gt 5){
 		if(! ~ $"antimsg $"prevmsg){
-			echo ANTI $prevmsg to /n/cube/$port
+#			echo ANTI $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
 		}
 	}
-	echo SEND $outmsg to /n/cube/$port
+#	echo SEND $outmsg to /n/cube/$port
 	echo $outmsg >>/n/cube/$port
 	echo $antimsg >antiq/$cvt
 	echo $accum >state.$cvt
 	msg=`{read}
-	echo RECV msg $msg
+#	echo RECV msg $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
 #		echo msg vrt is $vrt checking if less than cvt $cvt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
-			echo ROLLBACK to $cvt
+#			echo ROLLBACK to $cvt
 			if(test -e state.$cvt){
-				echo setting accum to state at cvt $cvt
-				accum=`{cat state.$cvt}
+#				echo setting accum to state at cvt $cvt
+				accum=`{cat state.$cvt >[2] /dev/null}
 			}
 		}
 		cancelinq
 	}
 	if(test -e inq/$cvt){
-		msg=`{cat inq/$cvt}
+		msg=`{cat inq/$cvt >[2] /dev/null}
 		parsemsg
 		if(~ $sign pos){
-			echo UPDATE $accum plus $body
-			accum=`{echo $accum + $body |hoc}
+#			echo UPDATE $accum plus $body
+			if(~ $body(1) BUNNY){
+				echo a BUNNY hops along
+				accum=($body $accum)
+			}
 		}
 	}
-	echo accum is $accum
+	echo $accum
 }
