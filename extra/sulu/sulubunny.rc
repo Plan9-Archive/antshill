@@ -37,20 +37,22 @@ rm inq/*
 rm antiq/*
 cvt=0
 accum=meadow
-if(~ $mynum 0000)
-	accum=BUNNY
+#if(~ $mynum 0000)
+#	accum=BUNNY
 echo begin accum $accum
 echo $accum >state.$cvt
 sleep 30
 
-while(test $cvt -lt 99){
+while(test $cvt -lt 16){
 	cvt=`{echo $cvt + 1 |hoc}
 	echo $cvt _____ $cvt cvt
 	outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
 	antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	port=`{echo $cvt - 1 |hoc}
-	if(test $port -gt $dim)
+	if(test $port -ge $dim)
+		port=`{echo $port^' % '^$dim |hoc}
+	if(test $cvt -gt 8)
 		port=$dim
 	if(test $#prevmsg -gt 5){
 		if(! ~ $"antimsg $"prevmsg){
@@ -86,6 +88,10 @@ while(test $cvt -lt 99){
 			if(~ $body(1) BUNNY){
 				echo a BUNNY hops along
 				accum=($body $accum)
+			}
+			if(~ $body(1) GLENDA){
+				echo its GLENDA
+				accum=($body)
 			}
 		}
 	}
