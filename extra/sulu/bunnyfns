@@ -1,0 +1,31 @@
+fn bun {
+	if(~ $2 all)
+		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 BUNNY >>/n/$i}
+	if not
+		echo $1 0 0 0 pos 0.0 BUNNY >>/n/$2/in
+}
+
+fn glen {
+	if(~ $2 all)
+		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 GLENDA >>/n/$i}
+	if not
+		echo $1 0 0 0 pos 0.0 GLENDA >>/n/$2/in
+}
+
+fn rock {
+	if(~ $2 all)
+		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 METEOR >>/n/$i}
+	if not
+		echo $1 0 0 0 pos 0.0 METEOR >>/n/$2/in
+}
+
+fn mead {
+	if(~ $2 all)
+		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 meadow >>/n/$i}
+	if not
+		echo $1 0 0 0 pos 0.0 meadow >>/n/$2/in
+}
+
+fn step {
+	for(i in `{ls /n/????}){echo STEP >>/n/$i}
+}

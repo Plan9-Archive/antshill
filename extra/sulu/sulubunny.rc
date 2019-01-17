@@ -51,37 +51,36 @@ while(test $cvt -lt 16){
 		port=`{echo $port^' % '^$dim |hoc}
 	if(test $cvt -gt 8)
 		port=$dim
-	outmsg=($cvt $cvt $cvt $mynum pos $mynum.$cvt $accum)
-	antimsg=($cvt $cvt $cvt $mynum neg $mynum.$cvt $accum)
+	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $accum)
+	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	if(test $#prevmsg -gt 5){
 		if(~ $"antimsg $"prevmsg)
-			echo already sent $antimsg
+			echo LAZY $antimsg
 		if(! ~ $"antimsg $"prevmsg){
-			echo ANTI $prevmsg to /n/cube/$port
+#			echo ANTI $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
-			echo SEND $outmsg to /n/cube/$port
+#			echo SEND $outmsg to /n/cube/$port
 			echo $outmsg >>/n/cube/$port
 			echo $antimsg >antiq/$cvt
 		}
 	}
 	if(! test $#prevmsg -gt 5){
-		echo SENDNOPREV $outmsg to /n/cube/$port
+#		echo SENDNOPREV $outmsg to /n/cube/$port
 		echo $outmsg >>/n/cube/$port
 		echo $antimsg >antiq/$cvt
 	}
 	echo $accum >state.$cvt
 	msg=`{read}
-	echo RECV msg $msg
+#	echo RECV msg $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
-#		echo msg vrt is $vrt checking if less than cvt $cvt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
 			echo ROLLBACK to $cvt
 			if(test -e state.$cvt){
-#				echo setting accum to state at cvt $cvt
+#				echo LOADING accum to state at cvt $cvt
 				accum=`{cat state.$cvt >[2] /dev/null}
 			}
 		}
@@ -90,8 +89,14 @@ while(test $cvt -lt 16){
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt >[2] /dev/null}
 		parsemsg
-		if(~ $sign pos){
-			echo UPDATE $accum plus $body
+		if(~ $accum ROCK)
+			echo rock block
+		if not if(~ $sign pos){
+#			echo UPDATE $accum plus $body
+			if(~ $body(1) METEOR){
+				echo a ROCK falls from the sky
+				accum=ROCK
+			}
 			if(~ $body(1) BUNNY){
 				echo a BUNNY hops along
 				accum=($body $accum)
@@ -102,5 +107,5 @@ while(test $cvt -lt 16){
 			}
 		}
 	}
-	echo $accum
+	echo '**' $accum '**'
 }
