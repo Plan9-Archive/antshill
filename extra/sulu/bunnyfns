@@ -27,5 +27,8 @@ fn mead {
 }
 
 fn step {
-	for(i in `{ls /n/????}){echo STEP >>/n/$i}
+	if(~ $#1 1)
+		echo step >>/n/$1/in
+	if not
+		for(i in `{ls /n/????}){echo STEP >>/n/$i}
 }
