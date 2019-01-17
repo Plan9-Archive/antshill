@@ -30,7 +30,7 @@ fn cancelinq{
 }
 
 dim=`{echo -n $mynum |wc -c}
-echo ___INITIATE $dim dimensional similation
+echo ___INITIATE $dim dimensional simulation
 cd /tmp/$mynum
 rm state.*
 rm inq/*
