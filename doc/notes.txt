@@ -1,0 +1,33 @@
+hubfs as node microkernel
+
+cooperative community coordination that scales
+
+whatsit - hypercube builder
+sulu - time warp engine
+
+coarse grained modular timewarp
+ "It had mercury delay lines for memory. According to the history books, there was no problem with vibration from the firing range at the main front, but they had a tremendous problem with thermal stability. They eventually had to put it into an elaborate oven with all sorts of thermostats and thermal buffers."
+
+anything that you can name could be a file
+
+a function is a naming relationship
+f(x) = y means x is a name for y
+a function is a SET OF NAMES
+
+time warp is like a tree (fs?) of temporal dependencies expressed as message/antimessage pairs
+
+"Axis manages a hypercube of node processors as a device, which is simply one type of file.  A device can be opened, closed, written to, and read from as if it were a normal file. Axis provides the capability to organize the eight file systems asone distributed file system; Axis further allows complete systems to be networked through iSBX connections so as to provide a single multisystem file system."
+
+"...the Fifth Distributed Memory Computing Conference. The DMCC conference was really the fifth hypercube conference, but people were starting to realize that hypercubes were evolving into more general distributed-memory computer systems. "
+
+#!/bin/rc
+# sums input and sends it to node 0000
+
+acc=0
+for(i in $*)
+	acc=`{echo $acc + $i |hoc}
+echo 0000 echo $acc >/n/$mynum/in
+
+in essence, we show that the distribution of angles induced by Boolean noise on the hypercube can be modeled by the effect of Brownianmotion on the sphere, or equivalently diffusion driven by the spherical heat equation
+
+The Abelian null blade semigroup is of particular interest, as its associated semigroup algebra is canonically isomorphic to the zeon algebra.
