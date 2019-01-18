@@ -1,27 +1,27 @@
 fn base {
 	if(~ $2 all)
-		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 adm starbase scan empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase scan empty none >>/n/$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm starbase scan empty none >>/n/$2/in
 }
 
 fn freight {
 	if(~ $2 all)
-		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 adm freighter travel empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter travel empty none >>/n/$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm freighter travel empty none >>/n/$2/in
 }
 
 fn rock {
 	if(~ $2 all)
-		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 adm planet proselytize empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet proselytize empty none >>/n/$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm planet proselytize empty none >>/n/$2/in
 }
 
 fn mead {
 	if(~ $2 all)
-		for(i in `{ls /n/????}){echo $1 0 0 0 pos 0.0 adm space idle empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space idle empty none >>/n/$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm space idle empty none >>/n/$2/in
 }
@@ -29,12 +29,12 @@ fn mead {
 fn step {
 	if(~ $1 ?){
 		for(i in `{seq 1 $1})
-			for(j in `{ls /n/????}){echo STEP >>/n/$j}
+			for(j in `{ls /n/????/in}){echo STEP >>/n/$j}
 	}
 	if not if(~ $#1 1)
 		echo step >>/n/$1/in
 	if not
-		for(i in `{ls /n/????}){echo STEP >>/n/$i}
+		for(i in `{ls /n/????/in}){echo STEP >>/n/$i}
 }
 
 fn fullrun {
