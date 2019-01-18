@@ -8,3 +8,4 @@ if(~ $#mynum 0)
 hubfs -t -s $mynum
 mount -c /srv/$mynum /n/$mynum
 touch /n/$mynum/in
+touch /n/$mynum/ctl

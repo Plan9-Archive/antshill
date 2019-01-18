@@ -56,7 +56,14 @@ fn updatestate{
 	ract=$body(3)
 	rstate=$body(4)
 	rext=$body(5)
+	if(~ $rname adm)
+		type=update
 	switch($type){
+	case update
+		type=$rtype
+		act=$ract
+		state=$rstate
+		ext=$rext
 	case starbase
 		switch($ract){
 		case cargo
