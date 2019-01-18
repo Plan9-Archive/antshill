@@ -48,6 +48,13 @@ fn fullrun {
 
 fn clearall {
 	rock 0 all
-	fullrun
+	step
+	step
+	step
+	step
+	step
+	step
+	step
+	step
 	mead 0 all
 }

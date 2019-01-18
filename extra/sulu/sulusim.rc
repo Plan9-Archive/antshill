@@ -29,23 +29,45 @@ fn cancelinq{
 	}
 }
 
-dim=`{echo -n $mynum |wc -c}
-echo ___INITIATE $dim dimensional simulation
+fn siminit{
+	echo ___INITIATE $dim dimensional simulation
+	accum=meadow
+#	if(~ $mynum 0000)
+#		accum=BUNNY
+	echo $accum
+}
+
+fn updatestate{
+	if(! ~ $accum ROCK){
+		if(~ $body(1) METEOR){
+			echo a ROCK falls from the sky
+			accum=ROCK
+		}
+		if(~ $body(1) BUNNY){
+			echo a BUNNY hops along
+			accum=($body $accum)
+		}
+		if(~ $body(1) GLENDA){
+			echo its GLENDA
+			accum=($body)
+		}
+	}
+	echo $cvt ':' $accum 
+}
+
 cd /tmp/$mynum
 rm state.*
 rm inq/*
 rm antiq/*
+dim=`{echo -n $mynum |wc -c}
 cvt=0
-accum=meadow
-#if(~ $mynum 0000)
-#	accum=BUNNY
-echo begin accum $accum
+siminit
 echo $accum >state.$cvt
 sleep 30
 
 while(test $cvt -lt 24){
 	cvt=`{echo $cvt + 1 |hoc}
-	echo $cvt _____ $cvt cvt
+#	echo $cvt _____ $cvt cvt
 	port=`{echo $cvt - 1 |hoc}
 	if(test $port -ge $dim)
 		port=`{echo $port^' % '^$dim |hoc}
@@ -55,8 +77,8 @@ while(test $cvt -lt 24){
 	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	if(test $#prevmsg -gt 5){
-		if(~ $"antimsg $"prevmsg)
-			echo LAZY $antimsg
+#		if(~ $"antimsg $"prevmsg)
+#			echo LAZY $antimsg
 		if(! ~ $"antimsg $"prevmsg){
 #			echo ANTI $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
@@ -78,7 +100,7 @@ while(test $cvt -lt 24){
 		echo $msg >inq/$vrt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
-			echo ROLLBACK to $cvt
+#			echo ROLLBACK to $cvt
 			if(test -e state.$cvt){
 #				echo LOADING accum to state at cvt $cvt
 				accum=`{cat state.$cvt >[2] /dev/null}
@@ -89,23 +111,7 @@ while(test $cvt -lt 24){
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt >[2] /dev/null}
 		parsemsg
-		if(~ $accum ROCK)
-			echo rock block
-		if not if(~ $sign pos){
-#			echo UPDATE $accum plus $body
-			if(~ $body(1) METEOR){
-				echo a ROCK falls from the sky
-				accum=ROCK
-			}
-			if(~ $body(1) BUNNY){
-				echo a BUNNY hops along
-				accum=($body $accum)
-			}
-			if(~ $body(1) GLENDA){
-				echo its GLENDA
-				accum=($body)
-			}
-		}
+		if(~ $sign pos)
+			updatestate
 	}
-	echo '**' $accum '**'
 }
