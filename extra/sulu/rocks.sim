@@ -1,0 +1,71 @@
+fn siminit{
+	simend=128
+	simlimit=64
+	accum=($mynum space idle empty none)
+	echo ___INITIATE $dim dimensional simulation
+	echo $accum
+	if(~ $mynum 0??0)
+		accum=($mynum planet proselytize empty none)
+	if(~ $mynum 000?)
+		accum=($mynum freighter travel empty none)
+	if(~ $mynum 11??)
+		accum=($mynum starbase scan empty none)
+}
+
+fn updatestate{
+	name=$accum(1)
+	type=$accum(2)
+	act=$accum(3)
+	state=$accum(4)
+	ext=$accum(5)
+	rname=$body(1)
+	rtype=$body(2)
+	ract=$body(3)
+	rstate=$body(4)
+	rext=$body(5)
+	if(~ $rname adm)
+		type=update
+	switch($type){
+	case update
+		type=$rtype
+		act=$ract
+		state=$rstate
+		ext=$rext
+	case starbase
+		switch($ract){
+		case cargo
+			act=trade
+		case trade
+			act=invest
+		case proselytize
+			act=barrier
+		case *
+			act=scan
+		}
+	case freighter
+		switch($rtype){
+		case space
+			act=travel
+		case starbase
+			act=trade
+		case freighter
+			act=race
+		case planet
+			act=land
+		}
+	case planet
+		switch($rtype){
+		case space
+			act=radiate
+		case starbase
+			act=supply
+		case freighter
+			act=trade
+		case planet
+			act=scout
+		}
+	}	
+	accum=($name $type $act $state $ext)
+	echo recv $rname $rtype $ract $state $rext
+	echo $cvt ':' $accum 
+}
