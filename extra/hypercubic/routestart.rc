@@ -20,4 +20,4 @@ for(i in `{ls}){
 	bindtarg = `{hyper -id $i -f $mynum}
 	bind /n/$bindtarg/in $i
 }
-cube.rc </n/$mynum/in
+#cube.rc </n/$mynum/in
