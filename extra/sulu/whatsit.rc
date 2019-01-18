@@ -40,27 +40,18 @@ vstart=0
 hcor=`{echo $hstart + $hinc |hoc}
 vcor=`{echo $vstart + $vinc |hoc}
 
-if(~ $1 dsix){
-	for(i in $$1){
-		rfork efns
-		mynum=$i
-		echo window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
-		window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
-		hstart=$hcor
-		hcor=`{echo $hcor + $hinc |hoc}
-		if(test $hstart -gt 1700){
-			hstart=0
-			hcor=`{echo $hstart + $hinc |hoc}
-			vstart=$vcor
-			vcor=`{echo $vcor + $vinc |hoc}
-		}
-	}
-}
-if not {
-	for(i in $$1){
-		rfork efns
-		mynum=$i
-		window -m hub $i.ctl
+for(i in $$1){
+	rfork efns
+	mynum=$i
+	echo window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
+	window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
+	hstart=$hcor
+	hcor=`{echo $hcor + $hinc |hoc}
+	if(test $hstart -gt 1700){
+		hstart=0
+		hcor=`{echo $hstart + $hinc |hoc}
+		vstart=$vcor
+		vcor=`{echo $vcor + $vinc |hoc}
 	}
 }
 sleep 2
