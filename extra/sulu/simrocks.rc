@@ -1,0 +1,152 @@
+#!/bin/rc
+# prototype proof of concept timewarping rc script
+
+fn parsemsg{
+	vrt=$msg(1)
+	vst=$msg(2)
+	rcvr=$msg(3)
+	sndr=$msg(4)
+	sign=$msg(5)
+	gid=$msg(6)
+	body=$msg(7-)
+}
+
+fn cancelinq{
+	for(i in `{ls inq}){
+		chksign=`{cat $i}
+		if(~ $chksign(5) neg){
+			for(j in `{ls inq}){
+				chkmatch=`{cat $j}
+				if(~ $chkmatch(5) pos){
+					if(~ $chkmatch(6) $chksign(6)){
+						echo removing $i $j
+						rm $i
+						rm $j
+					}
+				}
+			}
+		}
+	}
+}
+
+fn siminit{
+	simend=128
+	simlimit=64
+	accum=($mynum space idle empty none)
+#	if(~ $mynum 0000)
+#		accum=BUNNY
+	echo ___INITIATE $dim dimensional simulation
+	echo $accum
+	if(~ $mynum 0??0)
+		accum=($mynum planet proselytize empty none)
+	if(~ $mynum 000?)
+		accum=($mynum freighter travel empty none)
+	if(~ $mynum 11??)
+		accum=($mynum starbase scan empty none)
+}
+
+fn updatestate{
+	name=$accum(1)
+	type=$accum(2)
+	act=$accum(3)
+	state=$accum(4)
+	ext=$accum(5)
+	rname=$body(1)
+	rtype=$body(2)
+	ract=$body(3)
+	rstate=$body(4)
+	rext=$body(5)
+	switch($type){
+	case starbase
+		switch($ract){
+		case cargo
+			act=trade
+		case trade
+			act=invest
+		case proselytize
+			act=barrier
+		case *
+			act=scan
+		}
+	case freighter
+		switch($rtype){
+		case space
+			act=travel
+		case starbase
+			act=trade
+		case freighter
+			act=race
+		case planet
+			act=land
+		}
+	case planet
+		switch($rtype){
+		case space
+			act=radiate
+		case starbase
+			act=supply
+		case freighter
+			act=trade
+		case planet
+			act=scout
+		}
+	}	
+	accum=($name $type $act $state $ext)
+	echo recv $rname $rtype $ract $state $rext
+	echo $cvt ':' $accum 
+}
+
+cd /tmp/$mynum
+rm state.*
+rm inq/*
+rm antiq/*
+dim=`{echo -n $mynum |wc -c}
+cvt=0
+siminit
+echo $accum >state.$cvt
+if(~ $#simend 0)
+	simend=109
+if(~ $#simlimit 0)
+	simlimit=90
+sleep 30
+
+while(test $cvt -lt $simend){
+	cvt=`{echo $cvt + 1 |hoc}
+	port=`{echo $cvt - 1 |hoc}
+	if(test $port -ge $dim)
+		port=`{echo $port^' % '^$dim |hoc}
+	if(test $cvt -gt $simlimit)
+		port=$dim
+	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $accum)
+	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $accum)
+	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
+	if(test $#prevmsg -gt 5){
+		if(! ~ $"antimsg $"prevmsg){
+			echo $prevmsg >>/n/cube/$port
+			echo $outmsg >>/n/cube/$port
+			echo $antimsg >antiq/$cvt
+		}
+	}
+	if(! test $#prevmsg -gt 5){
+		echo $outmsg >>/n/cube/$port
+		echo $antimsg >antiq/$cvt
+	}
+	echo $accum >state.$cvt
+	msg=`{read}
+	if(test $#msg -gt 5){
+		parsemsg
+		echo $msg >inq/$vrt
+		if(test $vrt -lt $cvt){
+			cvt=$vrt
+			if(test -e state.$cvt)
+				accum=`{cat state.$cvt >[2] /dev/null}
+		}
+		cancelinq
+	}
+	if(test -e inq/$cvt){
+		msg=`{cat inq/$cvt >[2] /dev/null}
+		parsemsg
+		if(~ $sign pos)
+			updatestate
+	}
+}
