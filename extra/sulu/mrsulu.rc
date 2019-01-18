@@ -36,6 +36,11 @@ fn cancelinq{
 	}
 }
 
+if(! test -e /tmp/$mynum){
+	mkdir /tmp/$mynum
+	mkdir /tmp/$mynum/inq
+	mkdir /tmp/$mynum/antiq
+}
 cd /tmp/$mynum
 rm state.*
 rm inq/*
