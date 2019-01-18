@@ -13,10 +13,55 @@ if(~ $#2 1){
 	exit
 }
 
-for(i in $$1){
-	rfork efns
-	mynum=$i
-	window -m hub $i.ctl
+switch($1){
+case dtwo
+	dim=2
+	hinc=949
+	vinc=499
+case dthree
+	dim=3
+	hinc=474
+	vinc=499
+case dfour
+	dim=4
+	hinc=474
+	vinc=249
+case dfive
+	dim=5
+	hinc=237
+	vinc=249
+case dsix
+	dim=6
+	hinc=237
+	vinc=124
+}
+hstart=0
+vstart=0
+hcor=`{echo $hstart + $hinc |hoc}
+vcor=`{echo $vstart + $vinc |hoc}
+
+if(~ $1 dsix){
+	for(i in $$1){
+		rfork efns
+		mynum=$i
+		echo window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
+		window -m -r $hstart $vstart $hcor $vcor hub $i.ctl
+		hstart=$hcor
+		hcor=`{echo $hcor + $hinc |hoc}
+		if(test $hstart -gt 1700){
+			hstart=0
+			hcor=`{echo $hstart + $hinc |hoc}
+			vstart=$vcor
+			vcor=`{echo $vcor + $vinc |hoc}
+		}
+	}
+}
+if not {
+	for(i in $$1){
+		rfork efns
+		mynum=$i
+		window -m hub $i.ctl
+	}
 }
 sleep 2
 for(i in $$1){
