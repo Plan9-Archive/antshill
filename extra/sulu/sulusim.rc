@@ -30,10 +30,12 @@ fn cancelinq{
 }
 
 fn siminit{
-	echo ___INITIATE $dim dimensional simulation
+	simend=24
+	simlimit=8
 	accum=meadow
 #	if(~ $mynum 0000)
 #		accum=BUNNY
+	echo ___INITIATE $dim dimensional simulation
 	echo $accum
 }
 
@@ -63,48 +65,42 @@ dim=`{echo -n $mynum |wc -c}
 cvt=0
 siminit
 echo $accum >state.$cvt
+if(~ $#simend 0)
+	simend=109
+if(~ $#simlimit 0)
+	simlimit=90
 sleep 30
 
-while(test $cvt -lt 24){
+while(test $cvt -lt $simend){
 	cvt=`{echo $cvt + 1 |hoc}
-#	echo $cvt _____ $cvt cvt
 	port=`{echo $cvt - 1 |hoc}
 	if(test $port -ge $dim)
 		port=`{echo $port^' % '^$dim |hoc}
-	if(test $cvt -gt 8)
+	if(test $cvt -gt $simlimit)
 		port=$dim
 	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $accum)
 	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $accum)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	if(test $#prevmsg -gt 5){
-#		if(~ $"antimsg $"prevmsg)
-#			echo LAZY $antimsg
 		if(! ~ $"antimsg $"prevmsg){
-#			echo ANTI $prevmsg to /n/cube/$port
 			echo $prevmsg >>/n/cube/$port
-#			echo SEND $outmsg to /n/cube/$port
 			echo $outmsg >>/n/cube/$port
 			echo $antimsg >antiq/$cvt
 		}
 	}
 	if(! test $#prevmsg -gt 5){
-#		echo SENDNOPREV $outmsg to /n/cube/$port
 		echo $outmsg >>/n/cube/$port
 		echo $antimsg >antiq/$cvt
 	}
 	echo $accum >state.$cvt
 	msg=`{read}
-#	echo RECV msg $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
-#			echo ROLLBACK to $cvt
-			if(test -e state.$cvt){
-#				echo LOADING accum to state at cvt $cvt
+			if(test -e state.$cvt)
 				accum=`{cat state.$cvt >[2] /dev/null}
-			}
 		}
 		cancelinq
 	}
