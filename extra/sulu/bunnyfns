@@ -32,3 +32,22 @@ fn step {
 	if not
 		for(i in `{ls /n/????}){echo STEP >>/n/$i}
 }
+
+fn fullrun {
+	mead 0 all
+	step
+	step
+	step
+	step
+	step
+	step
+	step
+	step
+	step
+}
+
+fn clearall {
+	rock 0 all
+	fullrun
+	mead 0 all
+}
