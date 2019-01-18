@@ -19,6 +19,12 @@ if(~ $3 kill){
 	exit
 }
 
+if(~ $2 *.sim){
+	for(i in $$1)
+		echo mrsulu.rc $2 '< /n/'^$i^'/in' >>/n/$i.ctl/io0
+	exit
+}
+
 if(~ $#2 1){
 	for(i in $$1)
 		echo $2 '< /n/'^$i^'/in' >>/n/$i.ctl/io0
