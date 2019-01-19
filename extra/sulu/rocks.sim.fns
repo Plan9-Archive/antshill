@@ -37,28 +37,10 @@ fn step {
 		for(i in `{ls /n/????/in}){echo STEP >>/n/$i}
 }
 
-fn fullrun {
-	mead 0 all
-	step
-	step
-	step
-	step
-	step
-	step
-	step
-	step
-	step
+fn freeze {
+	for(i in `{ls /n/????/ctl}){echo freeze >>/n/$i}
 }
 
-fn clearall {
-	rock 0 all
-	step
-	step
-	step
-	step
-	step
-	step
-	step
-	step
-	mead 0 all
+fn melt {
+	for(i in `{ls /n/????/ctl}){echo melt >>/n/$i}
 }
