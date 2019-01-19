@@ -1,29 +1,29 @@
 fn base {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase scan empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>/n/$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm starbase scan empty none >>/n/$2/in
+		echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>/n/$2/in
 }
 
 fn freight {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter travel empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>/n/$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm freighter travel empty none >>/n/$2/in
+		echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>/n/$2/in
 }
 
-fn rock {
+fn planet {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet proselytize empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>/n/$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm planet proselytize empty none >>/n/$2/in
+		echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>/n/$2/in
 }
 
-fn mead {
+fn space {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space idle empty none >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>/n/$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm space idle empty none >>/n/$2/in
+		echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>/n/$2/in
 }
 
 fn step {

@@ -1,15 +1,15 @@
 fn siminit{
 	simend=128
 	simlimit=64
-	accum=($mynum space idle empty none)
+	accum=($mynum space 0 0 0)
+	if(~ $mynum 0??0)
+		accum=($mynum planet 0 10 1)
+	if(~ $mynum 000?)
+		accum=($mynum freighter 0 10 1)
+	if(~ $mynum 11??)
+		accum=($mynum starbase 0 25 2)
 	echo ___INITIATE $dim dimensional simulation
 	echo $accum
-	if(~ $mynum 0??0)
-		accum=($mynum planet proselytize empty none)
-	if(~ $mynum 000?)
-		accum=($mynum freighter travel empty none)
-	if(~ $mynum 11??)
-		accum=($mynum starbase scan empty none)
 }
 
 fn updatestate{
@@ -32,40 +32,67 @@ fn updatestate{
 		state=$rstate
 		ext=$rext
 	case starbase
-		switch($ract){
-		case cargo
-			act=trade
-		case trade
-			act=invest
-		case proselytize
-			act=barrier
-		case *
-			act=scan
+		state=`{echo $state '-' $ext |hoc}
+		switch($rtype){
+		case space
+			act=`{echo $act '-' 2 |hoc}
+		case starbase
+			act=`{echo $act '+' 1 |hoc}
+			state=`{echo $state '-' $rext |hoc}
+			echo $cvt starbase $rname drained $rext energy
+		case freighter
+			act=`{echo $act '+' 1 |hoc}
+			state=`{echo $state '+' $rext |hoc}
+			echo $cvt freighter $rname supplied $rext energy
+		case planet
+			act=`{echo $act '+' 1 |hoc}
+			ext=`{echo $ext '+' $rext |hoc}
+			echo $cvt planet $rname boosted production $rext
 		}
 	case freighter
+		state=`{echo $state '-' $ext |hoc}
 		switch($rtype){
 		case space
-			act=travel
-		case starbase
-			act=trade
+			act=`{echo $act '-' 2 |hoc}
 		case freighter
-			act=race
+			act=`{echo $act '+' 1 |hoc}
+			state=`{echo $state '-' $rext |hoc}
+			echo $cvt freighter $rname drained $rext fuel
+		case starbase
+			act=`{echo $act '+' 1 |hoc}
+			state=`{echo $state '+' $rext |hoc}
+			echo $cvt freighter $rname supplied $rext fuel
 		case planet
-			act=land
+#			act=`{echo $act '+' 1 |hoc}
+			ext=`{echo $state '+' $rext |hoc}
+			echo $cvt planet $rname supplied $rext fuel
 		}
 	case planet
+		state=`{echo $state '+' $ext |hoc}
 		switch($rtype){
 		case space
-			act=radiate
+			act=`{echo $act '-' 2 |hoc}
 		case starbase
-			act=supply
+			act=`{echo $act '+' 1 |hoc}
+			ext=`{echo $rext '+' 1 |hoc}
+			echo $cvt starbase $rname increased production
 		case freighter
-			act=trade
+			act=`{echo $act '+' 1 |hoc}
+			state=`{echo $state '+' $rext |hoc}
+			echo $cvt freighter $rname supplied $rext wealth
 		case planet
-			act=scout
+			act=0
+			ext=0
+			echo $cvt planet $rname collided and destroyed the economy
 		}
-	}	
+	}
+	if(test $act -gt 50){
+		echo $cvt OVERLOAD $name $act RESET
+		state=10
+		ext=1
+	}
 	accum=($name $type $act $state $ext)
-	echo recv $rname $rtype $ract $state $rext
-	echo $cvt ':' $accum 
+#	echo recv $rname $rtype $ract $state $rext
+	if(test $cvt -gt 62)
+		echo $cvt ':' $accum 
 }
