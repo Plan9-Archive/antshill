@@ -1,6 +1,6 @@
 fn siminit{
-	simend=128
-	simlimit=64
+	simend=64
+	simlimit=32
 	accum=($mynum space 0 0 0)
 	if(~ $mynum 0??0)
 		accum=($mynum planet 0 10 1)
@@ -31,11 +31,12 @@ fn updatestate{
 		act=$ract
 		state=$rstate
 		ext=$rext
+		echo _____ $type warps in from a wormhole
 	case starbase
 		state=`{echo $state '-' $ext |hoc}
 		switch($rtype){
 		case space
-			act=`{echo $act '-' 2 |hoc}
+			act=`{echo $act '-' 1 |hoc}
 		case starbase
 			act=`{echo $act '+' 1 |hoc}
 			state=`{echo $state '-' $rext |hoc}
@@ -63,7 +64,7 @@ fn updatestate{
 			state=`{echo $state '+' $rext |hoc}
 			echo $cvt freighter $rname supplied $rext fuel
 		case planet
-#			act=`{echo $act '+' 1 |hoc}
+			act=`{echo $act '+' 1 |hoc}
 			ext=`{echo $state '+' $rext |hoc}
 			echo $cvt planet $rname supplied $rext fuel
 		}
@@ -81,18 +82,22 @@ fn updatestate{
 			state=`{echo $state '+' $rext |hoc}
 			echo $cvt freighter $rname supplied $rext wealth
 		case planet
-			act=0
+			state=0
 			ext=0
 			echo $cvt planet $rname collided and destroyed the economy
 		}
 	}
 	if(test $act -gt 50){
 		echo $cvt OVERLOAD $name $act RESET
+		act=25
 		state=10
 		ext=1
 	}
+	if(test $state -lt 10)
+		state=10
+	if(test $ext -lt 1)
+		ext=1
 	accum=($name $type $act $state $ext)
 #	echo recv $rname $rtype $ract $state $rext
-	if(test $cvt -gt 62)
-		echo $cvt ':' $accum 
+	echo $cvt ':' $accum 
 }
