@@ -58,7 +58,7 @@ if(~ $routestart yes){
 		mount /srv/$i.ctl /n/$i.ctl
 		echo routestart.rc >>/n/$i.ctl/io0
 	}
-	sleep 2
+	sleep 5
 	for(i in $$1)
 		mount /srv/$i /n/$i
 	rc
@@ -126,19 +126,19 @@ for(i in $$1){
 		vcor=`{echo $vcor + $vinc |hoc}
 	}
 }
-sleep 2
+sleep 5
 for(i in $$1){
 	mount /srv/$i.ctl /n/$i.ctl
 	echo routehub.rc >>/n/$i.ctl/io0
 }
 if(~ $routehub yes)
 	exit
-sleep 3
+sleep 6
 for(i in $$1){
 #	mount /srv/$i.ctl /n/$i.ctl
 	echo routestart.rc >>/n/$i.ctl/io0
 }
-sleep 2
+sleep 5
 for(i in $$1)
 	mount /srv/$i /n/$i
 
