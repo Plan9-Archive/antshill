@@ -5,30 +5,26 @@ fn siminit{
 	type=space
 	act=0
 	mainval=0
-	echo mainval is $mainval
 	ext=0
 	if(~ $mynum 0??0){
 		type=planet
 		mainval=10
-		echo mainval $mainval
 		ext=1
 	}
 	if(~ $mynum 000?){
 		type=freighter
 		mainval=10
-		echo mainval $mainval
 		ext=1
 	}
 	if(~ $mynum 11??){
 		type=starbase
 		mainval=25
-		echo mainval $mainval
 		ext=2
 	}
 	state=($name $type $act $mainval $ext)
 	sendout=($mynum $type $ext)
 	echo ___INITIATE $dim dimensional simulation
-	echo vx $state
+	echo $state
 }
 
 fn updatestate{
@@ -116,6 +112,6 @@ fn updatestate{
 		ext=1
 	state=($name $type $act $mainval $ext)
 	sendout=($name $type $ext)
-	echo recv $rname $rtype $ext
-	echo $cvt ':' $state 
+#	echo recv $rname $rtype $ext
+	echo $cvt^':' $state 
 }

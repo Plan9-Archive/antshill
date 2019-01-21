@@ -1,25 +1,27 @@
 fn siminit{
-	simend=1024
+	simend=48
 	simlimit=24
-	accum=meadow
+	state=meadow
+	sendout=$state
 	echo ___INITIATE $dim dimensional simulation
-	echo $accum
+	echo $state
 }
 
 fn updatestate{
-	if(! ~ $accum ROCK){
+	if(! ~ $state ROCK){
 		if(~ $body(1) METEOR){
 			echo a ROCK falls from the sky
-			accum=ROCK
+			state=ROCK
 		}
 		if(~ $body(1) BUNNY){
 			echo a BUNNY hops along
-			accum=($body $accum)
+			state=($body $state)
 		}
 		if(~ $body(1) GLENDA){
 			echo its GLENDA
-			accum=($body)
+			state=($body)
 		}
 	}
-	echo $cvt ':' $accum 
+	sendout=$state
+	echo $cvt ':' $state 
 }
