@@ -8,6 +8,7 @@ fn siminit{
 }
 
 fn updatestate{
+#	echo recv $body
 	if(! ~ $state ROCK){
 		if(~ $body(1) METEOR){
 			echo a ROCK falls from the sky
