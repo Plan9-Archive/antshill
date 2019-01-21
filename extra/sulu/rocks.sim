@@ -1,5 +1,5 @@
 fn siminit{
-	simend=64
+	simend=128
 	simlimit=32
 	name=$mynum
 	type=space

@@ -1,0 +1,32 @@
+fn ping {
+	if(~ $2 all)
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm ping >>$i}
+	if not
+		echo $1 0 0 0 pos 0.0 adm ping >>/n/$2/in
+}
+
+fn pong {
+	if(~ $2 all)
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm pong >>$i}
+	if not
+		echo $1 0 0 0 pos 0.0 adm pong >>/n/$2/in
+}
+
+fn step {
+	if(~ $1 ?){
+		for(i in `{seq 1 $1})
+			for(j in `{ls /n/????/in}){echo STEP >>$j}
+	}
+	if not if(~ $#1 1)
+		echo step >>/n/$1/in
+	if not
+		for(i in `{ls /n/????/in}){echo STEP >>$i}
+}
+
+fn freeze {
+	for(i in `{ls /n/????/ctl}){echo freeze >>$i}
+}
+
+fn melt {
+	for(i in `{ls /n/????/ctl}){echo melt >>$i}
+}

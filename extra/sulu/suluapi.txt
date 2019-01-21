@@ -1,0 +1,24 @@
+# Guide to using mrsulu.rc
+
+whatsit.rc dfour
+whatsit.rc dfour rocks.sim
+commands as defined in rocks.sim.fns
+
+A .sim file needs to provide these four fns:
+
+siminit
+updatestate
+msgproc
+tickstate
+
+siminit is called once at the beginning of the sim. it must set up the variables $state and $sendout. The only var defined is $mynum, the binary hypercube node id. setting $simend (the tick the program will exit) and $simlimit (the tick beyond which the simulation will not change) is optional.
+
+updatestate is called every tick. its purpose is to initialize variable names from the contents of the $state list.
+
+msgproc is called if there is a message with positive sign at this time tick. it should initialize its local vars from the $body list of the received message. Interactions with $body should be contained to this function.
+
+tickstate is called to finalize state before messages are sent and state is saved for this virtual time tick. It needs to prepare the $state and $sendout vars for commitment and transmission.
+
+The simulation object process may examine, but not modify, the $cvt and other variables in the environment. Other than private local state, only the $state and $sendout variables are permissible to modify.
+
+a sample implementation of a very simple sim is ping.sim, with a template of control functions set up for 4d in ping.sim.fns. ping.sim can be run any # of dimensions, just change the number of ???? in the .fns file to make the control functions match.
