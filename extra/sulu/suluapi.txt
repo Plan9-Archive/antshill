@@ -4,6 +4,15 @@ whatsit.rc dfour
 whatsit.rc dfour rocks.sim
 commands as defined in rocks.sim.fns
 
+simulations are fun using rc functions provided by .sim modules. A user may create .sim modules by implementing the correct interface. The variables controlled by the user are:
+
+$state - a list of arbitrary length which you initialize and is then upated each tick and saved/restored as needed
+$outmsg - a list of arbitrary length which every node sends out per tick to their neighber in the hypercubic pattern.
+
+Each tick the process may receive a message. The contents of this message may be read but not manipulated by the sim fns.
+
+$body - a list of arbitrary length which corresponds to the $outmsg sent by the neighbor for this tick.
+
 A .sim file needs to provide these four fns:
 
 siminit

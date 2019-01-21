@@ -68,6 +68,8 @@ rm inq/*
 rm antiq/*
 dim=`{echo -n $mynum |wc -c}
 cvt=0
+
+# call user supplied siminit fn to initialize $state and $sendout
 siminit
 echo $state >state.$cvt
 if(~ $#simend 0)
@@ -76,6 +78,7 @@ if(~ $#simlimit 0)
 	simlimit=32
 sleep 30
 
+# we enter the sim loop "halfway" through the first tick and send the state
 while(test $cvt -lt $simend){
 	cvt=`{echo $cvt + 1 |hoc}
 	port=`{echo $cvt - 1 |hoc}
@@ -101,9 +104,9 @@ while(test $cvt -lt $simend){
 		echo $outmsg >>/n/cube/$port
 		echo $antimsg >antiq/$cvt
 	}
-
 	echo $state >state.$cvt
 
+# messages have been sent and state saved. wait for message and call user fns
 	msg=`{read}
 	if(~ $debug yes)
 		echo MSG $msg
@@ -131,3 +134,17 @@ while(test $cvt -lt $simend){
 	}
 	tickstate
 }
+# when we loop here, we have set up the $state and $sendout vars but not saved or sent them
+
+
+# the sequence each tick is as follows
+# BEGIN at cvt 0
+#	increment cvt and set message port
+#	compare outmsg and any saved antimsg and dispatch as dictated by Time Warp algo
+#	save state
+#	block waiting for next message
+#	receive message and rollback if needed, initialize $state and call user updatestate()
+#	process message unless its just a STEP tick by calling user msgproc()
+#	finalize $state and $outmsg with user tickstate()
+# END at cvt $simend
+# no changes in state occur after cvt $simlimit

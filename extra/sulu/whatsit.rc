@@ -1,6 +1,7 @@
 #!/bin/rc
 # makes hypercubes and launches applications and simulations
 
+# lists of node names of hypercubes and hypercube slices
 dtwo=(00 01 10 11)
 dthree=(000 001 010 011 100 101 110 111)
 dfour=(0000 0001 0010 0011 0100 0101 0110 0111 1000 1001 1010 1011 1100 1101 1110 1111)
@@ -30,6 +31,8 @@ while (~ $1 -*){
 	}
 }
 
+# whatsit.rc dfour mrsulu.rc kill
+# kills named process and closes hubs
 if(~ $3 kill){
 	kill $2 |rc
 	for(i in $$1){
@@ -42,6 +45,8 @@ if(~ $3 kill){
 	exit
 }
 
+# whatsit.rc dfour rocks.sim
+# used after initial hypercube setup to launch a sim with mrsulu.rc
 if(~ $2 *.sim){
 	suluargs=$2
 	if(~ $debug yes)
@@ -53,12 +58,16 @@ if(~ $2 *.sim){
 	exit
 }
 
+# whatsit.rc dfour cube.rc
+# starts an arbitrary program connected to the given cube
 if(~ $#2 1){
 	for(i in $$1)
 		echo $2 '< /n/'^$i^'/in' >>/n/$i.ctl/io0
 	exit
 }
 
+# whatsit.rc -s dfour
+# used as the second stage in setting up a multisystem partitioned cube
 if(~ $routestart yes){
 	for(i in $$1){
 		mount /srv/$i.ctl /n/$i.ctl
@@ -71,6 +80,7 @@ if(~ $routestart yes){
 	exit
 }
 
+# setup sizing for window spawning
 switch($1){
 case dtwo
 	dim=2
@@ -118,6 +128,8 @@ vstart=0
 hcor=`{echo $hstart + $hinc |hoc}
 vcor=`{echo $vstart + $vinc |hoc}
 
+# whatsit.rc dfour
+# spawns windows for a hypercube, puts control hubfs in each, puts cube hubfs in each
 for(i in $$1){
 	rfork efns
 	mynum=$i
@@ -132,18 +144,23 @@ for(i in $$1){
 		vcor=`{echo $vcor + $vinc |hoc}
 	}
 }
+# give all those windows time to spawn and then tell the ctl shell to start the cube hub
 sleep 5
 for(i in $$1){
 	mount /srv/$i.ctl /n/$i.ctl
 	echo routehub.rc >>/n/$i.ctl/io0
 }
+# whatsit.rc -h dfour
+# if we are doing a multipart multisystem cube we exit here
 if(~ $routehub yes)
 	exit
+# wait for setup and start the actual cubic connection routing
 sleep 6
 for(i in $$1){
 #	mount /srv/$i.ctl /n/$i.ctl
 	echo routestart.rc >>/n/$i.ctl/io0
 }
+# wait again and mount everything because we are going to be sending commands
 sleep 5
 for(i in $$1)
 	mount /srv/$i /n/$i
