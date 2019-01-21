@@ -1,0 +1,33 @@
+fn siminit{
+	simend=64
+	simlimit=32
+	accum=($mynum space 0 0 0)
+	if(~ $mynum 0000)
+		accum=($mynum mob 0 0 0)
+	echo ___INITIATE $dim dimensional simulation
+	echo $accum
+}
+
+fn updatestate{
+	name=$accum(1)
+	type=$accum(2)
+	rname=$body(1)
+	rtype=$body(2)
+	if(~ $rname adm)
+		type=update
+	switch($type){
+	case update
+		type=$rtype
+		echo _____ $type warps in from a wormhole
+	case space
+		switch($rtype){
+		case mob
+			type=mob
+		}
+	case mob
+		type=$rtype
+	}
+	accum=($name $type)
+#	echo recv $rname $rtype
+	echo $cvt ':' $accum 
+}
