@@ -1,6 +1,17 @@
 #!/bin/rc
 # prototype proof of concept timewarping rc script
 
+while (~ $1 -*){
+	switch($1){
+	case -c
+		cancels = yes
+		shift
+	case *
+		echo bad flag $1
+		shift
+	}
+}
+
 if(! test -e $1){
 	echo no sim file found
 	exit
@@ -86,7 +97,8 @@ while(test $cvt -lt $simend){
 			if(test -e state.$cvt)
 				state=`{cat state.$cvt >[2] /dev/null}
 		}
-		cancelinq
+		if(~ $cancels yes)
+			cancelinq
 	}
 	updatestate
 	if(test -e inq/$cvt){
