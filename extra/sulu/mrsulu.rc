@@ -13,6 +13,7 @@ while (~ $1 -*){
 		shift
 	case -d
 		debug=yes
+		shift
 	case *
 		echo bad flag $1
 		shift
