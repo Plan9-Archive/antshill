@@ -48,7 +48,7 @@ rm antiq/*
 dim=`{echo -n $mynum |wc -c}
 cvt=0
 siminit
-echo $accum >state.$cvt
+echo $state >state.$cvt
 if(~ $#simend 0)
 	simend=109
 if(~ $#simlimit 0)
@@ -62,8 +62,8 @@ while(test $cvt -lt $simend){
 		port=`{echo $port^' % '^$dim |hoc}
 	if(test $cvt -gt $simlimit)
 		port=$dim
-	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $accum)
-	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $accum)
+	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $sendout)
+	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $sendout)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
 	if(test $#prevmsg -gt 5){
 		if(! ~ $"antimsg $"prevmsg){
@@ -76,7 +76,7 @@ while(test $cvt -lt $simend){
 		echo $outmsg >>/n/cube/$port
 		echo $antimsg >antiq/$cvt
 	}
-	echo $accum >state.$cvt
+	echo $state >state.$cvt
 	msg=`{read}
 	if(test $#msg -gt 5){
 		parsemsg
@@ -84,7 +84,7 @@ while(test $cvt -lt $simend){
 		if(test $vrt -lt $cvt){
 			cvt=$vrt
 			if(test -e state.$cvt)
-				accum=`{cat state.$cvt >[2] /dev/null}
+				state=`{cat state.$cvt >[2] /dev/null}
 		}
 		cancelinq
 	}

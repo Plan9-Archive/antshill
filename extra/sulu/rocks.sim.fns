@@ -1,27 +1,27 @@
 fn base {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>/n/$2/in
 }
 
 fn freight {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>/n/$2/in
 }
 
 fn planet {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>/n/$2/in
 }
 
 fn space {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>/n/$i}
+		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>/n/$2/in
 }
@@ -29,18 +29,18 @@ fn space {
 fn step {
 	if(~ $1 ?){
 		for(i in `{seq 1 $1})
-			for(j in `{ls /n/????/in}){echo STEP >>/n/$j}
+			for(j in `{ls /n/????/in}){echo STEP >>$j}
 	}
 	if not if(~ $#1 1)
 		echo step >>/n/$1/in
 	if not
-		for(i in `{ls /n/????/in}){echo STEP >>/n/$i}
+		for(i in `{ls /n/????/in}){echo STEP >>$i}
 }
 
 fn freeze {
-	for(i in `{ls /n/????/ctl}){echo freeze >>/n/$i}
+	for(i in `{ls /n/????/ctl}){echo freeze >>$i}
 }
 
 fn melt {
-	for(i in `{ls /n/????/ctl}){echo melt >>/n/$i}
+	for(i in `{ls /n/????/ctl}){echo melt >>$i}
 }

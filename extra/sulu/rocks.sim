@@ -1,49 +1,66 @@
 fn siminit{
 	simend=64
 	simlimit=32
-	accum=($mynum space 0 0 0)
-	if(~ $mynum 0??0)
-		accum=($mynum planet 0 10 1)
-	if(~ $mynum 000?)
-		accum=($mynum freighter 0 10 1)
-	if(~ $mynum 11??)
-		accum=($mynum starbase 0 25 2)
+	name=$mynum
+	type=space
+	act=0
+	mainval=0
+	echo mainval is $mainval
+	ext=0
+	if(~ $mynum 0??0){
+		type=planet
+		mainval=10
+		echo mainval $mainval
+		ext=1
+	}
+	if(~ $mynum 000?){
+		type=freighter
+		mainval=10
+		echo mainval $mainval
+		ext=1
+	}
+	if(~ $mynum 11??){
+		type=starbase
+		mainval=25
+		echo mainval $mainval
+		ext=2
+	}
+	state=($name $type $act $mainval $ext)
+	sendout=($mynum $type $ext)
 	echo ___INITIATE $dim dimensional simulation
-	echo $accum
+	echo vx $state
 }
 
 fn updatestate{
-	name=$accum(1)
-	type=$accum(2)
-	act=$accum(3)
-	state=$accum(4)
-	ext=$accum(5)
+	name=$state(1)
+	type=$state(2)
+	act=$state(3)
+	mainval=$state(4)
+	ext=$state(5)
 	rname=$body(1)
 	rtype=$body(2)
-	ract=$body(3)
-	rstate=$body(4)
-	rext=$body(5)
+	rext=$body(3)
 	if(~ $rname adm)
 		type=update
 	switch($type){
 	case update
-		type=$rtype
-		act=$ract
-		state=$rstate
-		ext=$rext
+		type=$body(2)
+		act=$body(3)
+		mainval=$body(4)
+		ext=$body(5)
 		echo _____ $type warps in from a wormhole
 	case starbase
-		state=`{echo $state '-' $ext |hoc}
+		mainval=`{echo $mainval '-' $ext |hoc}
 		switch($rtype){
 		case space
 			act=`{echo $act '-' 1 |hoc}
 		case starbase
-			act=`{echo $act '+' 1 |hoc}
-			state=`{echo $state '-' $rext |hoc}
+			act=`{echo $act '+' 2 |hoc}
+			mainval=`{echo $mainval '-' $rext |hoc}
 			echo $cvt starbase $rname drained $rext energy
 		case freighter
-			act=`{echo $act '+' 1 |hoc}
-			state=`{echo $state '+' $rext |hoc}
+			act=`{echo $act '+' 2 |hoc}
+			mainval=`{echo $mainval '+' $rext |hoc}
 			echo $cvt freighter $rname supplied $rext energy
 		case planet
 			act=`{echo $act '+' 1 |hoc}
@@ -51,25 +68,25 @@ fn updatestate{
 			echo $cvt planet $rname boosted production $rext
 		}
 	case freighter
-		state=`{echo $state '-' $ext |hoc}
+		mainval=`{echo $mainval '-' $ext |hoc}
 		switch($rtype){
 		case space
 			act=`{echo $act '-' 1 |hoc}
 		case freighter
-			act=`{echo $act '+' 1 |hoc}
-			state=`{echo $state '-' $rext |hoc}
+			act=`{echo $act '+' 2 |hoc}
+			mainval=`{echo $mainval '-' $rext |hoc}
 			echo $cvt freighter $rname drained $rext fuel
 		case starbase
-			act=`{echo $act '+' 1 |hoc}
-			state=`{echo $state '+' $rext |hoc}
+			act=`{echo $act '+' 2 |hoc}
+			mainval=`{echo $mainval '+' $rext |hoc}
 			echo $cvt freighter $rname supplied $rext fuel
 		case planet
 			act=`{echo $act '+' 1 |hoc}
-			ext=`{echo $state '+' $rext |hoc}
+			ext=`{echo $mainval '+' $rext |hoc}
 			echo $cvt planet $rname supplied $rext fuel
 		}
 	case planet
-		state=`{echo $state '+' $ext |hoc}
+		mainval=`{echo $mainval '+' $ext |hoc}
 		switch($rtype){
 		case space
 			act=`{echo $act '-' 1 |hoc}
@@ -79,10 +96,10 @@ fn updatestate{
 			echo $cvt starbase $rname increased production
 		case freighter
 			act=`{echo $act '+' 1 |hoc}
-			state=`{echo $state '+' $rext |hoc}
+			mainval=`{echo $mainval '+' $rext |hoc}
 			echo $cvt freighter $rname supplied $rext wealth
 		case planet
-			state=0
+			mainval=0
 			ext=0
 			echo $cvt planet $rname collided and destroyed the economy
 		}
@@ -90,14 +107,15 @@ fn updatestate{
 	if(test $act -gt 50){
 		echo $cvt OVERLOAD $name $act RESET
 		act=25
-		state=10
+		mainval=10
 		ext=1
 	}
-	if(test $state -lt 10)
-		state=10
+	if(test $mainval -lt 10)
+		mainval=10
 	if(test $ext -lt 1)
 		ext=1
-	accum=($name $type $act $state $ext)
-#	echo recv $rname $rtype $ract $state $rext
-	echo $cvt ':' $accum 
+	state=($name $type $act $mainval $ext)
+	sendout=($name $type $ext)
+	echo recv $rname $rtype $ext
+	echo $cvt ':' $state 
 }
