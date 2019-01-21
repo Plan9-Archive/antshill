@@ -1,5 +1,5 @@
 #!/bin/rc
-# makes hypercubes
+# makes hypercubes and launches applications and simulations
 
 dtwo=(00 01 10 11)
 dthree=(000 001 010 011 100 101 110 111)
@@ -15,11 +15,13 @@ dsev=(0000000 0000001 0000010 0000011 0000100 0000101 0000110 0000111 0001000 00
 
 while (~ $1 -*){
 	switch($1){
+	case -d
+		debug=yes
 	case -h
-		routehub = yes
+		routehub=yes
 		shift
 	case -s
-		routestart = yes
+		routestart=yes
 		shift
 	case *
 		echo bad flag $1
@@ -40,8 +42,11 @@ if(~ $3 kill){
 }
 
 if(~ $2 *.sim){
+	suluargs=$2
+	if(~ $debug yes)
+	suluargs=(-d $suluargs)
 	for(i in $$1)
-		echo mrsulu.rc $2 '< /n/'^$i^'/in' >>/n/$i.ctl/io0
+		echo mrsulu.rc $suluargs '< /n/'^$i^'/in' >>/n/$i.ctl/io0
 	. $2.fns
 	rc
 	exit

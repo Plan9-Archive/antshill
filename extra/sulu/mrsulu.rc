@@ -3,11 +3,16 @@
 # needs a .sim file with siminit updatestate msgproc tickstate fns
 # usually launched by whatsit.rc
 
+cancels=()
+debug=()
+
 while (~ $1 -*){
 	switch($1){
 	case -c
-		cancels = yes
+		cancels=yes
 		shift
+	case -d
+		debug=yes
 	case *
 		echo bad flag $1
 		shift
@@ -32,6 +37,7 @@ fn parsemsg{
 	body=$msg(7-)
 }
 
+# this is a horribly inefficent function. not needed in hypercubic implementation
 fn cancelinq{
 	for(i in `{ls inq}){
 		chksign=`{cat $i}
@@ -78,7 +84,11 @@ while(test $cvt -lt $simend){
 		port=$dim
 	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $sendout)
 	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $sendout)
-	prevmsg=`{cat antiq/$cvt >[2] /dev/null} 
+	prevmsg=`{cat antiq/$cvt >[2] /dev/null}
+	if(~ $debug yes){
+		echo CVT $cvt STATE $state
+		echo OUT $outmsg PREV $prevmsg
+	}
 	if(test $#prevmsg -gt 5){
 		if(! ~ $"antimsg $"prevmsg){
 			echo $prevmsg >>/n/cube/$port
@@ -90,12 +100,18 @@ while(test $cvt -lt $simend){
 		echo $outmsg >>/n/cube/$port
 		echo $antimsg >antiq/$cvt
 	}
+
 	echo $state >state.$cvt
+
 	msg=`{read}
+	if(~ $debug yes)
+		echo MSG $msg
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
 		if(test $vrt -lt $cvt){
+			if(~ $debug yes)
+				echo ROLLBACK to $vrt
 			cvt=$vrt
 			if(test -e state.$cvt)
 				state=`{cat state.$cvt >[2] /dev/null}
@@ -106,6 +122,8 @@ while(test $cvt -lt $simend){
 	updatestate
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt >[2] /dev/null}
+		if(~ $debug yes)
+			echo INQ $cvt $msg
 		parsemsg
 		if(~ $sign pos)
 			msgproc
