@@ -88,10 +88,12 @@ while(test $cvt -lt $simend){
 		}
 		cancelinq
 	}
+	updatestate
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt >[2] /dev/null}
 		parsemsg
 		if(~ $sign pos)
-			updatestate
+			msgproc
 	}
+	tickstate
 }

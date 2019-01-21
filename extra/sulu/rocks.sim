@@ -6,6 +6,7 @@ fn siminit{
 	act=0
 	mainval=0
 	ext=0
+if(~ yes no){
 	if(~ $mynum 0??0){
 		type=planet
 		mainval=10
@@ -21,6 +22,7 @@ fn siminit{
 		mainval=25
 		ext=2
 	}
+}
 	state=($name $type $act $mainval $ext)
 	sendout=($mynum $type $ext)
 	echo ___INITIATE $dim dimensional simulation
@@ -33,6 +35,9 @@ fn updatestate{
 	act=$state(3)
 	mainval=$state(4)
 	ext=$state(5)
+}
+
+fn msgproc{
 	rname=$body(1)
 	rtype=$body(2)
 	rext=$body(3)
@@ -100,6 +105,9 @@ fn updatestate{
 			echo $cvt planet $rname collided and destroyed the economy
 		}
 	}
+}
+
+fn tickstate{
 	if(test $act -gt 50){
 		echo $cvt OVERLOAD $name $act RESET
 		act=25
