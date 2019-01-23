@@ -1,27 +1,27 @@
 fn base {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm starbase 0 25 2 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm starbase 0 25 2 >>/n/$2/in
 }
 
 fn freight {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm freighter 0 10 1 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm freighter 0 10 1 >>/n/$2/in
 }
 
 fn planet {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm planet 0 10 1 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm planet 0 10 1 >>/n/$2/in
 }
 
 fn space {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm space 0 0 0 >>$i}
 	if not
 		echo $1 0 0 0 pos 0.0 adm space 0 0 0 >>/n/$2/in
 }

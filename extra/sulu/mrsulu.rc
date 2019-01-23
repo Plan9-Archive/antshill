@@ -5,6 +5,7 @@
 
 cancels=()
 debug=()
+msgforme=no
 
 while (~ $1 -*){
 	switch($1){
@@ -86,8 +87,9 @@ while(test $cvt -lt $simend){
 		port=`{echo $port^' % '^$dim |hoc}
 	if(test $cvt -gt $simlimit)
 		port=$dim
-	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $sendout)
-	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $sendout)
+	neighbor=`{hyper -id $port -f $mynum}
+	outmsg=($cvt $cvt $neighbor $mynum pos $mynum.$cvt $sendout)
+	antimsg=($cvt $cvt $neighbor $mynum neg $mynum.$cvt $sendout)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null}
 	if(~ $debug yes){
 		echo CVT $cvt STATE $state
@@ -107,9 +109,20 @@ while(test $cvt -lt $simend){
 	echo $state >state.$cvt
 
 # messages have been sent and state saved. wait for message and call user fns
-	msg=`{read}
-	if(~ $debug yes)
-		echo MSG $msg
+#	msg=`{read}
+	while(~ $msgforme no){
+		if(~ $debug yes)
+			echo MSG $msg
+		msg=`{read}
+		if(~ $msg(3) $mynum)
+			msgforme=yes
+		if not{
+			route=`{hyper -pno -d $dim -f $mynum -t $msg(3)}
+			echo wormhole msg for $msg(3) to $route
+			echo $msg >>/n/cube/$route
+		}
+	}
+	msgforme=no
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt

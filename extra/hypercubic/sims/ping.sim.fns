@@ -1,15 +1,15 @@
 fn ping {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm ping >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm ping >>$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm ping >>/n/$2/in
+		echo $1 0 $2 0 pos 0.0 adm ping >>/n/$2/in
 }
 
 fn pong {
 	if(~ $2 all)
-		for(i in `{ls /n/????/in}){echo $1 0 0 0 pos 0.0 adm pong >>$i}
+		for(i in `{ls /n/????/in}){echo $1 0 `{echo $i |awk -F / '{print $3}'} 0 pos 0.0 adm pong >>$i}
 	if not
-		echo $1 0 0 0 pos 0.0 adm pong >>/n/$2/in
+		echo $1 0 $2 0 pos 0.0 adm pong >>/n/$2/in
 }
 
 fn step {

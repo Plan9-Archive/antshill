@@ -5,6 +5,7 @@
 
 cancels=()
 debug=()
+msgforme=no
 
 while (~ $1 -*){
 	switch($1){
@@ -78,7 +79,9 @@ if(~ $#simlimit 0)
 	simlimit=32
 sleep 30
 
-# we enter the sim loop "halfway" through the first tick and send the state
+### BEGIN MAIN LOOP - only exits when sim completes
+# enter sim loop "halfway" through first tick and send $sendout and save state
+
 while(test $cvt -lt $simend){
 	cvt=`{echo $cvt + 1 |hoc}
 	port=`{echo $cvt - 1 |hoc}
@@ -86,8 +89,9 @@ while(test $cvt -lt $simend){
 		port=`{echo $port^' % '^$dim |hoc}
 	if(test $cvt -gt $simlimit)
 		port=$dim
-	outmsg=($cvt $cvt $port $mynum pos $mynum.$cvt $sendout)
-	antimsg=($cvt $cvt $port $mynum neg $mynum.$cvt $sendout)
+	neighbor=`{hyper -id $port -f $mynum}
+	outmsg=($cvt $cvt $neighbor $mynum pos $mynum.$cvt $sendout)
+	antimsg=($cvt $cvt $neighbor $mynum neg $mynum.$cvt $sendout)
 	prevmsg=`{cat antiq/$cvt >[2] /dev/null}
 	if(~ $debug yes){
 		echo CVT $cvt STATE $state
@@ -106,10 +110,31 @@ while(test $cvt -lt $simend){
 	}
 	echo $state >state.$cvt
 
-# messages have been sent and state saved. wait for message and call user fns
-	msg=`{read}
-	if(~ $debug yes)
-		echo MSG $msg
+# messages have been sent and state saved. 
+# wait for message and check if it is for us, pass it on if not
+
+	while(~ $msgforme no){
+		if(~ $debug yes)
+			echo MSG $msg
+		msg=`{read}
+		if(test $#msg -gt 5){
+			if(~ $msg(3) $mynum)
+				msgforme=yes
+			if not{
+				route=`{hyper -pno -d $dim -f $mynum -t $msg(3)}
+				if(! ~ $#route 0){
+					echo wormhole msg for $msg(3) to $route
+					echo $msg >>/n/cube/$route
+				}
+			}
+		}
+		if(test $#msg -lt 5)
+			msgforme=yes
+	}
+	msgforme=no
+
+# message is for us. check its time and rollback if needed
+
 	if(test $#msg -gt 5){
 		parsemsg
 		echo $msg >inq/$vrt
@@ -123,6 +148,9 @@ while(test $cvt -lt $simend){
 		if(~ $cancels yes)
 			cancelinq
 	}
+
+# call user updatestate, then msgproc if this tick has msg, then tickstate
+
 	updatestate
 	if(test -e inq/$cvt){
 		msg=`{cat inq/$cvt >[2] /dev/null}
@@ -136,14 +164,14 @@ while(test $cvt -lt $simend){
 }
 # when we loop here, we have set up the $state and $sendout vars but not saved or sent them
 
-
 # the sequence each tick is as follows
 # BEGIN at cvt 0
 #	increment cvt and set message port
 #	compare outmsg and any saved antimsg and dispatch as dictated by Time Warp algo
 #	save state
 #	block waiting for next message
-#	receive message and rollback if needed, initialize $state and call user updatestate()
+#	check if received message is for us and pass it on if not
+#	rollback if needed, initialize $state and call user updatestate()
 #	process message unless its just a STEP tick by calling user msgproc()
 #	finalize $state and $outmsg with user tickstate()
 # END at cvt $simend
