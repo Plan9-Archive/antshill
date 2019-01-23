@@ -1,5 +1,8 @@
 # Guide to using mrsulu.rc
 
+rfork V
+ramfs
+grio -s
 whatsit.rc dfour
 whatsit.rc dfour rocks.sim
 commands as defined in rocks.sim.fns
