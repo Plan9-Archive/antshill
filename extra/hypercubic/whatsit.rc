@@ -126,6 +126,22 @@ case dsev
 	dim=7
 	hinc=119
 	vinc=124
+case qaeight
+	dim=6
+	hinc=237
+	vinc=124
+case qbeight
+	dim=6
+	hinc=237
+	vinc=124
+case qceight
+	dim=6
+	hinc=237
+	vinc=124
+case qdeight
+	dim=6
+	hinc=237
+	vinc=124
 }
 hstart=0
 vstart=0
