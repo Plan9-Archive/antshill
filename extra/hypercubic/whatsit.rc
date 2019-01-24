@@ -1,5 +1,6 @@
 #!/bin/rc
 # makes hypercubes and launches applications and simulations
+# usuall used after rfork V and starting ramfs and possibly importing /srv from other cubehosts
 
 # lists of node names of hypercubes and hypercube slices
 dtwo=(00 01 10 11)
@@ -70,7 +71,7 @@ if(~ $#2 1){
 	exit
 }
 
-# whatsit.rc -s dfour
+# whatsit.rc -s hasev
 # used as the second stage in setting up a multisystem partitioned cube
 if(~ $routestart yes){
 	for(i in $$1){
@@ -164,13 +165,15 @@ for(i in $$1){
 		vcor=`{echo $vcor + $vinc |hoc}
 	}
 }
+
 # give all those windows time to spawn and then tell the ctl shell to start the cube hub
 sleep 5
 for(i in $$1){
 	mount /srv/$i.ctl /n/$i.ctl
 	echo routehub.rc >>/n/$i.ctl/io0
 }
-# whatsit.rc -h dfour
+
+# whatsit.rc -h hasev
 # if we are doing a multipart multisystem cube we exit here
 if(~ $routehub yes)
 	exit
@@ -180,6 +183,7 @@ for(i in $$1){
 #	mount /srv/$i.ctl /n/$i.ctl
 	echo routestart.rc >>/n/$i.ctl/io0
 }
+
 # wait again and mount everything because we are going to be sending commands
 sleep 5
 for(i in $$1)
