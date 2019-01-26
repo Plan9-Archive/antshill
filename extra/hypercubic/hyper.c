@@ -126,7 +126,7 @@ main(int argc, char *argv[])
 	if(strlen(source) != strlen(destination))
 		sysfatal("to and from values must be of equal length");
 	if((strlen(source) != dim) || (strlen(destination) != dim))
-		sysfatal("dimension doesnt macth input lengths");
+		sysfatal("dimension doesnt match input lengths");
 	strncpy(src, source, dim);
 	strncpy(dest, destination, dim);
 	strncpy(curr, src, dim);
