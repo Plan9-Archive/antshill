@@ -36,6 +36,7 @@ if(test -e /srv/gridregistry){
 		rm /srv/gridregistry
 		rm /srv/gridroot
 		rm /srv/gridwiki
+		rm /srv/griddisk
 		rm /srv/pubregistry
 	}
 }		
