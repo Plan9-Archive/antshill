@@ -31,3 +31,6 @@ echo 0000 echo $acc >/n/$mynum/in
 in essence, we show that the distribution of angles induced by Boolean noise on the hypercube can be modeled by the effect of Brownianmotion on the sphere, or equivalently diffusion driven by the spherical heat equation
 
 The Abelian null blade semigroup is of particular interest, as its associated semigroup algebra is canonically isomorphic to the zeon algebra.
+
+hypercubic is a combined naming/routing system. it is also a family of algorithms for processing data. it is also a multistage interconnect topology. if you chart the data flow when a hypercubic algorithm is applied to a set of processors in hypercubic array, the data flow graph will be isomorphic to hypercubic multistage interconnect, which provides the same processing capability as the general category of shuffle-exchange networks.
+

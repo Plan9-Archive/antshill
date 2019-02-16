@@ -8,6 +8,10 @@ objtype=`{cat /env/cputype}
 
 # utility functions
 
+fn sigint{
+	echo interrupt received
+}
+
 fn shifter{
 	shift
 	echo $*
