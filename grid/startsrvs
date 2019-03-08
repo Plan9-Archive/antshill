@@ -1,13 +1,14 @@
 #!/bin/rc
 
 bind -b '#S' /dev
-mntgen -s slashn /n
-mntgen -s slashmnt /mnt
-mntgen -s mntexport /mnt/exportfs
-chmod 666 /srv/slashn
-chmod 666 /srv/slashmnt
-chmod 666 /srv/mntexport
-auth/factotum -S -s factotum
-ndb/cs
-ndb/dns -r
+
+/tmp/mntgen -s slashn /n
+/tmp/mntgen -s slashmnt /mnt
+/tmp/mntgen -s mntexport /mnt/exportfs
+/tmp/chmod 666 /srv/slashn
+/tmp/chmod 666 /srv/slashmnt
+/tmp/chmod 666 /srv/mntexport
+/tmp/factotum -S -s factotum
+/tmp/cs
+/tmp/dns -r
 

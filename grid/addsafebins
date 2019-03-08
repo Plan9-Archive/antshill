@@ -1,0 +1,9 @@
+#!/bin/rc
+
+ramfs -S /zrv/safebins
+mount -c /zrv/safebins /n/safebins
+cp /bin/auth/factotum /n/safebins
+cp /bin/ndb/cs /n/safebins
+cp /bin/ndb/dns /n/safebins
+cp /bin/mntgen /n/safebins
+cp /bin/chmod /n/safebins
