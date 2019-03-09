@@ -1,0 +1,11 @@
+#!/bin/rc
+
+#config helper script for spawngrid cpu servers
+
+echo 'mount -a /zrv/safebins /tmp' >>/lib/namespace.local
+echo 'addsafebins' >>/rc/bin/cpurc
+echo '. /rc/bin/scorefns' >>/rc/bin/cpurc
+echo 'rimport -p spawnstorage /srv /n/sto' >>/rc/bin/cpurc
+echo 'startcpusvc' >>/rc/bin/cpurc
+
+echo 'add/edit information on spawnstorage server to ndb/local and change rimport line in cpurc to match'
