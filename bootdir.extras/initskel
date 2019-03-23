@@ -120,10 +120,17 @@ if(~ $hostfactotum no){
 
 if(! ~ $netsvc no){
 	if(! test -e /net/ipifc/0/ctl){
-		if(! ~ $#gateway 0)
+		if(! ~ $#gateway 0){
 			ipparams=( -g $gateway ether /net/ether0 $ipaddress $ipmask )
-		echo -n 'ipconfig ' $ipparams '...'
-		ip/ipconfig $ipparams
+			echo ipconfig $ipparams
+			ip/ipconfig $ipparams
+		}
+		if not{
+			echo 'ipconfig...'
+			ip/ipconfig -6 ether /net/ether0
+			ip/ipconfig ether /net/ether0 ra6 recvra 1
+			ip/ipconfig -h $sysname ether /net/ether0
+		}
 		ip/ipconfig loopback /dev/null 127.1
 	}
 }
