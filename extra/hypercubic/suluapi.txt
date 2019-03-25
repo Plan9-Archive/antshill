@@ -1,5 +1,7 @@
 # Guide to using mrsulu.rc
 
+mkdir /tmp/cube
+touch /tmp/cube/0 /tmp/cube/1 /tmp/cube/2 /tmp/cube/3
 whatsit.rc dfour
 whatsit.rc dfour rocks.sim
 commands as defined in rocks.sim.fns

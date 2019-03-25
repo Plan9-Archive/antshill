@@ -2,6 +2,13 @@
 # makes hypercubes and launches applications and simulations
 # usuall used after rfork V and starting ramfs and possibly importing /srv from other cubehosts
 
+if(! test -d /tmp/cube){
+	echo 'mkdir /tmp/cube and touch 0 1 2 3 corresponding to desired cube dimensions'
+	exit no.cube
+}
+
+rfork en
+
 # lists of node names of hypercubes and hypercube slices
 dtwo=(00 01 10 11)
 dthree=(000 001 010 011 100 101 110 111)
