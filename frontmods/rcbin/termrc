@@ -93,7 +93,7 @@ screenrc
 if(test -f /dev/apm)
 	aux/apm
 
-dontkill '^(ipconfig|factotum|mntgen|venti|hjfs|kfs|cfs|cwfs.*|9660srv|dossrv|paqfs|cs|dns|listen|reboot|usbd|kb|disk|ether|wpa)$'
+dontkill '^(ipconfig|factotum|mntgen|venti|hjfs|fossil|cfs|cwfs.*|9660srv|dossrv|paqfs|cs|dns|listen|reboot|usbd|kb|disk|ether|wpa)$'
 
 home=/usr/$user; cd;
 aux/listen1 -t tcp!*!17019 /rc/bin/service/tcp17019 &
