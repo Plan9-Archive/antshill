@@ -4,11 +4,11 @@
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
-uncompressed md5sum: 7b458200d54acb6a2925cde4b5fe9585
+uncompressed md5sum: 55359245a7de1cc46140c9392f4958f1
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
-uncompressed md5sum: d8cc3cd903dbdcc2e94768bcf3d9b1d3
+uncompressed md5sum: 76155f4057cd8a518e02a90e7a483e96
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
