@@ -29,6 +29,7 @@ case cpu
 	prompt=($sysname'% ')
 	echo fn $sysname'%{ $* }' >/tmp/sysfn
 	. /tmp/sysfn
+	webfs
 case con
 	prompt=('cpu% ' '	')
 }
