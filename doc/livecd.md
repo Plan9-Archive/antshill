@@ -1,14 +1,14 @@
 # ANTS/9front Live+Install CD .iso image
 
-### ANTSv4.99 386 and 64-bit iso based on 9front r6967, released 21 Dec 2018
+### ANTSv5.23 386 and 64-bit iso based on 9front r7098, released 25 Mar 2019
 
 ## [files.9gridchan.org/9ants386.iso.gz](//files.9gridchan.org/9ants386.iso.gz)
 
-uncompressed md5sum: 5f3a3c8c01d7c86c86e34dccd24e6078
+uncompressed md5sum: 7b458200d54acb6a2925cde4b5fe9585
 
 ## [files.9gridchan.org/9ants64.iso.gz](//files.9gridchan.org/9ants64.iso.gz)
 
-uncompressed md5sum: ba11894bb65fc1a801a65b356fc3bab7
+uncompressed md5sum: d8cc3cd903dbdcc2e94768bcf3d9b1d3
 
 The Advanced Namespace Tools for Plan 9 are now available for testing and installation as a custom spin of the 9front live/install cd image. The cd boots the 9ants custom kernel and includes all userspace tools, and can install the full ANTS system. Installation is the same as standard 9front, the command inst/start beings the process. The installer also has new optional abilities to setup a cpu/auth server rather than a terminal, and also provides the option for venti+fossil in addition to standard 9front fileservers. You can experiment with most of the new features without needing to install.
 
@@ -123,7 +123,7 @@ Also installed is the shareware wad file for doom, so
 
 	games/doom
 
-will launch the standard Doom 1 game without needing to download, place, and rename any .wad files. The 64-bit livecd also includes a chess program by Umbraticus with some engine ports by QWX. Read "man chess" for usage instructions. Byouki-onna contributed "ehget", a directory-downloader script for ehentai.org, and juku, timed flashcard repetition for learning. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume. Also included is Kvik's "clone" utility for fcp-style fast copies of full directories.
+will launch the standard Doom 1 game without needing to download, place, and rename any .wad files. The livecd also includes a chess program by Umbraticus with some engine ports by QWX. Read "man chess" for usage instructions. Byouki-onna contributed "juku", timed flashcard repetition for learning. Another addition is spew's "aplay" and "volume" music tools located at games/aplay and games/volume. Also included is Kvik's "clone" utility for fcp-style fast copies of full directories. Burnzez tools "walk" and "ci" are included and his replica-scripting "rep" tools as well.
 
 ### Who is this for?
 
