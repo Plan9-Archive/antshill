@@ -62,7 +62,7 @@ case go
 				echo -n $"i'='
 				cat $i
 				echo
-			} | grep -v '(apm0|e820|bootfile|bootargs|bootscreen|nvram|mouseport|monitor|vgasize|cdboot|tgzfs)'
+			} | grep -v '(apm0|e820|bootfile|bootargs|bootcmd|bootscreen|nvram|mouseport|monitor|vgasize|cdboot|tgzfs)'
 		} >/tmp/plan9.ini
 	}
 
