@@ -4,13 +4,18 @@
 rfork en
 reboot=no
 scram=no
-switch ($#*) {
-case 0
-case 1
-	reboot=yes
-case *
-	echo usage: $0 '[-r]' >[1=2]
-	exit usage
+while (~ $1 -*){
+	switch($1){
+	case -r
+		reboot=yes
+		shift
+	case -n
+		scram=noscram
+		shift
+	case *
+		echo usage: $0 '[-r] [-n]' >[1=2]
+		exit usage
+	}
 }
 
 path=(/bin)
@@ -27,12 +32,14 @@ h=`{ls /srv/hjfs*cmd >[2]/dev/null}
 f=`{ls /srv/fscons* >[2]/dev/null}
 
 # for scram, don't scram other systems
-bind -b '#P' /dev
-if(! ~ $reboot yes){
-	if (test -e '#P'/apm)
-		scram=yes
-	if (test -e '#P'/acpitbls -a -e '#P'/iow)
-		scram=yes
+if(! ~ $scram noscram){
+	bind -b '#P' /dev
+	if(! ~ $reboot yes){
+		if (test -e '#P'/apm)
+			scram=yes
+		if (test -e '#P'/acpitbls -a -e '#P'/iow)
+			scram=yes
+	}
 }
 
 for(i in $f){
