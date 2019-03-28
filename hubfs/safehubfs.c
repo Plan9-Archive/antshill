@@ -284,7 +284,7 @@ fsread(Req *r)
 	Msgq *mq;
 	u32int count;
 	vlong offset;
-	char tmpstr[SMBUF];
+	char tmpstr[2*SMBUF];
 	int i;
 	int j;
 
@@ -298,13 +298,15 @@ fsread(Req *r)
 			respond(r, nil);
 			return;
 		}
-		sprint(tmpstr, "\tHubfs %s status (1 is active, 0 is inactive):\n \
+		snprint(tmpstr, 2*SMBUF-1, "\tHubfs %s status (1 is active, 0 is inactive):\n \
 Paranoia == %d  Freeze == %d  Trunc == %d  Applylimits == %d\n \
 Buffersize == %ulld \n", srvname, paranoia, freeze, trunc, applylimits, bucksize);
 		if(strlen(tmpstr) <= count)
 			count = strlen(tmpstr);
-		else
+		else{
 			respond(r, "read count too small to answer");
+			return;
+		}
 		memmove(r->ofcall.data, tmpstr, count);
 		r->ofcall.count = count;
 		respond(r, nil);
@@ -435,7 +437,7 @@ fscreate(Req *r)
 		h = (Hub*)emalloc9p(sizeof(Hub));
 		setuphub(h);
 		addhub(h);
-		strcat(h->name, r->ifcall.name);
+		strncat(h->name,r->ifcall.name,SMBUF-1);
 		f->aux = h;
 		r->fid->file = f;
 		r->ofcall.qid = f->qid;
