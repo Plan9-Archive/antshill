@@ -1,3 +1,5 @@
+The partitioning of utilities between the ramboot ramdisk and the paqfs means that rerootwin -f ramboot no longer works because rc and supporting files are contained only within the paqfs, and the namespace.save9front file doesnt try to mount this.
+
 The plan9.ini modifications for the livecd seem to be missing from the repo. They perpetuate themselves if the new cd is built from a previous cd install though. It goes to the 'patches vs distro' dilemma. 
 
 The skel.tar file remains a hassle.

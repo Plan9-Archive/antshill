@@ -7,3 +7,4 @@ cp /bin/ndb/cs /n/safebins
 cp /bin/ndb/dns /n/safebins
 cp /bin/mntgen /n/safebins
 cp /bin/chmod /n/safebins
+cp /bin/aux/listen1 /n/safebins
