@@ -1,6 +1,6 @@
---- /sys/src/9/port/sysproc.c	Mon Nov  5 07:29:45 2018
-+++ ../frontmods/port/sysproc.c	Fri Dec  7 23:24:25 2018
-@@ -36,6 +36,7 @@
+--- /sys/src/9/port/sysproc.c	Fri May 24 05:35:49 2019
++++ ../frontmods/port/sysproc.c	Fri May 24 05:40:56 2019
+@@ -32,6 +32,7 @@
  	Pgrp *opg;
  	Rgrp *org;
  	Egrp *oeg;
@@ -8,7 +8,7 @@
  	ulong pid, flag;
  	Mach *wm;
  
-@@ -75,6 +76,12 @@
+@@ -71,6 +72,12 @@
  			up->rgrp = newrgrp();
  			closergrp(org);
  		}
@@ -21,7 +21,7 @@
  		if(flag & (RFENVG|RFCENVG)) {
  			oeg = up->egrp;
  			up->egrp = smalloc(sizeof(Egrp));
-@@ -160,6 +167,15 @@
+@@ -156,6 +163,15 @@
  	else {
  		incref(up->rgrp);
  		p->rgrp = up->rgrp;

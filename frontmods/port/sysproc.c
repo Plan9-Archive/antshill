@@ -9,15 +9,11 @@
 
 #include	<a.out.h>
 
-extern void checkpages(void);
-extern void checkpagerefs(void);
-
 uintptr
 sysr1(va_list)
 {
 	if(!iseve())
 		error(Eperm);
-	checkpagerefs();
 	return 0;
 }
 
@@ -347,6 +343,9 @@ sysexec(va_list list)
 				break;
 			case V_MAGIC:	/* 16K segment alignment for mips */
 				align = 0x4000;
+				break;
+			case R_MAGIC:	/* 64K segment alignment for arm64 */
+				align = 0x10000;
 				break;
 			}
 			if(text >= (USTKTOP-USTKSIZE)-(UTZERO+sizeof(Exec))
