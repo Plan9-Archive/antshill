@@ -418,12 +418,34 @@ fswrite(Req *r)
 	/* that means there is new data for readers, so send it to them asap */
 }
 
+void
+mqassociate(Req *r, Hub *h, Msgq *q)
+{
+	q = (Msgq*)emalloc9p(sizeof(Msgq));
+	q->myfid = r->fid->fid;
+	q->nxt = h->bucket;
+	q->bufuse = 0;
+	if(r->ifcall.mode&OTRUNC){
+		if(allowzap){
+			h->inbuckp = h->bucket;
+			h->buckfull = 0;
+			r->fid->file->length = 0;
+		}
+	}
+	if (trunc == UP){
+		q->nxt = h->inbuckp;
+		q->bufuse = h->buckfull;
+	}
+	r->fid->aux = q;
+}
+
 /* making a file is making a new hub, prepare it for i/o and add to hublist */
 void
 fscreate(Req *r)
 {
 	Hub *h;
 	File *f;
+	Msgq *q;
 
 	if(numhubs > MAXHUBS){
 		fprint(2, "Too many hubs created\n");
@@ -439,6 +461,7 @@ fscreate(Req *r)
 		f->aux = h;
 		r->fid->file = f;
 		r->ofcall.qid = f->qid;
+		mqassociate(r, h, q);
 		respond(r, nil);
 		return;
 	}
@@ -457,23 +480,7 @@ fsopen(Req *r)
 		respond(r, nil);
 		return;
 	}
-	q = (Msgq*)emalloc9p(sizeof(Msgq));
-
-	q->myfid = r->fid->fid;
-	q->nxt = h->bucket;
-	q->bufuse = 0;
-	if(r->ifcall.mode&OTRUNC){
-		if(allowzap){
-			h->inbuckp = h->bucket;
-			h->buckfull = 0;
-			r->fid->file->length = 0;
-		}
-	}
-	if (trunc == UP){
-		q->nxt = h->inbuckp;
-		q->bufuse = h->buckfull;
-	}
-	r->fid->aux = q;
+	mqassociate(r, h, q);
 	respond(r, nil);
 }
 
