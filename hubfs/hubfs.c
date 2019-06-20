@@ -421,7 +421,6 @@ fswrite(Req *r)
 void
 mqassociate(Req *r, Hub *h, Msgq *q)
 {
-	q = (Msgq*)emalloc9p(sizeof(Msgq));
 	q->myfid = r->fid->fid;
 	q->nxt = h->bucket;
 	q->bufuse = 0;
@@ -461,6 +460,7 @@ fscreate(Req *r)
 		f->aux = h;
 		r->fid->file = f;
 		r->ofcall.qid = f->qid;
+		q = (Msgq*)emalloc9p(sizeof(Msgq));
 		mqassociate(r, h, q);
 		respond(r, nil);
 		return;
@@ -480,6 +480,7 @@ fsopen(Req *r)
 		respond(r, nil);
 		return;
 	}
+	q = (Msgq*)emalloc9p(sizeof(Msgq));
 	mqassociate(r, h, q);
 	respond(r, nil);
 }
