@@ -494,6 +494,7 @@ fn dorootstart{
 		}
 		home=/usr/$user
 		if(test -e /root/rc/bin/termrc){
+			rm /env/'fn#sigint'
 			auth/newns -n /root/lib/namespace /root/rc/bin/termrc
 			auth/newns -n /root/lib/namespace rc -c 'cd; . $home/lib/profile'
 		}
