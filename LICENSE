@@ -5,5 +5,8 @@ borrowed from the 9legacy.org patch series.  The ANTS modifications
 and original components are offered under the same licensing as
 9front, Lucent for modifications of Bell Labs code, MIT for original
 work and changes to 9front original code.
-Only hubfs is primarily original non-derivative work.
-copyright 2009-2018 Mycroftiv (Ben Kidwell)
+hubfs and the hypercubic tools are primarily original non-derivative work
+the documentation is available under some suitable free docs license
+the blog posts and other such material are 
+free to distribute in unmodifed properly attributed form
+copyright 2009-2019 Mycroftiv (Ben Kidwell)

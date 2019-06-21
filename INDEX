@@ -56,7 +56,16 @@ tools, plan9.ini/plan9rc/initskel variables
 	textdoc/ - older plaintext forms of documentation prior to
 	manpage writing
 
+extra/ - supporting utilities for ants-related projects
+
+	hypercubic/ - hypercubic timewarp simulation framework in rc
+
+	pubgrid/ - scripts used to start services on the 9gridchan.org public grid
+
 frontmods/ - modified 9front code to be bound over base versions
+
+grid/ - scripts used for the Spawngrid, a global network of ants servers
+	providing independent namespaces from replicated venti/fossil rootscores
 
 grio/ - modified rio with hubfs integration and other features
 

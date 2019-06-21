@@ -28,13 +28,6 @@ add "privpassword=SOMEPASSWORD"
 There are many optional plan9.ini variables which affect the plan9rc
 script.  Please see its documentation for a comprehensive list.
 
-build script info
------------------
-
-The build script uses binds to work only within the rootless directory
-and leave all existing system src unmodified.  It has the following
-modes:
-
 9front build script modes
 -------------------------
 
@@ -66,7 +59,7 @@ interactive=yes gives fully interactive configurable boot
 interactive=no will boot with no prompts unless info is missing
 
 tgzfs= if you wish to load a tgz of tools other than tools.tgz, set
-this to the name of the .tgz in 9fant, or set to "no" to skip loading
+this to the name of the .tgz in 9fat, or set to "no" to skip loading
 
 fatpath= if the correct 9fat partition isn't auto-detected, set this
 to supply the correct pathname
@@ -78,6 +71,7 @@ is found within the doc subdirectory.
 revisions may work as well, these were tested during the development
 process)
 
+hg up -r411 builds vs 9front 7292
 hg up -r398 builds vs 9front 7099 # ants 5.23
 hg up -r301 builds vs 9front 6967 # ants 4.99
 hg up -r145 builds vs 9front 6855

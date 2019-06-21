@@ -27,6 +27,10 @@ queue with pipelike hubfiles
 namespace grouping, user-selectable additional menu command, and hubfs
 integration
 
+* Script toolkits for the services provided by 9gridchan.org projects
+such as the public 9p grid and the Spawngrid, as well as hypercubic
+timewarp simuation.
+
 Most of these components are synergistic, but not interdependent.  The
 userspace programs and utilities do not generally depend on using the
 modified ANTS kernel.
@@ -34,8 +38,7 @@ modified ANTS kernel.
 - Installing on 9front from source -
 
 Check that your 9front hg revision matched up with a compatible ANTS
-revision.  The most recent tested 9front revision is the 5736 Feb2017
-release.  Previously tested ANTS/9front revisions are listed in the
+revision.  Tested ANTS/9front revisions are listed in the
 INSTALLING file.The build script has a variety of possible targets.  A
 basic sequence:
 
@@ -67,9 +70,8 @@ You may also wish to change "rio" to "grio" in your profile.
 The behavior of the standard user namespace should be unchanged, apart
 from the use of grio rather rio if desired.  To access the special
 service namespace, either rcpu in (the default port is 17060) or, if
-using a terminal system, "hub hubfs" to connect to a peristent shell
-in that namespace.  When connecting to the service namespace via
-Drawterm, add the -B flag.  From within the service namespace, you may
+using a terminal system, via /srv/hubfs connected to a peristent shell
+in that namespace. From within the service namespace, you may
 enter the standard namespace with this sequence:
 
 	rerootwin -f boot
