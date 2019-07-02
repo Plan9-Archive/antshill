@@ -104,6 +104,7 @@ while(usercmd=`{read}){
 		if(test -e /usr/grid/$username/$targetfs){
 			echo uname $inviteduser $inviteduser >>/srv/$targetfs^fscons
 			echo 'uname sys +'^$inviteduser >>/srv/$targetfs^fscons
+			echo 'uname adm +'^$inviteduser >>/srv/$targetfs^fscons
 			echo 'uname upas +'^$inviteduser >>/srv/$targetfs^fscons
 			sleep 1
 			echo savesnap -u $inviteduser $targetfs $targetfs^$inviteduser $nonce >>/usr/grid/stolog.$pid
