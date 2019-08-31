@@ -100,7 +100,7 @@ while(talk=`{read}){
 #		ts=`{date -u}
 #		ts=`{echo '('^$ts(4)^')'}
 		if(! ~ $talk ''){
-			line=`{echo $name ': ' $talk}
+			line=`{echo $name '→ ' $talk}
 			echo $line >>/n/chat/$channel
 		}
 	}
