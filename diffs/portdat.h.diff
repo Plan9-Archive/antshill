@@ -1,5 +1,5 @@
---- /sys/src/9/port/portdat.h	Mon Nov  5 07:29:45 2018
-+++ ../frontmods/port/portdat.h	Fri Dec  7 23:24:25 2018
+--- /sys/src/9/port/portdat.h	Wed Sep  4 02:49:09 2019
++++ ../frontmods/port/portdat.h	Wed Sep  4 02:54:48 2019
 @@ -44,6 +44,8 @@
  typedef struct Segment	Segment;
  typedef struct Segio	Segio;
@@ -9,7 +9,7 @@
  typedef struct Timer	Timer;
  typedef struct Timers	Timers;
  typedef struct Uart	Uart;
-@@ -467,6 +469,21 @@
+@@ -469,6 +471,21 @@
  	Page	*pghash[PGHSIZE];	/* page cache */
  };
  
@@ -31,7 +31,7 @@
  
  struct Pgrp
  {
-@@ -575,6 +592,7 @@
+@@ -577,6 +594,7 @@
  	RFPROC		= (1<<4),
  	RFMEM		= (1<<5),
  	RFNOWAIT	= (1<<6),
@@ -39,7 +39,7 @@
  	RFCNAMEG	= (1<<10),
  	RFCENVG		= (1<<11),
  	RFCFDG		= (1<<12),
-@@ -673,6 +691,7 @@
+@@ -675,6 +693,7 @@
  	Egrp 	*egrp;		/* Environment group */
  	Fgrp	*fgrp;		/* File descriptor group */
  	Rgrp	*rgrp;		/* Rendez group */
@@ -47,7 +47,7 @@
  
  	Fgrp	*closingfgrp;	/* used during teardown */
  
-@@ -770,7 +789,8 @@
+@@ -772,7 +791,8 @@
  	PMMU;			/* machine specific mmu state */
  
  	char	*syscalltrace;	/* syscall trace */

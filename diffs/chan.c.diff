@@ -1,5 +1,5 @@
---- /sys/src/9/port/chan.c	Mon Nov  5 07:29:45 2018
-+++ ../frontmods/port/chan.c	Fri Dec  7 23:24:23 2018
+--- /sys/src/9/port/chan.c	Wed Sep  4 02:49:09 2019
++++ ../frontmods/port/chan.c	Wed Sep  4 03:15:54 2019
 @@ -753,6 +753,128 @@
  	return nm->mountid;
  }
@@ -522,7 +522,7 @@
  
  	if((e->nelems % Delta) == 0){
  		new = smalloc((e->nelems+Delta) * sizeof(char*));
-@@ -1613,6 +2030,348 @@
+@@ -1617,6 +2034,352 @@
  
  	return c;
  }
@@ -537,7 +537,7 @@
 +	Elemlist e;
 +	Rune r;
 +	Mhead *m;
-+	char *createerr, tmperrbuf[ERRMAX];
++	char *err;
 +	char *name;
 +
 +	if(aname[0] == '\0')
@@ -614,13 +614,15 @@
 +		 */
 +		if(e.nerror == 0)
 +			nexterror();
-+		strcpy(tmperrbuf, targp->errstr);
 +		if(e.off[e.nerror]==0)
 +			print("nerror=%d but off=%d\n",
 +				e.nerror, e.off[e.nerror]);
 +		len = e.prefix+e.off[e.nerror];
 +		free(e.off);
-+		namelenerror(aname, len, tmperrbuf);
++		err = targp->errstr;
++		targp->errstr = targp->syserrstr;
++		targp->syserrstr = err;
++		namelenerror(aname, len, err);
 +	}
 +
 +	/*
@@ -838,14 +840,16 @@
 +		if(omode & OEXCL)
 +			nexterror();
 +		/* save error */
-+		createerr = targp->errstr;
-+		targp->errstr = tmperrbuf;
++		err = targp->errstr;
++		targp->errstr = targp->syserrstr;
++		targp->syserrstr = err;
 +		/* note: we depend that walk does not error */
 +		if(pwalk(&c, e.elems+e.nelems-1, 1, nomount, nil, targp) < 0){
-+			targp->errstr = createerr;
-+			error(createerr);	/* report true error */
++			error(err);	/* report true error */
 +		}
-+		targp->errstr = createerr;
++		err = targp->syserrstr;
++		targp->syserrstr = targp->errstr;
++		targp->errstr = err;
 +		omode |= OTRUNC;
 +		goto Open;
 +

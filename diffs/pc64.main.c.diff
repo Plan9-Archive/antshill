@@ -1,5 +1,5 @@
---- /sys/src/9/pc64/main.c	Sat Jun 29 23:47:49 2019
-+++ ../frontmods/pc64/main.c	Sat Jun 29 23:55:31 2019
+--- /sys/src/9/pc64/main.c	Wed Sep  4 02:49:09 2019
++++ ../frontmods/pc64/main.c	Wed Sep  4 02:53:39 2019
 @@ -197,6 +197,8 @@
  	p->pgrp = newpgrp();
  	p->egrp = smalloc(sizeof(Egrp));
