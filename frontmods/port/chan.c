@@ -2045,7 +2045,7 @@ pnamec(char *aname, int amode, int omode, ulong perm, Proc *targp)
 	Elemlist e;
 	Rune r;
 	Mhead *m;
-	char *createerr, tmperrbuf[ERRMAX];
+	char *err;
 	char *name;
 
 	if(aname[0] == '\0')
@@ -2128,7 +2128,10 @@ pnamec(char *aname, int amode, int omode, ulong perm, Proc *targp)
 				e.nerror, e.off[e.nerror]);
 		len = e.prefix+e.off[e.nerror];
 		free(e.off);
-		namelenerror(aname, len, tmperrbuf);
+		err = targp->errstr;
+		targp->errstr = targp->syserrstr;
+		targp->syserrstr = err;
+		namelenerror(aname, len, err);
 	}
 
 	/*
@@ -2346,14 +2349,16 @@ pnamec(char *aname, int amode, int omode, ulong perm, Proc *targp)
 		if(omode & OEXCL)
 			nexterror();
 		/* save error */
-		createerr = targp->errstr;
-		targp->errstr = tmperrbuf;
+		err = targp->errstr;
+		targp->errstr = targp->syserrstr;
+		targp->syserrstr = err;
 		/* note: we depend that walk does not error */
 		if(pwalk(&c, e.elems+e.nelems-1, 1, nomount, nil, targp) < 0){
-			targp->errstr = createerr;
-			error(createerr);	/* report true error */
+			error(err);	/* report true error */
 		}
-		targp->errstr = createerr;
+		err = targp->syserrstr;
+		targp->syserrstr = targp->errstr;
+		targp->errstr = err;
 		omode |= OTRUNC;
 		goto Open;
 
