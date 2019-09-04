@@ -2122,7 +2122,6 @@ pnamec(char *aname, int amode, int omode, ulong perm, Proc *targp)
 		 */
 		if(e.nerror == 0)
 			nexterror();
-		strcpy(tmperrbuf, targp->errstr);
 		if(e.off[e.nerror]==0)
 			print("nerror=%d but off=%d\n",
 				e.nerror, e.off[e.nerror]);
